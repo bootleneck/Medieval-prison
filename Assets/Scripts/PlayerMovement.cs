@@ -5,17 +5,18 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")]
+    [Header("Movement Settings")]  // Ajustes de velocidad para cada estado
     [SerializeField] private float _normalSpeed = 4f;
     [SerializeField] private float _sprintSpeed = 8f;
-    [SerializeField] private float _crouchSpeed = 2.5f; // La mantenemos para saber a qué velocidad ir
+    [SerializeField] private float _crouchSpeed = 2f; 
+    [SerializeField] private float _proneSpeed = 0.8f; 
 
     [Header("Gravity & Jump")]
     [SerializeField] private float _gravity = -19.81f;
     [SerializeField] private float _jumpForce = 7f;
 
     private CharacterController _characterController;
-    private PlayerCrouch _crouchScript; // Referencia al nuevo script
+    private PlayerCrouch _crouchScript;
     private float _speed;
     private Vector2 _move;
     private float _verticalVelocity;
@@ -23,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _crouchScript = GetComponent<PlayerCrouch>(); // Obtenemos el script de agachado
+        _crouchScript = GetComponent<PlayerCrouch>();
     }
 
     void Start()
@@ -34,16 +35,24 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Actualizamos la velocidad dependiendo de si el otro script dice que estamos agachados
         UpdateSpeed();
         HandleMovement();
+
     }
 
     private void UpdateSpeed()
     {
-        if (_crouchScript != null && _crouchScript.IsCrouching)
+        // Si el script de agachado nos dice que estamos en un estado "bajo"
+        if (_crouchScript != null && _crouchScript.IsLowered)
         {
-            _speed = _crouchSpeed;
+            // Si estamos arrastrados (Prone) usamos _proneSpeed 
+            // si no (estamos agachados) usamos _crouchSpeed
+            _speed = _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
+        }
+        else if (!Keyboard.current.leftShiftKey.isPressed)
+        {
+            // Solo volvemos a normal si no estamos apretando Shift
+            _speed = _normalSpeed;
         }
     }
 
@@ -67,21 +76,24 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnSprint(InputAction.CallbackContext context)
     {
-        // Solo permite sprintar si NO estamos agachados según el otro script
-        if (context.performed && (_crouchScript == null || !_crouchScript.IsCrouching))
+        // Solo permite correr si el cuerpo está totalmente erguido
+        if (context.performed && (_crouchScript == null || !_crouchScript.IsLowered))
         {
             _speed = _sprintSpeed;
         }
         else if (context.canceled)
         {
-            _speed = (_crouchScript != null && _crouchScript.IsCrouching) ? _crouchSpeed : _normalSpeed;
+            // Al soltar shift, regresamos a la velocidad que corresponda al estado actual
+            if (_crouchScript != null && _crouchScript.IsLowered)
+                _speed = _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
+            else
+                _speed = _normalSpeed;
         }
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        // Solo salta si no estamos agachados
-        if (context.performed && _characterController.isGrounded && (_crouchScript == null || !_crouchScript.IsCrouching))
+        if (context.performed && _characterController.isGrounded && (_crouchScript == null || !_crouchScript.IsLowered))
         {
             _verticalVelocity = _jumpForce;
         }

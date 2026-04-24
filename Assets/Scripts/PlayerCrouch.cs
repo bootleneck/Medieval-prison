@@ -4,114 +4,112 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCrouch : MonoBehaviour
 {
-    [Header("Configuración de Alturas")]
-    [SerializeField] private float _crouchHeight = 1f;
-    [SerializeField] private float _standingHeight = 2.0f;
+    public enum CrouchState { Standing, Crouching, Prone }
+    private CrouchState _currentState = CrouchState.Standing;
+
+    [Header("Configuración de Alturas (Cápsula)")]
+    [SerializeField] private float _standHeight = 2.0f;
+    [SerializeField] private float _crouchHeight = 1.0f;
+    [SerializeField] private float _proneHeight = 0.5f;
+
+    [Header("Alturas de Cámara (Visual)")]
+    [SerializeField] private float _camStandY = 1.6f;
     [SerializeField] private float _camCrouchY = 0.8f;
-    [SerializeField] private float _crouchSmoothTime = 10f;
+    [SerializeField] private float _camProneY = 0.3f;
+    [SerializeField] private float _smoothTime = 10f;
 
     [Header("Detección de Techo (Raycast)")]
     [SerializeField] private LayerMask _ceilingLayer;
-    [SerializeField] private float _rayOffset = 0.3f; // Distancia de los rayos laterales
+    [SerializeField] private float _rayOffset = 0.25f;
 
     private CharacterController _controller;
     private Camera _cam;
-    private float _standCamY;
+    private float _targetHeight;
     private float _targetCamY;
-    private bool _isCrouching;
-    private bool _wantsToStandUp;
+    private bool _wantsToRise = false;
 
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _cam = GetComponentInChildren<Camera>();
-
-        if (_cam != null)
-        {
-            _standCamY = _cam.transform.localPosition.y;
-            _targetCamY = _standCamY;
-        }
+        _targetHeight = _standHeight;
+        if (_cam != null) _targetCamY = _cam.transform.localPosition.y;
     }
 
     private void Update()
     {
-        // 1. Suavizado de la cámara (Lerp)
+        // 1. Suavizado de la cápsula y la cámara
+        _controller.height = Mathf.Lerp(_controller.height, _targetHeight, Time.deltaTime * _smoothTime);
+        _controller.center = new Vector3(0, _controller.height / 2f, 0);
+
         if (_cam != null)
         {
-            float newY = Mathf.Lerp(_cam.transform.localPosition.y, _targetCamY, Time.deltaTime * _crouchSmoothTime);
+            float newY = Mathf.Lerp(_cam.transform.localPosition.y, _targetCamY, Time.deltaTime * _smoothTime);
             _cam.transform.localPosition = new Vector3(0, newY, 0);
         }
 
-        // 2. Lógica de seguridad constante
-        if (_isCrouching && _wantsToStandUp)
-        {
-            CheckIfCanStandUp();
-        }
+        // 2. Si soltamos tecla bajo techo, el Raycast decide cuándo subir
+        if (_wantsToRise) CheckIfCanRise();
     }
 
     public void OnCrouch(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            _wantsToStandUp = false;
-            PerformCrouch(true);
+            _wantsToRise = false;
+            if (_currentState == CrouchState.Standing) SetCrouchState(CrouchState.Crouching);
+            else if (_currentState == CrouchState.Crouching) SetCrouchState(CrouchState.Prone);
+            else _wantsToRise = true;
+        }
+    }
+
+    public void OnProne(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _wantsToRise = false;
+            SetCrouchState(CrouchState.Prone);
         }
         else if (context.canceled)
         {
-            _wantsToStandUp = true;
-            CheckIfCanStandUp();
+            _wantsToRise = true;
         }
     }
 
-    private void CheckIfCanStandUp()
+    private void SetCrouchState(CrouchState newState)
     {
-        // El origen es la parte superior de la cabeza actual
-        Vector3 origin = transform.position + Vector3.up * _controller.height;
-        float distance = (_standingHeight - _controller.height) + 0.2f;
-
-        //  5 puntos de origen (Centro + Cruz)
-        Vector3[] rayOrigins = new Vector3[]
+        _currentState = newState;
+        switch (newState)
         {
-            origin,
-            origin + new Vector3(_rayOffset, 0, 0),
-            origin + new Vector3(-_rayOffset, 0, 0),
-            origin + new Vector3(0, 0, _rayOffset),
-            origin + new Vector3(0, 0, -_rayOffset)
-        };
-
-        bool hitSomething = false;
-
-        foreach (Vector3 pos in rayOrigins)
-        {
-            // Dibujamos los rayos para Debug 
-            Debug.DrawRay(pos, Vector3.up * distance, Color.red);
-
-            if (Physics.Raycast(pos, Vector3.up, distance, _ceilingLayer))
-            {
-                hitSomething = true;
-                break;
-            }
-        }
-
-        if (!hitSomething)
-        {
-            PerformCrouch(false);
-            _wantsToStandUp = false;
-            Debug.Log("Raycasts despejados: El personaje se para.");
-        }
-        else
-        {
-            Debug.Log("Raycast detectó obstrucción: No puedes pararte.");
+            case CrouchState.Standing: _targetHeight = _standHeight; _targetCamY = _camStandY; break;
+            case CrouchState.Crouching: _targetHeight = _crouchHeight; _targetCamY = _camCrouchY; break;
+            case CrouchState.Prone: _targetHeight = _proneHeight; _targetCamY = _camProneY; break;
         }
     }
 
-    private void PerformCrouch(bool crouch)
+    private void CheckIfCanRise()
     {
-        _isCrouching = crouch;
-        _controller.height = crouch ? _crouchHeight : _standingHeight;
-        _controller.center = new Vector3(0, _controller.height / 2f, 0);
-        _targetCamY = crouch ? _camCrouchY : _standCamY;
+        float targetH = (_currentState == CrouchState.Prone) ? _crouchHeight : _standHeight;
+        Vector3 origin = transform.position + Vector3.up * (_controller.height - 0.1f);
+        float dist = (targetH - _controller.height) + 0.2f;
+
+        Vector3[] origins = { origin, origin + transform.forward * _rayOffset, origin - transform.forward * _rayOffset };
+
+        bool blocked = false;
+        foreach (var pos in origins)
+        {
+            Debug.DrawRay(pos, Vector3.up * dist, Color.red);
+            if (Physics.Raycast(pos, Vector3.up, dist, _ceilingLayer)) { blocked = true; break; }
+        }
+
+        if (!blocked)
+        {
+            if (_currentState == CrouchState.Prone) SetCrouchState(CrouchState.Crouching);
+            else { SetCrouchState(CrouchState.Standing); _wantsToRise = false; }
+        }
     }
 
-    public bool IsCrouching => _isCrouching;
+    // Propiedades para que PlayerMovement las lea
+    public bool IsLowered => _currentState != CrouchState.Standing;
+    public bool IsProne => _currentState == CrouchState.Prone;
 }
