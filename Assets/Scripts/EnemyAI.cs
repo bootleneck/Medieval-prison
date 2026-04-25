@@ -24,13 +24,13 @@ public class EnemyAI : MonoBehaviour
     [Header("Anti-traspaso y altura")]
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float obstacleCheckDistance = 1.2f;
-    [SerializeField] private float groundY;           // ← Nueva: altura fija del suelo
 
     private Rigidbody rb;
     private Vector3 startPoint;
     private Vector3 targetPoint;
     private float waitCounter;
     private bool isChasing = false;
+    private float groundY;
 
     void Start()
     {
@@ -45,7 +45,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         startPoint = transform.position;
-        groundY = transform.position.y;        // Guardamos la altura actual del enemigo
+        groundY = transform.position.y;
 
         SetNewRandomPoint();
 
@@ -71,6 +71,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // PATRULLA 
     void Patrol()
     {
         if (CanMoveTo(targetPoint))
@@ -93,6 +94,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // PERSECUCIÓN 
     void ChasePlayer(float distance)
     {
         if (distance > stopDistance)
@@ -108,37 +110,55 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // MOVIMIENTO 
     void MoveTo(Vector3 target, float currentRotationSpeed, float currentMoveSpeed)
     {
-        // ← IMPORTANTE: Forzamos la altura Y para que no se hunda
         Vector3 fixedTarget = new Vector3(target.x, groundY, target.z);
-
         Vector3 direction = (fixedTarget - transform.position).normalized;
 
         Vector3 newPosition = transform.position + direction * currentMoveSpeed * Time.fixedDeltaTime;
-
-        // Forzamos que la nueva posición mantenga siempre la altura correcta
         newPosition.y = groundY;
 
         rb.MovePosition(newPosition);
 
-        // Rotación solo en el plano horizontal (sin inclinarse hacia abajo)
         if (direction != Vector3.zero)
         {
-            // Quitamos la componente Y de la dirección para que no mire hacia abajo
             Vector3 flatDirection = new Vector3(direction.x, 0f, direction.z).normalized;
-
             if (flatDirection != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(flatDirection);
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRotation,
-                    Time.fixedDeltaTime * currentRotationSpeed
-                );
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * currentRotationSpeed);
             }
         }
     }
+
+    // PUNTO ALEATORIO
+    void SetNewRandomPoint()
+    {
+        const int maxAttempts = 50;
+        int attempts = 0;
+
+        while (attempts < maxAttempts)
+        {
+            Vector2 randomCircle = Random.insideUnitCircle * patrolRadius;
+
+            Vector3 candidatePoint = new Vector3(
+                startPoint.x + randomCircle.x,
+                groundY,
+                startPoint.z + randomCircle.y
+            );
+
+            
+            if (!Physics.CheckSphere(candidatePoint, 0.3f, obstacleLayer, QueryTriggerInteraction.Ignore))
+            {
+                targetPoint = candidatePoint;
+                return;
+            }
+
+            attempts++;
+        }
+        targetPoint = startPoint;
+            }
 
     bool HasLineOfSightToPlayer()
     {
@@ -154,20 +174,5 @@ public class EnemyAI : MonoBehaviour
         float distanceToTarget = Vector3.Distance(transform.position, fixedTarget);
 
         return !Physics.Raycast(transform.position, direction, Mathf.Min(obstacleCheckDistance, distanceToTarget), obstacleLayer);
-    }
-
-    void SetNewRandomPoint()
-    {
-        Vector2 randomCircle = Random.insideUnitCircle * patrolRadius;
-        targetPoint = new Vector3(
-            startPoint.x + randomCircle.x,
-            groundY,                    // ← Usamos la altura fija
-            startPoint.z + randomCircle.y
-        );
-
-        if (Physics.CheckSphere(targetPoint, 0.5f, obstacleLayer))
-        {
-            SetNewRandomPoint();
-        }
     }
 }
