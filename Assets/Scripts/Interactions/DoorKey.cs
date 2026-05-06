@@ -1,18 +1,17 @@
 using UnityEngine;
 
-public class DoorKey : MonoBehaviour, IInteractable   // Cambié el nombre
+public class DoorKey : MonoBehaviour, IInteractable
 {
     [SerializeField] private string keyID = "RedKey";
 
     public void Interact()
     {
-        // Buscar el inventario de forma segura
         PlayerInventory inventory = FindObjectOfType<PlayerInventory>();
 
         if (inventory != null)
         {
-            inventory.AddKey(keyID);
-            Destroy(gameObject);           // La llave desaparece al recogerla
+            inventory.AddItem(keyID);
+            Destroy(gameObject);
             Debug.Log("¡Llave " + keyID + " recogida!");
         }
         else

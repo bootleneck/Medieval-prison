@@ -3,28 +3,28 @@ using System.Collections.Generic;
 
 public class PlayerInventory : MonoBehaviour
 {
-    // Lista de llaves que tiene el jugador (por su ID o nombre)
-    private List<string> keys = new List<string>();
+    // Lista general de objetos
+    private List<string> items = new List<string>();
 
-    // Agrega una llave al inventario
-    public void AddKey(string keyID)
+    // Agregar objeto
+    public void AddItem(string itemID)
     {
-        if (!keys.Contains(keyID))
+        if (!items.Contains(itemID))
         {
-            keys.Add(keyID);
-            Debug.Log("Llave recogida: " + keyID);
+            items.Add(itemID);
+            Debug.Log(itemID + " agregado al inventario");
         }
     }
 
-    // Verifica si el jugador tiene una llave específica
-    public bool HasKey(string keyID)
+    // Verificar si tiene objeto
+    public bool HasItem(string itemID)
     {
-        return keys.Contains(keyID);
+        return items.Contains(itemID);
     }
 
-    // (Opcional) Remover llave después de usarla
-    public void RemoveKey(string keyID)
+    // Remover objeto
+    public void RemoveItem(string itemID)
     {
-        keys.Remove(keyID);
+        items.Remove(itemID);
     }
 }

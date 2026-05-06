@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6772996073551871312}
   - component: {fileID: 6079564548782730328}
   - component: {fileID: 3330322209264713932}
+  - component: {fileID: 5342444244233232681}
   m_Layer: 0
   m_Name: Arch_Gate
   m_TagString: Untagged
@@ -106,10 +107,22 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300114, guid: 628e5212ccbe5044ba8b70740d37394e, type: 3}
+--- !u!114 &5342444244233232681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5032732577174788124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da779ae0a7a0924a9503ce0bab4fda6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RejitaRompible
