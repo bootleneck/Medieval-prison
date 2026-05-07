@@ -3,13 +3,17 @@ using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInput))]
+[RequireComponent(typeof(PlayerStamina))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement Settings")]  // Ajustes de velocidad para cada estado
+    [Header("Movement Settings")]
     [SerializeField] private float _normalSpeed = 4f;
     [SerializeField] private float _sprintSpeed = 8f;
-    [SerializeField] private float _crouchSpeed = 2f; 
-    [SerializeField] private float _proneSpeed = 0.8f; 
+    [SerializeField] private float _crouchSpeed = 2f;
+    [SerializeField] private float _proneSpeed = 0.8f;
+
+    [Header("Sprint Stamina")]
+    [SerializeField] private float _sprintStaminaCostPerSecond = 20f;
 
     [Header("Gravity & Jump")]
     [SerializeField] private float _gravity = -19.81f;
@@ -17,88 +21,115 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController _characterController;
     private PlayerCrouch _crouchScript;
-    private float _speed;
+    private PlayerStamina _stamina;
+
     private Vector2 _move;
     private float _verticalVelocity;
+
+    private bool _isSprinting;    
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
         _crouchScript = GetComponent<PlayerCrouch>();
+        _stamina = GetComponent<PlayerStamina>();
     }
 
-    void Start()
+    private void Start()
     {
-        _speed = _normalSpeed;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
+    private void Update()
     {
-        UpdateSpeed();
         HandleMovement();
-
     }
 
-    private void UpdateSpeed()
-    {
-        // Si el script de agachado nos dice que estamos en un estado "bajo"
-        if (_crouchScript != null && _crouchScript.IsLowered)
-        {
-            // Si estamos arrastrados (Prone) usamos _proneSpeed 
-            // si no (estamos agachados) usamos _crouchSpeed
-            _speed = _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
-        }
-        else if (!Keyboard.current.leftShiftKey.isPressed)
-        {
-            // Solo volvemos a normal si no estamos apretando Shift
-            _speed = _normalSpeed;
-        }
-    }
+    // =========================================================
+    // MOVEMENT CORE (UNIFICADO)
+    // =========================================================
 
     private void HandleMovement()
     {
-        Vector3 moveDirection = transform.forward * _move.y + transform.right * _move.x;
-        Vector3 movement = moveDirection.normalized * _speed;
+        float baseSpeed = GetBaseSpeed();
+        float finalSpeed = ApplySprint(baseSpeed);
 
+        Vector3 moveDirection =
+            transform.forward * _move.y +
+            transform.right * _move.x;
+
+        Vector3 movement = moveDirection.normalized * finalSpeed;
+
+        // Gravity
         if (_characterController.isGrounded && _verticalVelocity < 0)
+        {
             _verticalVelocity = -2f;
+        }
         else
+        {
             _verticalVelocity += _gravity * Time.deltaTime;
+        }
 
         movement.y = _verticalVelocity;
+
         _characterController.Move(movement * Time.deltaTime);
     }
 
-    // --- INPUT EVENTS ---
+    // =========================================================
+    // SPEED LOGIC (UNA SOLA FUENTE DE VERDAD)
+    // =========================================================
 
-    public void OnMove(InputAction.CallbackContext context) => _move = context.ReadValue<Vector2>();
+    private float GetBaseSpeed()
+    {
+        if (_crouchScript != null && _crouchScript.IsLowered)
+        {
+            return _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
+        }
+
+        return _normalSpeed;
+    }
+
+    private float ApplySprint(float baseSpeed)
+    {
+        bool canSprint =
+            _isSprinting &&
+            _move != Vector2.zero &&
+            (_crouchScript == null || !_crouchScript.IsLowered) &&
+            _stamina.HasStamina(0.1f);
+
+        if (canSprint)
+        {
+            _stamina.UseStamina(_sprintStaminaCostPerSecond * Time.deltaTime);
+            return _sprintSpeed;
+        }
+
+        return baseSpeed;
+    }
+
+    // =========================================================
+    // INPUTS
+    // =========================================================
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        _move = context.ReadValue<Vector2>();
+    }
 
     public void OnSprint(InputAction.CallbackContext context)
     {
-        // Solo permite correr si el cuerpo está totalmente erguido
-        if (context.performed && (_crouchScript == null || !_crouchScript.IsLowered))
-        {
-            _speed = _sprintSpeed;
-        }
-        else if (context.canceled)
-        {
-            // Al soltar shift, regresamos a la velocidad que corresponda al estado actual
-            if (_crouchScript != null && _crouchScript.IsLowered)
-                _speed = _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
-            else
-                _speed = _normalSpeed;
-        }
+        _isSprinting = context.performed;
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed && _characterController.isGrounded && (_crouchScript == null || !_crouchScript.IsLowered))
+        bool canJump =
+            context.performed &&
+            _characterController.isGrounded &&
+            (_crouchScript == null || !_crouchScript.IsLowered);
+
+        if (canJump)
         {
             _verticalVelocity = _jumpForce;
         }
     }
 }
-
-
-

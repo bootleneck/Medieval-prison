@@ -21,27 +21,42 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float patrolRadius = 6f;
     [SerializeField] private float waitTime = 2f;
 
-    [Header("Anti-traspaso y altura")]
+    [Header("Anti-Traspaso y Altura")]
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float obstacleCheckDistance = 1.2f;
 
+    [Header("Stun")]
+    [SerializeField] private float stunDuration = 5f;
+    [SerializeField] private float stunCooldown = 2f;
+    [SerializeField] private float stunKnockback = 0.5f;
+
     private Rigidbody rb;
+
     private Vector3 startPoint;
     private Vector3 targetPoint;
+
     private float waitCounter;
-    private bool isChasing = false;
     private float groundY;
 
-    void Start()
+    private bool isChasing = false;
+
+    // STUN
+    private bool isStunned = false;
+    private float stunTimer;
+    private float lastStunTime;
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
+
         rb.isKinematic = true;
         rb.freezeRotation = true;
 
         if (player == null)
         {
             GameObject obj = GameObject.FindGameObjectWithTag("Player");
-            if (obj != null) player = obj.transform;
+            if (obj != null)
+                player = obj.transform;
         }
 
         startPoint = transform.position;
@@ -50,12 +65,29 @@ public class EnemyAI : MonoBehaviour
         SetNewRandomPoint();
 
         if (obstacleLayer.value == 0)
+        {
             obstacleLayer = LayerMask.GetMask("Default", "Wall");
+        }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (player == null) return;
+        if (player == null)
+            return;
+
+        // ---------------- STUN ----------------
+
+        if (isStunned)
+        {
+            stunTimer -= Time.fixedDeltaTime;
+
+            if (stunTimer <= 0f)
+                isStunned = false;
+
+            return;
+        }
+
+        // ---------------- IA NORMAL ----------------
 
         float distance = Vector3.Distance(transform.position, player.position);
 
@@ -71,8 +103,11 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // PATRULLA 
-    void Patrol()
+    // =========================================================
+    // PATROL
+    // =========================================================
+
+    private void Patrol()
     {
         if (CanMoveTo(targetPoint))
         {
@@ -86,6 +121,7 @@ public class EnemyAI : MonoBehaviour
         if (Vector3.Distance(transform.position, targetPoint) < 0.5f)
         {
             waitCounter += Time.fixedDeltaTime;
+
             if (waitCounter >= waitTime)
             {
                 SetNewRandomPoint();
@@ -94,8 +130,11 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // PERSECUCIÓN 
-    void ChasePlayer(float distance)
+    // =========================================================
+    // CHASE
+    // =========================================================
+
+    private void ChasePlayer(float distance)
     {
         if (distance > stopDistance)
         {
@@ -110,30 +149,44 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // MOVIMIENTO 
-    void MoveTo(Vector3 target, float currentRotationSpeed, float currentMoveSpeed)
+    // =========================================================
+    // MOVEMENT
+    // =========================================================
+
+    private void MoveTo(Vector3 target, float currentRotationSpeed, float currentMoveSpeed)
     {
         Vector3 fixedTarget = new Vector3(target.x, groundY, target.z);
         Vector3 direction = (fixedTarget - transform.position).normalized;
 
-        Vector3 newPosition = transform.position + direction * currentMoveSpeed * Time.fixedDeltaTime;
+        Vector3 newPosition =
+            transform.position +
+            direction * currentMoveSpeed * Time.fixedDeltaTime;
+
         newPosition.y = groundY;
 
         rb.MovePosition(newPosition);
 
         if (direction != Vector3.zero)
         {
-            Vector3 flatDirection = new Vector3(direction.x, 0f, direction.z).normalized;
-            if (flatDirection != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(flatDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * currentRotationSpeed);
-            }
+            Vector3 flatDirection =
+                new Vector3(direction.x, 0f, direction.z).normalized;
+
+            Quaternion targetRotation =
+                Quaternion.LookRotation(flatDirection);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                Time.fixedDeltaTime * currentRotationSpeed
+            );
         }
     }
 
-    // PUNTO ALEATORIO
-    void SetNewRandomPoint()
+    // =========================================================
+    // RANDOM PATROL POINT
+    // =========================================================
+
+    private void SetNewRandomPoint()
     {
         const int maxAttempts = 50;
         int attempts = 0;
@@ -148,8 +201,14 @@ public class EnemyAI : MonoBehaviour
                 startPoint.z + randomCircle.y
             );
 
-            
-            if (!Physics.CheckSphere(candidatePoint, 0.3f, obstacleLayer, QueryTriggerInteraction.Ignore))
+            bool blocked = Physics.CheckSphere(
+                candidatePoint,
+                0.3f,
+                obstacleLayer,
+                QueryTriggerInteraction.Ignore
+            );
+
+            if (!blocked)
             {
                 targetPoint = candidatePoint;
                 return;
@@ -157,22 +216,60 @@ public class EnemyAI : MonoBehaviour
 
             attempts++;
         }
-        targetPoint = startPoint;
-            }
 
-    bool HasLineOfSightToPlayer()
+        targetPoint = startPoint;
+    }
+
+    // =========================================================
+    // DETECTION
+    // =========================================================
+
+    private bool HasLineOfSightToPlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, player.position);
-        return !Physics.Raycast(transform.position, direction, distance, obstacleLayer);
+
+        return !Physics.Raycast(
+            transform.position,
+            direction,
+            distance,
+            obstacleLayer
+        );
     }
 
-    bool CanMoveTo(Vector3 target)
+    private bool CanMoveTo(Vector3 target)
     {
         Vector3 fixedTarget = new Vector3(target.x, groundY, target.z);
         Vector3 direction = (fixedTarget - transform.position).normalized;
-        float distanceToTarget = Vector3.Distance(transform.position, fixedTarget);
 
-        return !Physics.Raycast(transform.position, direction, Mathf.Min(obstacleCheckDistance, distanceToTarget), obstacleLayer);
+        float distanceToTarget =
+            Vector3.Distance(transform.position, fixedTarget);
+
+        return !Physics.Raycast(
+            transform.position,
+            direction,
+            Mathf.Min(obstacleCheckDistance, distanceToTarget),
+            obstacleLayer
+        );
+    }
+
+    // =========================================================
+    // STUN (CORREGIDO)
+    // =========================================================
+
+    public void Stun()
+    {
+        if (Time.time < lastStunTime + stunCooldown)
+            return;
+
+        lastStunTime = Time.time;
+
+        isStunned = true;
+        stunTimer = stunDuration;
+
+        // ✔ MEJORA: usar Rigidbody en vez de transform directo
+        rb.MovePosition(transform.position - transform.forward * stunKnockback);
+
+        Debug.Log($"{gameObject.name} stunned");
     }
 }

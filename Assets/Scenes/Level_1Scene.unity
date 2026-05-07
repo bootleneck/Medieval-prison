@@ -614,6 +614,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8109110820744107094}
     - target: {fileID: 8831256694059178980, guid: cdc35d37ec0c6e54dba6fc31fd1ea5f5, type: 3}
+      propertyPath: stunDuration
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8831256694059178980, guid: cdc35d37ec0c6e54dba6fc31fd1ea5f5, type: 3}
       propertyPath: obstacleLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
@@ -703,6 +707,7 @@ MonoBehaviour:
   _sprintSpeed: 7
   _crouchSpeed: 2.5
   _proneSpeed: 0.8
+  _sprintStaminaCostPerSecond: 50
   _gravity: -19.81
   _jumpForce: 7
 --- !u!4 &682394524 stripped
@@ -1680,10 +1685,14 @@ GameObject:
   - component: {fileID: 8109110820744107094}
   - component: {fileID: 830611864435632393}
   - component: {fileID: 6011975042090003776}
+  - component: {fileID: 8109110820744107100}
+  - component: {fileID: 8109110820744107099}
   - component: {fileID: 482809989}
   - component: {fileID: 8109110820744107095}
   - component: {fileID: 8109110820744107097}
   - component: {fileID: 8109110820744107096}
+  - component: {fileID: 8109110820744107098}
+  - component: {fileID: 8109110820744107101}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -2458,6 +2467,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2eb7580c-0ba7-43d7-87c3-56566fc756b9
     m_ActionName: 'Player/Prone[/Keyboard/x]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8109110820744107099}
+        m_TargetAssemblyTypeName: PlayerCombat, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 375b38d9-f24e-4054-9303-fe9b1fc0f2df
+    m_ActionName: 'Player/StunAttack[/Keyboard/q]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -3068,6 +3093,73 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 226ca02d74d639d40a6b8ad88c9284e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+--- !u!114 &8109110820744107098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09a54df86d67b594594a0c2e7d85190f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStamina
+  _maxStamina: 100
+  _regenRate: 15
+  _regenDelay: 1.5
+--- !u!114 &8109110820744107099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a656506d67349d42b6b1237b7deeaa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  _stunCost: 50
+  _stunRange: 4
+  _attackDelay: 0.25
+--- !u!114 &8109110820744107100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09a54df86d67b594594a0c2e7d85190f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStamina
+  _maxStamina: 100
+  _regenRate: 15
+  _regenDelay: 1.5
+--- !u!95 &8109110820744107101
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 17525d1f0bbb3dc4a8f3413903d9b44c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &8238229626776545522
 PrefabInstance:
   m_ObjectHideFlags: 0
