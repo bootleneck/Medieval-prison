@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : MonoBehaviour, IStunnable, IDamageable
 {
     [Header("Referencias")]
     [SerializeField] private Transform player;
@@ -21,12 +21,15 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float patrolRadius = 6f;
     [SerializeField] private float waitTime = 2f;
 
-    [Header("Anti-Traspaso y Altura")]
+    [Header("Anti-Traspaso")]
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float obstacleCheckDistance = 1.2f;
 
+    [Header("Vida")]
+    [SerializeField] private int maxHealth = 100;
+    private int currentHealth;
+
     [Header("Stun")]
-    [SerializeField] private float stunDuration = 5f;
     [SerializeField] private float stunCooldown = 2f;
     [SerializeField] private float stunKnockback = 0.5f;
 
@@ -38,12 +41,13 @@ public class EnemyAI : MonoBehaviour
     private float waitCounter;
     private float groundY;
 
-    private bool isChasing = false;
-
-    // STUN
     private bool isStunned = false;
     private float stunTimer;
     private float lastStunTime;
+
+    // =========================================================
+    // UNITY
+    // =========================================================
 
     private void Start()
     {
@@ -51,6 +55,8 @@ public class EnemyAI : MonoBehaviour
 
         rb.isKinematic = true;
         rb.freezeRotation = true;
+
+        currentHealth = maxHealth;
 
         if (player == null)
         {
@@ -75,8 +81,6 @@ public class EnemyAI : MonoBehaviour
         if (player == null)
             return;
 
-        // ---------------- STUN ----------------
-
         if (isStunned)
         {
             stunTimer -= Time.fixedDeltaTime;
@@ -87,24 +91,61 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // ---------------- IA NORMAL ----------------
-
         float distance = Vector3.Distance(transform.position, player.position);
 
         if (distance <= detectionRange && HasLineOfSightToPlayer())
         {
-            isChasing = true;
             ChasePlayer(distance);
         }
         else
         {
-            isChasing = false;
             Patrol();
         }
     }
 
     // =========================================================
-    // PATROL
+    // VIDA
+    // =========================================================
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        Debug.Log($"{gameObject.name} HP: {currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log($"{gameObject.name} murió");
+        Destroy(gameObject);
+    }
+
+    // =========================================================
+    // STUN
+    // =========================================================
+
+    public void Stun(float duration)
+    {
+        if (Time.time < lastStunTime + stunCooldown)
+            return;
+
+        lastStunTime = Time.time;
+
+        isStunned = true;
+        stunTimer = duration;
+
+        rb.MovePosition(transform.position - transform.forward * stunKnockback);
+
+        Debug.Log($"{gameObject.name} stunned");
+    }
+
+    // =========================================================
+    // IA (sin cambios importantes)
     // =========================================================
 
     private void Patrol()
@@ -130,10 +171,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // =========================================================
-    // CHASE
-    // =========================================================
-
     private void ChasePlayer(float distance)
     {
         if (distance > stopDistance)
@@ -142,25 +179,17 @@ public class EnemyAI : MonoBehaviour
             {
                 MoveTo(player.position, chaseRotationSpeed, chaseSpeed);
             }
-            else
-            {
-                isChasing = false;
-            }
         }
     }
 
-    // =========================================================
-    // MOVEMENT
-    // =========================================================
-
-    private void MoveTo(Vector3 target, float currentRotationSpeed, float currentMoveSpeed)
+    private void MoveTo(Vector3 target, float rotationSpeed, float moveSpeed)
     {
         Vector3 fixedTarget = new Vector3(target.x, groundY, target.z);
         Vector3 direction = (fixedTarget - transform.position).normalized;
 
         Vector3 newPosition =
             transform.position +
-            direction * currentMoveSpeed * Time.fixedDeltaTime;
+            direction * moveSpeed * Time.fixedDeltaTime;
 
         newPosition.y = groundY;
 
@@ -168,22 +197,17 @@ public class EnemyAI : MonoBehaviour
 
         if (direction != Vector3.zero)
         {
-            Vector3 flatDirection =
-                new Vector3(direction.x, 0f, direction.z).normalized;
-
-            Quaternion targetRotation =
-                Quaternion.LookRotation(flatDirection);
-
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRotation,
-                Time.fixedDeltaTime * currentRotationSpeed
+                Time.fixedDeltaTime * rotationSpeed
             );
         }
     }
 
     // =========================================================
-    // RANDOM PATROL POINT
+    // HELPERS
     // =========================================================
 
     private void SetNewRandomPoint()
@@ -201,14 +225,7 @@ public class EnemyAI : MonoBehaviour
                 startPoint.z + randomCircle.y
             );
 
-            bool blocked = Physics.CheckSphere(
-                candidatePoint,
-                0.3f,
-                obstacleLayer,
-                QueryTriggerInteraction.Ignore
-            );
-
-            if (!blocked)
+            if (!Physics.CheckSphere(candidatePoint, 0.3f, obstacleLayer))
             {
                 targetPoint = candidatePoint;
                 return;
@@ -220,56 +237,19 @@ public class EnemyAI : MonoBehaviour
         targetPoint = startPoint;
     }
 
-    // =========================================================
-    // DETECTION
-    // =========================================================
-
     private bool HasLineOfSightToPlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, player.position);
 
-        return !Physics.Raycast(
-            transform.position,
-            direction,
-            distance,
-            obstacleLayer
-        );
+        return !Physics.Raycast(transform.position, direction, distance, obstacleLayer);
     }
 
     private bool CanMoveTo(Vector3 target)
     {
-        Vector3 fixedTarget = new Vector3(target.x, groundY, target.z);
-        Vector3 direction = (fixedTarget - transform.position).normalized;
+        Vector3 direction = (target - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, target);
 
-        float distanceToTarget =
-            Vector3.Distance(transform.position, fixedTarget);
-
-        return !Physics.Raycast(
-            transform.position,
-            direction,
-            Mathf.Min(obstacleCheckDistance, distanceToTarget),
-            obstacleLayer
-        );
-    }
-
-    // =========================================================
-    // STUN (CORREGIDO)
-    // =========================================================
-
-    public void Stun()
-    {
-        if (Time.time < lastStunTime + stunCooldown)
-            return;
-
-        lastStunTime = Time.time;
-
-        isStunned = true;
-        stunTimer = stunDuration;
-
-        // ✔ MEJORA: usar Rigidbody en vez de transform directo
-        rb.MovePosition(transform.position - transform.forward * stunKnockback);
-
-        Debug.Log($"{gameObject.name} stunned");
+        return !Physics.Raycast(transform.position, direction, distance, obstacleLayer);
     }
 }

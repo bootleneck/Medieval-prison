@@ -8,7 +8,6 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float _regenDelay = 1.5f;
 
     public float CurrentStamina { get; private set; }
-    public float MaxStamina => _maxStamina;
 
     private float _regenTimer;
 
@@ -32,7 +31,6 @@ public class PlayerStamina : MonoBehaviour
         CurrentStamina -= amount;
         CurrentStamina = Mathf.Clamp(CurrentStamina, 0f, _maxStamina);
 
-        // Reinicia el delay de regeneración
         _regenTimer = _regenDelay;
     }
 

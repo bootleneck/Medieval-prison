@@ -1,74 +1,115 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 public class PlayerCombat : MonoBehaviour
 {
+    [Header("Slash Attack")]
+    [SerializeField] private int _slashDamage = 25;
+    [SerializeField] private float _slashRange = 2f;
+
     [Header("Stun Attack")]
     [SerializeField] private float _stunCost = 35f;
     [SerializeField] private float _stunRange = 2f;
-    [SerializeField] private float _attackDelay = 0.25f; // tiempo hasta el impacto
+    [SerializeField] private float _stunDuration = 5f;
+
+    [Header("Layers")]
+    [SerializeField] private LayerMask _hitLayers;
 
     private PlayerStamina _stamina;
-    private Animator animator;
+    private Animator _animator;
+    private Camera _cam;
+
+    private bool _isAttacking;
 
     private void Awake()
     {
         _stamina = GetComponent<PlayerStamina>();
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
+        _cam = Camera.main;
 
-        if (animator != null)
-        {
-            animator.ResetTrigger("StunAttack");
-            animator.Play("Idle", 0, 0f); // asegura que arranca en Idle
-        }
+        _animator.ResetTrigger("SlashAttack");
+        _animator.ResetTrigger("StunAttack");
     }
 
-    // IMPORTANTE: se llama OnAttack porque tu Input Action es "Attack"
+    // =========================================================
+    // INPUTS
+    // =========================================================
+
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!context.performed || _stamina == null)
+        if (!context.performed || _isAttacking)
+            return;
+
+        _isAttacking = true;
+        _animator.SetTrigger("SlashAttack");
+    }
+
+    public void OnStunAttack(InputAction.CallbackContext context)
+    {
+        if (!context.performed || _isAttacking)
             return;
 
         if (!_stamina.HasStamina(_stunCost))
             return;
 
-        // 🔥 dispara animación primero
-        if (animator != null)
-            animator.SetTrigger("StunAttack");
-
-        // 🔥 ejecuta el golpe con delay para sincronizar con animación
-        StartCoroutine(StunAttackRoutine());
+        _isAttacking = true;
+        _animator.SetTrigger("StunAttack");
     }
 
-    private IEnumerator StunAttackRoutine()
+    // =========================================================
+    // ANIMATION EVENTS
+    // =========================================================
+
+    public void DealSlashDamage()
     {
-        // Espera el momento del golpe
-        yield return new WaitForSeconds(_attackDelay);
+        Debug.Log("SLASH EVENT");
 
-        PerformStunAttack();
-    }
+        Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
 
-    private void PerformStunAttack()
-    {
-        Debug.Log("STUN ATTACK");
-
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, _stunRange))
+        if (Physics.Raycast(ray, out RaycastHit hit, _slashRange, _hitLayers))
         {
-            // IMPORTANTE: por si el collider está en un hijo
-            EnemyAI enemy = hit.collider.GetComponentInParent<EnemyAI>();
+            Debug.Log("HIT: " + hit.collider.name);
 
-            if (enemy != null)
+            IDamageable dmg = hit.collider.GetComponentInParent<IDamageable>();
+
+            if (dmg != null)
             {
-                enemy.Stun();
-
-                // Usa stamina solo si golpea
-                _stamina.UseStamina(_stunCost);
-
-                // 🔥 Opcional: aquí podrías añadir sonido, hitstop o cámara shake
+                dmg.TakeDamage(_slashDamage);
+                Debug.Log("DAMAGE APPLIED");
             }
         }
+        else
+        {
+            Debug.Log("NO HIT");
+        }
+    }
+
+    public void DealStunAttack()
+    {
+        Debug.Log("STUN EVENT");
+
+        Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, _stunRange, _hitLayers))
+        {
+            Debug.Log("STUN HIT: " + hit.collider.name);
+
+            IStunnable stun = hit.collider.GetComponentInParent<IStunnable>();
+
+            if (stun != null)
+            {
+                stun.Stun(_stunDuration);
+                _stamina.UseStamina(_stunCost);
+            }
+        }
+        else
+        {
+            Debug.Log("NO STUN HIT");
+        }
+    }
+
+    public void EndAttack()
+    {
+        _isAttacking = false;
     }
 }
