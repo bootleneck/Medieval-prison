@@ -26,9 +26,6 @@ public class PlayerCombat : MonoBehaviour
         _stamina = GetComponent<PlayerStamina>();
         _animator = GetComponent<Animator>();
         _cam = Camera.main;
-
-        _animator.ResetTrigger("SlashAttack");
-        _animator.ResetTrigger("StunAttack");
     }
 
     // =========================================================
@@ -57,44 +54,35 @@ public class PlayerCombat : MonoBehaviour
     }
 
     // =========================================================
-    // ANIMATION EVENTS
+    // SLASH DAMAGE
     // =========================================================
 
     public void DealSlashDamage()
     {
-        Debug.Log("SLASH EVENT");
-
         Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, _slashRange, _hitLayers))
         {
-            Debug.Log("HIT: " + hit.collider.name);
-
-            IDamageable dmg = hit.collider.GetComponentInParent<IDamageable>();
+            var dmg = hit.collider.GetComponentInParent<IDamageable>();
 
             if (dmg != null)
             {
                 dmg.TakeDamage(_slashDamage);
-                Debug.Log("DAMAGE APPLIED");
             }
-        }
-        else
-        {
-            Debug.Log("NO HIT");
         }
     }
 
+    // =========================================================
+    // STUN ATTACK
+    // =========================================================
+
     public void DealStunAttack()
     {
-        Debug.Log("STUN EVENT");
-
         Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, _stunRange, _hitLayers))
         {
-            Debug.Log("STUN HIT: " + hit.collider.name);
-
-            IStunnable stun = hit.collider.GetComponentInParent<IStunnable>();
+            var stun = hit.collider.GetComponentInParent<IStunnable>();
 
             if (stun != null)
             {
@@ -102,11 +90,11 @@ public class PlayerCombat : MonoBehaviour
                 _stamina.UseStamina(_stunCost);
             }
         }
-        else
-        {
-            Debug.Log("NO STUN HIT");
-        }
     }
+
+    // =========================================================
+    // ANIMATION END
+    // =========================================================
 
     public void EndAttack()
     {

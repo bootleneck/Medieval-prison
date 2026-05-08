@@ -1,27 +1,40 @@
+using System;
 using UnityEngine;
 
 public class Health : MonoBehaviour, IDamageable
 {
+    [Header("Health")]
     [SerializeField] private int maxHealth = 100;
 
-    private int currentHealth;
-    private bool isDead;
+    public int CurrentHealth { get; private set; }
+    public int MaxHealth => maxHealth;
+
+    public bool IsDead { get; private set; }
+
+    // eventos
+    public event Action<int> OnDamageTaken;
+    public event Action OnDeath;
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        CurrentHealth = maxHealth;
     }
 
     public void TakeDamage(int damage)
     {
-        if (isDead)
+        if (IsDead)
             return;
 
-        currentHealth -= damage;
+        CurrentHealth -= damage;
 
-        Debug.Log($"{gameObject.name} recibió {damage} daño");
+        if (CurrentHealth < 0)
+            CurrentHealth = 0;
 
-        if (currentHealth <= 0)
+        OnDamageTaken?.Invoke(damage);
+
+        Debug.Log($"{gameObject.name} HP: {CurrentHealth}");
+
+        if (CurrentHealth <= 0)
         {
             Die();
         }
@@ -29,10 +42,24 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        isDead = true;
+        if (IsDead)
+            return;
+
+        IsDead = true;
+
+        OnDeath?.Invoke();
 
         Debug.Log($"{gameObject.name} murió");
+    }
 
-        Destroy(gameObject);
+    public void Heal(int amount)
+    {
+        if (IsDead)
+            return;
+
+        CurrentHealth += amount;
+
+        if (CurrentHealth > maxHealth)
+            CurrentHealth = maxHealth;
     }
 }
