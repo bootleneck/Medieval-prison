@@ -657,7 +657,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1946148941622136802}
   - component: {fileID: 9018269580487197434}
-  - component: {fileID: 1895540199588728752}
   - component: {fileID: 8842378086761798907}
   - component: {fileID: 3997728295316834788}
   - component: {fileID: 8006313157017648953}
@@ -709,19 +708,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.9095159, y: 1.3114545, z: 2.115133}
   m_Center: {x: -0.09777665, y: 0.7288842, z: 0.35481513}
---- !u!114 &1895540199588728752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5269673520606563485}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8588cee50cb80eb46a1ddd7d690dd3fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 100
 --- !u!195 &8842378086761798907
 NavMeshAgent:
   m_ObjectHideFlags: 0
