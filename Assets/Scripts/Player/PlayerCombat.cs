@@ -4,100 +4,118 @@ using UnityEngine.InputSystem;
 public class PlayerCombat : MonoBehaviour
 {
     [Header("Slash Attack")]
-    [SerializeField] private int _slashDamage = 25;
-    [SerializeField] private float _slashRange = 2f;
+    [SerializeField] private int slashDamage = 25;
+    [SerializeField] private float slashRange = 2f;
+    [SerializeField] private LayerMask hitLayers;
 
     [Header("Stun Attack")]
-    [SerializeField] private float _stunCost = 35f;
-    [SerializeField] private float _stunRange = 2f;
-    [SerializeField] private float _stunDuration = 5f;
+    [SerializeField] private float stunCost = 35f;
+    [SerializeField] private float stunRange = 2f;
+    [SerializeField] private float stunDuration = 5f;
 
-    [Header("Layers")]
-    [SerializeField] private LayerMask _hitLayers;
+    [Header("Refs")]
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private PlayerStamina stamina;
+    [SerializeField] private Animator animator;
 
-    private PlayerStamina _stamina;
-    private Animator _animator;
-    private Camera _cam;
-
-    private bool _isAttacking;
+    private bool isAttacking;
 
     private void Awake()
     {
-        _stamina = GetComponent<PlayerStamina>();
-        _animator = GetComponent<Animator>();
-        _cam = Camera.main;
+        stamina = GetComponent<PlayerStamina>();
+        animator = GetComponent<Animator>();
     }
 
     // =========================================================
-    // INPUTS
+    // INPUT
     // =========================================================
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!context.performed || _isAttacking)
+        if (!context.performed || isAttacking)
             return;
 
-        _isAttacking = true;
-        _animator.SetTrigger("SlashAttack");
+        isAttacking = true;
+        animator.SetTrigger("SlashAttack");
     }
 
     public void OnStunAttack(InputAction.CallbackContext context)
     {
-        if (!context.performed || _isAttacking)
+        if (!context.performed || isAttacking)
             return;
 
-        if (!_stamina.HasStamina(_stunCost))
+        if (!stamina.HasStamina(stunCost))
             return;
 
-        _isAttacking = true;
-        _animator.SetTrigger("StunAttack");
+        isAttacking = true;
+        animator.SetTrigger("StunAttack");
     }
 
     // =========================================================
-    // SLASH DAMAGE
+    // SLASH (Animation Event)
     // =========================================================
 
     public void DealSlashDamage()
     {
-        Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
+        Collider[] hits = Physics.OverlapSphere(
+            attackPoint.position,
+            slashRange,
+            hitLayers
+        );
 
-        if (Physics.Raycast(ray, out RaycastHit hit, _slashRange, _hitLayers))
+        foreach (var hit in hits)
         {
-            var dmg = hit.collider.GetComponentInParent<IDamageable>();
+            IDamageable dmg =
+                hit.GetComponentInParent<IDamageable>();
 
             if (dmg != null)
-            {
-                dmg.TakeDamage(_slashDamage);
-            }
+                dmg.TakeDamage(slashDamage);
         }
     }
 
     // =========================================================
-    // STUN ATTACK
+    // STUN (Animation Event)
     // =========================================================
 
     public void DealStunAttack()
     {
-        Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
+        Collider[] hits = Physics.OverlapSphere(
+            attackPoint.position,
+            stunRange,
+            hitLayers
+        );
 
-        if (Physics.Raycast(ray, out RaycastHit hit, _stunRange, _hitLayers))
+        foreach (var hit in hits)
         {
-            var stun = hit.collider.GetComponentInParent<IStunnable>();
+            IStunnable stun =
+                hit.GetComponentInParent<IStunnable>();
 
             if (stun != null)
             {
-                stun.Stun(_stunDuration);
-                _stamina.UseStamina(_stunCost);
+                stun.Stun(stunDuration);
+                stamina.UseStamina(stunCost);
             }
         }
     }
 
     // =========================================================
-    // ANIMATION END
+    // END
     // =========================================================
 
     public void EndAttack()
     {
-        _isAttacking = false;
+        isAttacking = false;
+    }
+
+    // Debug visual
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, slashRange);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(attackPoint.position, stunRange);
     }
 }

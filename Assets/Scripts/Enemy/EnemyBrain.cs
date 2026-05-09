@@ -7,6 +7,8 @@ public class EnemyBrain : MonoBehaviour
 
     public EnemyMovement movement;
     public EnemyStun stun;
+    public EnemyAttack attack;
+    public Animator animator;
 
     [Header("Stats")]
     public float detectionRange = 10f;
@@ -23,6 +25,8 @@ public class EnemyBrain : MonoBehaviour
     {
         movement = GetComponent<EnemyMovement>();
         stun = GetComponent<EnemyStun>();
+        attack = GetComponent<EnemyAttack>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -39,14 +43,28 @@ public class EnemyBrain : MonoBehaviour
             if (currentState is not StunnedState)
                 ChangeState(new StunnedState());
 
+            animator.SetBool("IsMoving", false);
             return;
         }
 
         currentState?.Update(this);
+
+        UpdateAnimation();
     }
 
     // =========================================================
-    // 👁 VISIÓN EN CONO
+    // ANIMACIÓN SIMPLE Y ROBUSTA
+    // =========================================================
+
+    private void UpdateAnimation()
+    {
+        bool isMoving = movement.IsMovingTowardsTarget();
+
+        animator.SetBool("IsMoving", isMoving);
+    }
+
+    // =========================================================
+    // VISIÓN
     // =========================================================
 
     public bool CanSeePlayer()
@@ -62,12 +80,18 @@ public class EnemyBrain : MonoBehaviour
         Vector3 dirNormalized = dirToPlayer.normalized;
 
         float angle = Vector3.Angle(transform.forward, dirNormalized);
+
         if (angle > viewAngle * 0.5f)
             return false;
 
-        if (Physics.Raycast(transform.position + Vector3.up,
-            dirNormalized, distance, obstacleMask))
+        if (Physics.Raycast(
+            transform.position + Vector3.up,
+            dirNormalized,
+            distance,
+            obstacleMask))
+        {
             return false;
+        }
 
         return true;
     }

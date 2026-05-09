@@ -9,7 +9,13 @@ public class AttackState : EnemyState
 
     public override void Update(EnemyBrain brain)
     {
-        float dist = Vector3.Distance(brain.transform.position, brain.player.position);
+        if (brain.player == null)
+            return;
+
+        float dist = Vector3.Distance(
+            brain.transform.position,
+            brain.player.position
+        );
 
         if (dist > brain.attackRange)
         {
@@ -17,7 +23,28 @@ public class AttackState : EnemyState
             return;
         }
 
-        // daño / animación aquí
+        FacePlayer(brain);
+
+        if (brain.attack.CanAttack)
+        {
+            brain.attack.StartAttack();
+        }
+    }
+
+    private void FacePlayer(EnemyBrain brain)
+    {
+        Vector3 dir =
+            (brain.player.position - brain.transform.position);
+
+        dir.y = 0;
+
+        Quaternion rot = Quaternion.LookRotation(dir);
+
+        brain.transform.rotation = Quaternion.Slerp(
+            brain.transform.rotation,
+            rot,
+            Time.deltaTime * 10f
+        );
     }
 
     public override void Exit(EnemyBrain brain) { }

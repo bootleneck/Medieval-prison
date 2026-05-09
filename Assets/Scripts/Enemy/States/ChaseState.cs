@@ -15,7 +15,10 @@ public class ChaseState : EnemyState
             return;
         }
 
-        float dist = Vector3.Distance(brain.transform.position, brain.player.position);
+        float dist = Vector3.Distance(
+            brain.transform.position,
+            brain.player.position
+        );
 
         if (dist <= brain.attackRange)
         {
