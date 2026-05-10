@@ -3,7 +3,22 @@ guid: d2fae1cef4472a041a752547caa03e53
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: handle-lever-txt
+    second: {fileID: 2800000, guid: 29a5299cb0559e940a314b4cbccb41cf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: normal-map
+    second: {fileID: 2800000, guid: 486b176e0c0bc2e488d59a0df6121e62, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: palanca-txt
+    second: {fileID: 2800000, guid: 27477513743129c4eba8e7782501722a, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
