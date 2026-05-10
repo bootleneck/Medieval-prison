@@ -7,7 +7,7 @@ public class EnemyBrain : MonoBehaviour
 
     public EnemyMovement movement;
     public EnemyStun stun;
-    public EnemyAttack attack;
+    public EnemyMeleeAttack attack;
     public Animator animator;
 
     [Header("Stats")]
@@ -25,7 +25,7 @@ public class EnemyBrain : MonoBehaviour
     {
         movement = GetComponent<EnemyMovement>();
         stun = GetComponent<EnemyStun>();
-        attack = GetComponent<EnemyAttack>();
+        attack = GetComponent<EnemyMeleeAttack>();
         animator = GetComponent<Animator>();
     }
 

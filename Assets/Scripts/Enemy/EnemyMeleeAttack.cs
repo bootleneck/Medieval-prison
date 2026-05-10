@@ -1,14 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAttack : MonoBehaviour
+public class EnemyMeleeAttack : MonoBehaviour
 {
     [Header("Damage Settings")]
     [SerializeField] private int attackDamage = 20;
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private float attackCooldown = 1.5f;
+    [SerializeField] private LayerMask hitLayers;
 
     [Header("References")]
     [SerializeField] private Animator animator;
+    [SerializeField] private Transform attackPoint;
 
     private float lastAttackTime;
 
@@ -21,25 +24,43 @@ public class EnemyAttack : MonoBehaviour
         lastAttackTime = Time.time;
         animator.SetTrigger("Attack");
 
-        Debug.Log("⚔️ Enemy inicia ataque");
+        Debug.Log("⚔ Enemy inicia ataque");
     }
 
+    // Animation Event
     public void DealDamage()
     {
-        Debug.Log("⚔️ Hit frame ejecutado");
+        if (attackPoint == null)
+        {
+            Debug.LogWarning("❌ Falta asignar Attack Point");
+            return;
+        }
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+        Debug.Log("⚔ Hit frame ejecutado");
+
+        Collider[] hits = Physics.OverlapSphere(
+            attackPoint.position,
+            attackRange,
+            hitLayers
+        );
 
         bool hitSomeone = false;
 
+        HashSet<IDamageable> damagedTargets = new();
+
         foreach (var hit in hits)
         {
-            if (hit.transform.root.TryGetComponent<IDamageable>(out var dmg))
+            IDamageable dmg =
+                hit.GetComponentInParent<IDamageable>();
+
+            if (dmg != null && !damagedTargets.Contains(dmg))
             {
+                damagedTargets.Add(dmg);
+
                 dmg.TakeDamage(attackDamage);
 
-                // Corregido: acceder al GameObject real
                 var dmgGO = (dmg as Component).gameObject;
+
                 Debug.Log($"💥 {dmgGO.name} recibió {attackDamage} de daño");
 
                 hitSomeone = true;
@@ -54,7 +75,12 @@ public class EnemyAttack : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if (attackPoint == null) return;
+
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(
+            attackPoint.position,
+            attackRange
+        );
     }
 }
