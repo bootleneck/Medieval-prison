@@ -6,6 +6,8 @@ public class EquipmentManager : MonoBehaviour
     public Transform equipPoint;
     private GameObject currentItemInHand;
 
+    public ItemData currentEquippedItem;
+
     private void Awake() { Instance = this; }
 
     void Update()
@@ -39,13 +41,18 @@ public class EquipmentManager : MonoBehaviour
 
     public void Equip(ItemData item)
     {
-        if (currentItemInHand != null) Destroy(currentItemInHand);
-        if (item.visualPrefab == null) return;
+        if (currentItemInHand != null)
+            Destroy(currentItemInHand);
+
+        if (item.visualPrefab == null)
+            return;
 
         currentItemInHand = Instantiate(item.visualPrefab, equipPoint);
 
         currentItemInHand.transform.localPosition = Vector3.zero;
         currentItemInHand.transform.localRotation = Quaternion.identity;
+
+        currentEquippedItem = item;
 
         Debug.Log("Equipado: " + item.itemName);
     }

@@ -496,7 +496,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 8a4a1587bd94e3843a049b1d8bb07018, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.163
+      value: 5.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8a4a1587bd94e3843a049b1d8bb07018, type: 3}
       propertyPath: m_LocalPosition.y
@@ -504,7 +504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8a4a1587bd94e3843a049b1d8bb07018, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -27.63
+      value: -27.52
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8a4a1587bd94e3843a049b1d8bb07018, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1180,6 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentManager
   equipPoint: {fileID: 1500555562}
+  currentEquippedItem: {fileID: 0}
 --- !u!4 &758092442 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 499060, guid: a264dce65e4ae004bbc6be99c68d94c2, type: 3}
@@ -1920,18 +1921,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400006, guid: eb9a0a0315e3a16499b4caa557a46bfb, type: 3}
   m_PrefabInstance: {fileID: 21513033030215740}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1187296027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2733342670909283000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1da779ae0a7a0924a9503ce0bab4fda6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RejitaRompible
 --- !u!65 &1187296028
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1947,12 +1936,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.765327, y: 1.2850018, z: 2.0671077}
-  m_Center: {x: -0.3575407, y: 0.63935375, z: 0.020809889}
+  m_Size: {x: 0.027973182, y: 1.2850018, z: 2.0671077}
+  m_Center: {x: 0.01113456, y: 0.63935375, z: 0.02080894}
 --- !u!4 &1193160671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: a8414aad68fdcf6469a87e0cf6597979, type: 3}
@@ -6673,28 +6662,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63f3b47f3e60f074abce25f9a68f9853, type: 3}
---- !u!64 &2733342670902987294
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2733342670909283000}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300510, guid: 628e5212ccbe5044ba8b70740d37394e, type: 3}
 --- !u!64 &2733342670903040818
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6925,16 +6892,85 @@ GameObject:
   - component: {fileID: 2733342670908976968}
   - component: {fileID: 2733342670906073052}
   - component: {fileID: 2733342670906807326}
-  - component: {fileID: 2733342670902987294}
-  - component: {fileID: 1187296027}
   - component: {fileID: 1187296028}
-  m_Layer: 0
+  - component: {fileID: 2733342670909283004}
+  - component: {fileID: 2733342670909283003}
+  - component: {fileID: 2733342670909283002}
+  - component: {fileID: 2733342670909283001}
+  m_Layer: 9
   m_Name: Tunnel_Grate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &2733342670909283001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733342670909283000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8588cee50cb80eb46a1ddd7d690dd3fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxHealth: 100
+--- !u!114 &2733342670909283002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733342670909283000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff14f02bdec5a04990c8fa1d125795b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Structure
+--- !u!114 &2733342670909283003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733342670909283000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85829c57df1fc3f498232b448907eba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GateBreak
+  pushForce: 5
+  torqueForce: 3
+  pushOutDistance: 0.3
+--- !u!54 &2733342670909283004
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733342670909283000}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &2805145624507679420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15583,7 +15619,7 @@ Transform:
   m_GameObject: {fileID: 3103786805990135485}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.76331496, z: -0, w: -0.64602655}
-  m_LocalPosition: {x: -11.2, y: 0.01, z: -3.15}
+  m_LocalPosition: {x: -11.29, y: 0.01, z: -2.74}
   m_LocalScale: {x: 1, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15668,14 +15704,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a656506d67349d42b6b1237b7deeaa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  slashDamage: 25
-  slashRange: 1
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 128
   stunCost: 35
   stunRange: 0.8
   stunDuration: 5
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 640
   attackPoint: {fileID: 1500555562}
   stamina: {fileID: 8109110820744107098}
   animator: {fileID: 8109110820744107101}
