@@ -11,7 +11,13 @@ public class ItemData : ScriptableObject
     [Header("Item Type")]
     public ItemType itemType;
 
-    [Header("Combat")]
+    [Header("Combat (solo armas/herramientas)")]
     public int damage = 25;
     public float range = 2f;
+    public int maxUses = 100;
+
+    [Header("Consumable (solo consumibles)")]
+    public int healAmount = 0;          // cuánto cura
+    public int maxConsumableUses = 3;   // cuántas veces se puede usar antes de recargar
+    public bool isEquippableConsumable; // si puede ir a la mano
 }

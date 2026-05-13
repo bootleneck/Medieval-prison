@@ -19,8 +19,10 @@ public class InventorySystem : MonoBehaviour
 
     public bool AddItem(ItemData item, int amount = 1)
     {
-        // STACK
-        if (item.stackable)
+        if (item == null) return false;
+
+        // STACK (solo si es stackable y NO es consumible con usos)
+        if (item.stackable && item.itemType != ItemType.Consumable)
         {
             foreach (InventorySlot slot in inventory)
             {
@@ -32,7 +34,7 @@ public class InventorySystem : MonoBehaviour
             }
         }
 
-        // NUEVO SLOT
+        // Nuevo slot
         if (inventory.Count < maxSlots)
         {
             inventory.Add(new InventorySlot(item, amount));

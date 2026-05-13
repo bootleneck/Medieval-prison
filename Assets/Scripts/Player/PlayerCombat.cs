@@ -31,11 +31,18 @@ public class PlayerCombat : MonoBehaviour
         if (!context.performed || isAttacking)
             return;
 
-        ItemData equipped = EquipmentManager.Instance.currentEquippedItem;
+        var equipped = EquipmentManager.Instance.currentEquippedItem;
         if (equipped == null) return;
 
-        isAttacking = true;
-        animator.SetTrigger("SlashAttack");
+        if (equipped.itemType == ItemType.Consumable)
+        {
+            UseConsumable();
+        }
+        else
+        {
+            isAttacking = true;
+            animator.SetTrigger("SlashAttack");
+        }
     }
 
     public void OnStunAttack(InputAction.CallbackContext context)
@@ -43,7 +50,7 @@ public class PlayerCombat : MonoBehaviour
         if (!context.performed || isAttacking)
             return;
 
-        ItemData equipped = EquipmentManager.Instance.currentEquippedItem;
+        var equipped = EquipmentManager.Instance.currentEquippedItem;
         if (equipped == null || equipped.itemType != ItemType.Weapon) return;
         if (!stamina.HasStamina(stunCost)) return;
 
@@ -55,39 +62,40 @@ public class PlayerCombat : MonoBehaviour
 
     public void DealSlashDamage()
     {
-        ItemData equipped = EquipmentManager.Instance.currentEquippedItem;
-        if (equipped == null) return;
+        var equipped = EquipmentManager.Instance.currentEquippedItem;
+        if (equipped == null)
+        {
+            Debug.LogWarning("No hay item equipado para atacar");
+            return;
+        }
 
-        Collider[] hits = Physics.OverlapSphere(attackPoint.position, equipped.range, hitLayers);
+        float attackRange = equipped.range > 0 ? equipped.range : 2f;
+        Collider[] hits = Physics.OverlapSphere(attackPoint.position, attackRange, hitLayers);
 
         foreach (var hit in hits)
         {
             IDamageable dmg = hit.GetComponentInParent<IDamageable>();
             Structure structure = hit.GetComponentInParent<Structure>();
+            GateBreak gate = hit.GetComponentInParent<GateBreak>();
 
-            // ESPADA → SOLO enemigos
             if (equipped.itemType == ItemType.Weapon)
             {
-                if (structure != null) continue;
+                if (structure != null) continue; // No dañar estructuras con arma
                 if (dmg != null) dmg.TakeDamage(equipped.damage);
             }
-            // MALLET → SOLO estructuras
             else if (equipped.itemType == ItemType.Tool)
             {
-                if (structure == null) continue;
-
-                GateBreak gate = hit.GetComponentInParent<GateBreak>();
+                // === LÓGICA PARA MALLET ===
                 if (gate != null)
                 {
                     gate.SetPlayerPosition(transform.position);
-                    gate.AddHitForce(); // empuje por golpe
+                    gate.AddHitForce();
                 }
 
-                // Aplica daño solo si tiene Health
                 if (dmg != null)
-                {
                     dmg.TakeDamage(equipped.damage);
-                }
+
+                Debug.Log($"Tool usado contra estructura: {equipped.itemName} | Daño: {equipped.damage}");
             }
         }
     }
@@ -96,7 +104,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void DealStunAttack()
     {
-        ItemData equipped = EquipmentManager.Instance.currentEquippedItem;
+        var equipped = EquipmentManager.Instance.currentEquippedItem;
         if (equipped == null || equipped.itemType != ItemType.Weapon) return;
 
         Collider[] hits = Physics.OverlapSphere(attackPoint.position, stunRange, hitLayers);
@@ -112,6 +120,42 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    // ================= CONSUMABLE =================
+
+    private void UseConsumable()
+    {
+        var equipped = EquipmentManager.Instance.currentEquippedItem;
+        if (equipped == null || equipped.itemType != ItemType.Consumable)
+            return;
+
+        var handItem = EquipmentManager.Instance.CurrentItemInHand;
+        DurableItem durable = handItem?.GetComponent<DurableItem>();
+
+        if (durable == null || !durable.Use())
+        {
+            Debug.Log("No se pudo usar el consumible");
+            return;
+        }
+
+        Health health = GetComponent<Health>();
+        if (health != null)
+        {
+            health.Heal(equipped.healAmount);
+        }
+
+        if (durable.currentUses <= 0)
+        {
+            EquipmentManager.Instance.Equip(null); // desequipar al agotarse
+        }
+    }
+
+    // Corutina para desequipar después de usar el último
+    private System.Collections.IEnumerator AutoUnequipAfterUse()
+    {
+        yield return new WaitForSeconds(0.3f);
+        EquipmentManager.Instance.Equip(null); // desequipa
+    }
+
     // ================= END =================
 
     public void EndAttack()
@@ -125,10 +169,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (attackPoint == null) return;
 
-        ItemData equipped = null;
-        if (EquipmentManager.Instance != null)
-            equipped = EquipmentManager.Instance.currentEquippedItem;
-
+        var equipped = EquipmentManager.Instance.currentEquippedItem;
         float range = equipped != null ? equipped.range : 2f;
 
         Gizmos.color = Color.red;

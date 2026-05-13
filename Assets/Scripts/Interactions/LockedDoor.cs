@@ -43,9 +43,10 @@ public class LockedDoor : MonoBehaviour, IInteractable
         }
     }
 
-    public void Interact()
+    // Cambiado para cumplir con la nueva interfaz
+    public void Interact(GameObject interactor)
     {
-        PlayerInventory inventory = FindObjectOfType<PlayerInventory>();
+        PlayerInventory inventory = FindFirstObjectByType<PlayerInventory>();
 
         if (isOpen)
         {

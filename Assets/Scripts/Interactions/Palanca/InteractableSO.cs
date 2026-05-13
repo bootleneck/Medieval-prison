@@ -4,7 +4,8 @@ public class InteractableSO : MonoBehaviour, IInteractable
 {
     public InteractionAction action; // Asignar ScriptableObject aquí
 
-    public void Interact()
+    // Cambiado para cumplir con la nueva interfaz
+    public void Interact(GameObject interactor)
     {
         if (action != null)
         {

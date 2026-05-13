@@ -4,9 +4,10 @@ public class DoorKey : MonoBehaviour, IInteractable
 {
     [SerializeField] private string keyID = "RedKey";
 
-    public void Interact()
+    // Cambiado para cumplir con la nueva interfaz
+    public void Interact(GameObject interactor)
     {
-        PlayerInventory inventory = FindObjectOfType<PlayerInventory>();
+        PlayerInventory inventory = FindFirstObjectByType<PlayerInventory>();
 
         if (inventory != null)
         {
