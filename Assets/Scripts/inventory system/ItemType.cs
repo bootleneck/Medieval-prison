@@ -2,5 +2,6 @@ public enum ItemType
 {
     Weapon,
     Tool,
-    Consumable
+    Consumable,
+    Key
 }

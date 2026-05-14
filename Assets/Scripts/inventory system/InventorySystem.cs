@@ -7,6 +7,8 @@ public class InventorySystem : MonoBehaviour
 
     public List<InventorySlot> inventory = new List<InventorySlot>();
 
+    public List<InventorySlot> keyInventory = new List<InventorySlot>();
+
     public int maxSlots = 20;
 
     private void Awake()
@@ -21,7 +23,25 @@ public class InventorySystem : MonoBehaviour
     {
         if (item == null) return false;
 
-        // STACK (solo si es stackable y NO es consumible con usos)
+        // ===== LLAVES =====
+        if (item.itemType == ItemType.Key)
+        {
+            foreach (InventorySlot slot in keyInventory)
+            {
+                if (slot.item == item)
+                {
+                    slot.amount += amount;
+                    return true;
+                }
+            }
+
+            keyInventory.Add(new InventorySlot(item, amount));
+            return true;
+        }
+
+        // ===== INVENTARIO NORMAL =====
+
+        // STACK
         if (item.stackable && item.itemType != ItemType.Consumable)
         {
             foreach (InventorySlot slot in inventory)
@@ -34,7 +54,7 @@ public class InventorySystem : MonoBehaviour
             }
         }
 
-        // Nuevo slot
+        // NUEVO SLOT
         if (inventory.Count < maxSlots)
         {
             inventory.Add(new InventorySlot(item, amount));
@@ -44,4 +64,35 @@ public class InventorySystem : MonoBehaviour
         Debug.Log("Inventario lleno");
         return false;
     }
+    public bool HasKey(ItemData keyItem)
+    {
+        foreach (InventorySlot slot in keyInventory)
+        {
+            if (slot.item == keyItem && slot.amount > 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    /*
+     // Consumir llave
+    public bool UseKey(ItemData keyItem)
+    {
+        foreach (InventorySlot slot in keyInventory)
+        {
+            if (slot.item == keyItem && slot.amount > 0)
+            {
+                slot.amount--;
+
+                if (slot.amount <= 0)
+                    keyInventory.Remove(slot);
+
+                return true;
+            }
+        }
+
+        return false;
+    }*/
+
 }

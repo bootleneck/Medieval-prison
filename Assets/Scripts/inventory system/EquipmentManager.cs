@@ -7,6 +7,8 @@ public class EquipmentManager : MonoBehaviour
     [Header("Equip Point")]
     public Transform equipPoint;
 
+    [SerializeField] private PlayerCombat playerCombat;
+
     // Private, no se puede modificar desde otros scripts
     private GameObject currentItemInHand;
 
@@ -61,7 +63,6 @@ public class EquipmentManager : MonoBehaviour
     }
     public void Equip(ItemData item)
     {
-        // Guardar usos anteriores
         if (currentItemInHand != null)
         {
             DurableItem old = currentItemInHand.GetComponent<DurableItem>();
@@ -73,27 +74,24 @@ public class EquipmentManager : MonoBehaviour
         currentItemInHand = null;
 
         if (item == null || item.visualPrefab == null)
-        {
-            Debug.Log("Desequipado");
             return;
-        }
+
+        if (item.itemType == ItemType.Key)
+            return;
 
         if (item.itemType == ItemType.Consumable && !item.isEquippableConsumable)
             return;
 
-        // Instanciar en mano
         currentItemInHand = Instantiate(item.visualPrefab, equipPoint);
         currentItemInHand.transform.localPosition = Vector3.zero;
         currentItemInHand.transform.localRotation = Quaternion.identity;
 
-        // DurableItem
         DurableItem durable = currentItemInHand.GetComponent<DurableItem>();
         if (durable == null)
             durable = currentItemInHand.AddComponent<DurableItem>();
 
         durable.Initialize(item);
 
-        // Cargar usos guardados (solo para consumibles)
         if (item.itemType == ItemType.Consumable)
         {
             var slot = GetSlotForItem(item);
@@ -101,7 +99,8 @@ public class EquipmentManager : MonoBehaviour
                 durable.currentUses = slot.currentUses;
         }
 
-        Debug.Log($"Equipado → {item.itemName} ({item.itemType}) | Daño: {item.damage} | Usos: {durable.currentUses}/{durable.maxUses}");
+        // 🔥 IMPORTANTE: reset de ataque al cambiar arma
+        playerCombat?.EndAttack();
     }
 
     private InventorySlot GetSlotForItem(ItemData item)
