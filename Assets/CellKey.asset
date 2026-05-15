@@ -17,9 +17,9 @@ MonoBehaviour:
   stackable: 0
   visualPrefab: {fileID: 7051857713405313495, guid: 1c4ae685353ad104eac8025426bde9a1, type: 3}
   itemType: 3
-  damage: 25
-  range: 2
-  maxUses: 100
+  damage: 0
+  range: 0
+  maxUses: 0
   healAmount: 0
-  maxConsumableUses: 3
+  maxConsumableUses: 0
   isEquippableConsumable: 0

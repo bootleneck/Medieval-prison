@@ -3,7 +3,6 @@ using UnityEngine;
 public class DurableItem : MonoBehaviour
 {
     public ItemData itemData;
-
     public int maxUses;
     public int currentUses;
 
@@ -11,41 +10,61 @@ public class DurableItem : MonoBehaviour
     {
         if (data == null)
         {
-            Debug.LogError("DurableItem: itemData null");
+            Debug.LogError("DurableItem: itemData es null");
             return;
         }
 
         itemData = data;
+        maxUses = (itemData.itemType == ItemType.Consumable)
+                  ? itemData.maxConsumableUses
+                  : itemData.maxUses;
 
-        if (itemData.itemType == ItemType.Consumable)
-            maxUses = itemData.maxConsumableUses;
-        else
-            maxUses = itemData.maxUses;
+        currentUses = LoadSavedUses();
 
-        currentUses = maxUses;
+        Debug.Log($"[DurableItem] {itemData.itemName} ({itemData.itemType}) → Cargado: {currentUses}/{maxUses}");
+    }
 
-        Debug.Log($"[DurableItem] {itemData.itemName} ({itemData.itemType}) inicializado → {currentUses}/{maxUses}");
+    private int LoadSavedUses()
+    {
+        if (itemData == null) return maxUses;
+
+        var slot = InventorySystem.Instance.inventory.Find(s => s.item == itemData);
+
+        if (slot != null)
+        {
+            // Para consumibles respetamos SIEMPRE el valor guardado (incluso 0)
+            if (itemData.itemType == ItemType.Consumable)
+            {
+                Debug.Log($"[Load Consumible] {itemData.itemName} → {slot.currentUses}/{maxUses}");
+                return Mathf.Clamp(slot.currentUses, 0, maxUses);
+            }
+            else
+            {
+                // Para armas
+                return slot.currentUses > 0 ? slot.currentUses : maxUses;
+            }
+        }
+
+        return maxUses;
     }
 
     public bool Use()
     {
-        if (itemData == null) return false;
-
         if (currentUses <= 0)
         {
-            Debug.LogWarning($"No quedan usos de {itemData.itemName}");
+            Debug.Log($"[DurableItem] {itemData.itemName} sin usos restantes");
             return false;
         }
 
         currentUses--;
+        Debug.Log($"[Uso] {itemData.itemName} → {currentUses}/{maxUses}");
         return true;
     }
 
-    public void RechargeUses(int amount)
+    public void RechargeToFull()
     {
-        if (itemData == null) return;
-        currentUses += amount;
-        if (currentUses > maxUses) currentUses = maxUses;
+        currentUses = maxUses;
+        SaveUsesToInventory();
     }
 
     public void SaveUsesToInventory()
@@ -56,6 +75,12 @@ public class DurableItem : MonoBehaviour
         if (slot != null)
         {
             slot.currentUses = currentUses;
+            Debug.Log($"[GUARDADO] {itemData.itemName} → {currentUses}/{maxUses}");
         }
+    }
+
+    private void OnDestroy()
+    {
+        SaveUsesToInventory();
     }
 }

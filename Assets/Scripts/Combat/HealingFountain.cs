@@ -2,42 +2,61 @@ using UnityEngine;
 
 public class HealingFountain : MonoBehaviour, IInteractable
 {
-    [SerializeField] private int rechargeAmount = 3;
-    [SerializeField] private string consumableNameToRecharge = "Calabaza Sanadora"; // Opcional: filtrar
+    [SerializeField] private bool hasBeenUsed = false;
 
     public void Interact(GameObject interactor)
     {
+        if (hasBeenUsed)
+        {
+            Debug.Log("[Fuente] Esta fuente ya ha sido usada.");
+            return;
+        }
+
         bool rechargedAnything = false;
 
-        // 1. Recargar el item que tiene equipado en la mano
+        // 1. Recargar completamente el objeto en mano
         DurableItem handDurable = EquipmentManager.Instance.CurrentItemInHand?.GetComponent<DurableItem>();
-        if (handDurable != null && handDurable.itemData.itemType == ItemType.Consumable)
+        if (handDurable != null)
         {
             int before = handDurable.currentUses;
-            handDurable.RechargeUses(rechargeAmount);
-            Debug.Log($"[Fuente] {handDurable.itemData.itemName} recargado en mano ({before} → {handDurable.currentUses})");
+            handDurable.RechargeToFull();
+            Debug.Log($"[Fuente] {handDurable.itemData.itemName} (en mano) recargado completamente ({before} → {handDurable.currentUses})");
             rechargedAnything = true;
         }
 
-        // 2. Recargar consumibles dentro del inventario
-        // Nota: Como DurableItem solo existe en la mano, necesitamos mejorar esto en el futuro
+        // 2. Recargar completamente todos los items del inventario
         foreach (var slot in InventorySystem.Instance.inventory)
         {
-            if (slot.item == null || slot.item.itemType != ItemType.Consumable)
-                continue;
+            if (slot.item == null) continue;
 
-            // Por ahora solo mostramos que se "recargaría" (necesitamos guardar los usos en el inventario)
-            if (slot.item.itemName.Contains(consumableNameToRecharge) ||
-                slot.item.itemName.ToLower().Contains("calabaza"))
+            if (slot.item.itemType == ItemType.Weapon ||
+                slot.item.itemType == ItemType.Tool ||
+                slot.item.itemType == ItemType.Consumable)
             {
-                Debug.Log($"[Fuente] Se recargaría {slot.item.itemName} en inventario (pendiente de implementar)");
-                rechargedAnything = true;
+                int before = slot.currentUses;
+                int max = (slot.item.itemType == ItemType.Consumable)
+                          ? slot.item.maxConsumableUses
+                          : slot.item.maxUses;
+
+                if (slot.currentUses < max)
+                {
+                    slot.currentUses = max;
+                    Debug.Log($"[Fuente] {slot.item.itemName} (inventario) recargado completamente");
+                    rechargedAnything = true;
+                }
             }
         }
 
         if (rechargedAnything)
-            Debug.Log($"[Fuente] ¡Recarga completada! (+{rechargeAmount} usos)");
+        {
+            hasBeenUsed = true;
+            Debug.Log("[Fuente] ¡Todos los items han sido recargados completamente!");
+            // Opcional: Desactivar visualmente la fuente
+            // gameObject.SetActive(false);
+        }
         else
-            Debug.Log("[Fuente] No se encontró ningún consumible para recargar");
+        {
+            Debug.Log("[Fuente] No había nada para recargar");
+        }
     }
 }

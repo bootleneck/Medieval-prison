@@ -113,6 +113,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Inventory Toggle",
+                    "type": "Button",
+                    "id": "2deb0621-340c-45b2-9de9-97f2cdd770b9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip Slot 1",
+                    "type": "Button",
+                    "id": "70263a77-a1f3-4d26-a58d-1d4f4e03313f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip Slot 2",
+                    "type": "Button",
+                    "id": "185b9e4e-b9d6-4924-9bde-09e2c92e59d1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Equip Slot 3",
+                    "type": "Button",
+                    "id": "0268c414-4d6f-41c4-9db2-b781b99079e6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -564,6 +600,50 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SlashAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6b73ba4c-6c85-4f2e-a8e4-e15ca53b878d",
+                    "path": "<Keyboard>/i",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Inventory Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0ea832c-a954-4bd8-8aa7-29512b638d7b",
+                    "path": "<Keyboard>/1",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Equip Slot 1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d397b45f-b9c3-4d23-a9f1-152b532344e9",
+                    "path": "<Keyboard>/2",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Equip Slot 2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "03176da7-aef4-4721-a36d-97463f5b69b4",
+                    "path": "<Keyboard>/3",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Equip Slot 3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

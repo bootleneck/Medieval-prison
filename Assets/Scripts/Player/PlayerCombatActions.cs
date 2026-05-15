@@ -25,9 +25,13 @@ public class PlayerCombatActions : MonoBehaviour
         float range = equipped.range > 0 ? equipped.range : 2f;
 
         Collider[] hits = Physics.OverlapSphere(attackPoint.position, range, hitLayers);
+        bool hitSomething = false;
 
         foreach (var hit in hits)
         {
+            // Registrar que impactó con algo válido
+            hitSomething = true;
+
             IHitReaction reaction = hit.GetComponentInParent<IHitReaction>();
             reaction?.Hit(equipped, transform.root.position);
 
@@ -37,13 +41,20 @@ public class PlayerCombatActions : MonoBehaviour
                 dmg?.TakeDamage(equipped.damage);
             }
         }
+
+        // ✅ SOLO gasta durabilidad si impactó contra algo
+        if (hitSomething)
+        {
+            ConsumeDurability();
+        }
     }
 
     public void DealStunAttack()
     {
         var equipped = EquipmentManager.Instance.currentEquippedItem;
-        if (equipped == null) return;
-        if (equipped.itemType != ItemType.Weapon) return; // Solo espada hace stun
+        if (equipped == null || equipped.itemType != ItemType.Weapon) return;
+
+        // Stun NO consume durabilidad (como antes)
 
         Collider[] hits = Physics.OverlapSphere(attackPoint.position, stunRange, hitLayers);
 
@@ -77,5 +88,12 @@ public class PlayerCombatActions : MonoBehaviour
 
         if (durable.currentUses <= 0)
             EquipmentManager.Instance.Equip(null);
+    }
+
+    private void ConsumeDurability()
+    {
+        var handItem = EquipmentManager.Instance.CurrentItemInHand;
+        DurableItem durable = handItem?.GetComponent<DurableItem>();
+        durable?.Use();
     }
 }

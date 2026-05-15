@@ -1362,7 +1362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentManager
   equipPoint: {fileID: 1500555562}
-  playerCombat: {fileID: 0}
+  playerCombat: {fileID: 8109110820744107100}
   currentEquippedItem: {fileID: 0}
 --- !u!4 &758092442 stripped
 Transform:
@@ -1725,8 +1725,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6654a0e401132d43ab22feeb159ceae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealingFountain
-  rechargeAmount: 1
-  consumableNameToRecharge: Calabaza Sanadora
+  hasBeenUsed: 0
+--- !u!64 &912739798
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268887103}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6522372316600196270, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
 --- !u!4 &918760598 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 63f3b47f3e60f074abce25f9a68f9853, type: 3}
@@ -12365,6 +12386,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 912739795}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 912739798}
   m_SourcePrefab: {fileID: 100100000, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
 --- !u!1001 &5930612262151331155
 PrefabInstance:
@@ -12750,6 +12774,70 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 18de1f17-fb1a-491d-84b4-5a83bde2382c
     m_ActionName: 'Player/SlashAttack[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 754005264}
+        m_TargetAssemblyTypeName: InventoryToggle, Assembly-CSharp
+        m_MethodName: ToggleInventory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2deb0621-340c-45b2-9de9-97f2cdd770b9
+    m_ActionName: 'Player/Inventory Toggle[/Keyboard/i]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 754005266}
+        m_TargetAssemblyTypeName: EquipmentManager, Assembly-CSharp
+        m_MethodName: EquipByIndex
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 70263a77-a1f3-4d26-a58d-1d4f4e03313f
+    m_ActionName: 'Player/Equip Slot 1[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 754005266}
+        m_TargetAssemblyTypeName: EquipmentManager, Assembly-CSharp
+        m_MethodName: EquipByIndex
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 185b9e4e-b9d6-4924-9bde-09e2c92e59d1
+    m_ActionName: 'Player/Equip Slot 2[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 754005266}
+        m_TargetAssemblyTypeName: EquipmentManager, Assembly-CSharp
+        m_MethodName: EquipByIndex
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0268c414-4d6f-41c4-9db2-b781b99079e6
+    m_ActionName: 'Player/Equip Slot 3[/Keyboard/3]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player

@@ -9,12 +9,8 @@ public class EquipmentManager : MonoBehaviour
 
     [SerializeField] private PlayerCombat playerCombat;
 
-    // Private, no se puede modificar desde otros scripts
     private GameObject currentItemInHand;
-
-    // Public getter seguro
     public GameObject CurrentItemInHand => currentItemInHand;
-
     public ItemData currentEquippedItem;
 
     private void Awake()
@@ -27,30 +23,8 @@ public class EquipmentManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Update()
+    public void EquipByIndex(int index)
     {
-        // Equipa primer ítem con tecla 1
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            EquipByIndex(0);
-        }
-
-        // Equipa segundo ítem con tecla 2
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            EquipByIndex(1);
-        }
-
-        // Equipa segundo ítem con tecla 3
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            EquipByIndex(2);
-        }
-    }
-
-    private void EquipByIndex(int index)
-    {
-        // Verificamos si hay algo en esa posición del inventario
         if (InventorySystem.Instance.inventory.Count > index)
         {
             ItemData itemToEquip = InventorySystem.Instance.inventory[index].item;
@@ -58,54 +32,63 @@ public class EquipmentManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("No hay ningún ítem en el slot " + (index + 1));
+            Debug.Log($"No hay ningún ítem en el slot {index + 1}");
         }
     }
+
     public void Equip(ItemData item)
     {
+        if (item == null) return;
+
+        // Si ya está equipado el mismo ítem, no hacer nada
+        if (currentEquippedItem == item && currentItemInHand != null)
+        {
+            Debug.Log($"[Equip] {item.itemName} ya está equipado.");
+            return;
+        }
+
+        // Guardar usos del objeto actual ANTES de destruirlo
         if (currentItemInHand != null)
         {
             DurableItem old = currentItemInHand.GetComponent<DurableItem>();
-            old?.SaveUsesToInventory();
+            if (old != null)
+            {
+                old.SaveUsesToInventory();
+            }
             Destroy(currentItemInHand);
         }
 
         currentEquippedItem = item;
         currentItemInHand = null;
 
-        if (item == null || item.visualPrefab == null)
-            return;
+        // Validaciones
+        if (item.visualPrefab == null) return;
+        if (item.itemType == ItemType.Key) return;
+        if (item.itemType == ItemType.Consumable && !item.isEquippableConsumable) return;
 
-        if (item.itemType == ItemType.Key)
-            return;
-
-        if (item.itemType == ItemType.Consumable && !item.isEquippableConsumable)
-            return;
-
+        // Instanciar el prefab visual
         currentItemInHand = Instantiate(item.visualPrefab, equipPoint);
         currentItemInHand.transform.localPosition = Vector3.zero;
         currentItemInHand.transform.localRotation = Quaternion.identity;
 
+        // Agregar o obtener DurableItem
         DurableItem durable = currentItemInHand.GetComponent<DurableItem>();
         if (durable == null)
             durable = currentItemInHand.AddComponent<DurableItem>();
 
         durable.Initialize(item);
 
-        if (item.itemType == ItemType.Consumable)
-        {
-            var slot = GetSlotForItem(item);
-            if (slot != null && slot.currentUses > 0)
-                durable.currentUses = slot.currentUses;
-        }
-
-        // 🔥 IMPORTANTE: reset de ataque al cambiar arma
         playerCombat?.EndAttack();
+
+        Debug.Log($"[Equip] Equipado: {item.itemName}");
     }
 
-    private InventorySlot GetSlotForItem(ItemData item)
+    private void OnDestroy()
     {
-        if (item == null) return null;
-        return InventorySystem.Instance.inventory.Find(s => s.item == item);
+        if (currentItemInHand != null)
+        {
+            DurableItem durable = currentItemInHand.GetComponent<DurableItem>();
+            durable?.SaveUsesToInventory();
+        }
     }
 }

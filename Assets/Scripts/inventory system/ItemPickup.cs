@@ -7,7 +7,6 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     private bool hasBeenPickedUp = false;
 
-    // Nuevo método con GameObject interactor
     public void Interact(GameObject interactor)
     {
         if (hasBeenPickedUp) return;
@@ -18,11 +17,13 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
         if (added)
         {
+            Debug.Log($"[Pickup] {item.itemName} recogido correctamente con máximos usos");
             Destroy(gameObject);
         }
         else
         {
             hasBeenPickedUp = false;
+            Debug.LogWarning($"[Pickup] Inventario lleno, no se pudo recoger {item.itemName}");
         }
     }
 }
