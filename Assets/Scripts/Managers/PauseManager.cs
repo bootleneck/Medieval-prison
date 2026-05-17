@@ -1,35 +1,35 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
     [Header("Paneles de pausa")]
-    public GameObject PausePanel;           // Panel principal de pausa
-    public GameObject PauseOptionsPanel;    // Sub-panel de opciones
-    public GameObject ControlsPanel;        // Panel de controles
-    public GameObject VolumePanel;          // Panel de volumen
+    public GameObject PausePanel;
+    public GameObject PauseOptionsPanel;
+    public GameObject ControlsPanel;
+    public GameObject VolumePanel;
 
     [Header("Back Buttons")]
     public GameObject BackButtonControls;
     public GameObject BackButtonVolume;
 
     [Header("Botones por defecto")]
-    public GameObject DefaultPauseButton;   // Continue Button
-    public GameObject DefaultOptionButton;  // Primer botón de opciones
+    public GameObject DefaultPauseButton;
+    public GameObject DefaultOptionButton;
 
     private bool isPaused = false;
 
     void Start()
     {
-        // Todo oculto al inicio
         PausePanel.SetActive(false);
         PauseOptionsPanel.SetActive(false);
         ControlsPanel.SetActive(false);
         VolumePanel.SetActive(false);
 
-        BackButtonControls.SetActive(false);
-        BackButtonVolume.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(false);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(false);
 
         isPaused = false;
         Time.timeScale = 1f;
@@ -40,18 +40,13 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        // P solo pausa el juego (no reanuda)
+        if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
         {
-            if (isPaused)
-                ResumeGame();
-            else
+            if (!isPaused)
                 PauseGame();
         }
     }
-
-    // =============================================
-    //                  PAUSA
-    // =============================================
 
     public void PauseGame()
     {
@@ -60,8 +55,8 @@ public class PauseManager : MonoBehaviour
         ControlsPanel.SetActive(false);
         VolumePanel.SetActive(false);
 
-        BackButtonControls.SetActive(false);
-        BackButtonVolume.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(false);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(false);
 
         Time.timeScale = 0f;
         isPaused = true;
@@ -70,6 +65,8 @@ public class PauseManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         EventSystem.current.SetSelectedGameObject(DefaultPauseButton);
+
+      //  FindFirstObjectByType<InventoryToggle>()?.CloseInventory();
     }
 
     public void ResumeGame()
@@ -79,8 +76,8 @@ public class PauseManager : MonoBehaviour
         ControlsPanel.SetActive(false);
         VolumePanel.SetActive(false);
 
-        BackButtonControls.SetActive(false);
-        BackButtonVolume.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(false);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(false);
 
         Time.timeScale = 1f;
         isPaused = false;
@@ -91,58 +88,56 @@ public class PauseManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
     }
 
-    // =============================================
-    //             NAVEGACIÓN DE MENÚS
-    // =============================================
+    // ====================== UNITY EVENTS ======================
 
     public void ShowPauseOptions()
     {
-        PausePanel.SetActive(false);           // Ocultamos el menú principal
+        PausePanel.SetActive(false);
         PauseOptionsPanel.SetActive(true);
         ControlsPanel.SetActive(false);
         VolumePanel.SetActive(false);
 
-        BackButtonControls.SetActive(false);
-        BackButtonVolume.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(false);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(DefaultOptionButton);
     }
 
     public void BackToPauseMenu()
     {
-        PausePanel.SetActive(true);            // Volvemos al menú principal
+        PausePanel.SetActive(true);
         PauseOptionsPanel.SetActive(false);
         ControlsPanel.SetActive(false);
         VolumePanel.SetActive(false);
 
-        BackButtonControls.SetActive(false);
-        BackButtonVolume.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(false);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(DefaultPauseButton);
     }
 
     public void ShowControls()
     {
-        PausePanel.SetActive(false);           // ← Importante
+        PausePanel.SetActive(false);
         PauseOptionsPanel.SetActive(false);
         ControlsPanel.SetActive(true);
         VolumePanel.SetActive(false);
 
-        BackButtonControls.SetActive(true);
-        BackButtonVolume.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(true);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(BackButtonControls);
     }
 
     public void ShowVolume()
     {
-        PausePanel.SetActive(false);           // ← Importante
+        PausePanel.SetActive(false);
         PauseOptionsPanel.SetActive(false);
         ControlsPanel.SetActive(false);
         VolumePanel.SetActive(true);
 
-        BackButtonVolume.SetActive(true);
-        BackButtonControls.SetActive(false);
+        if (BackButtonControls != null) BackButtonControls.SetActive(false);
+        if (BackButtonVolume != null) BackButtonVolume.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(BackButtonVolume);
     }
@@ -154,4 +149,6 @@ public class PauseManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         SceneManager.LoadScene("MainMenu");
     }
+
+    public bool IsPaused() => isPaused;
 }
