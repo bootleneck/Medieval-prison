@@ -5,15 +5,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    [Header("Game Settings")]
-    public float masterVolume = 1f;
-
     [Header("Game State")]
-    public bool isPaused = false;
+    public bool isPaused;
 
     private void Awake()
     {
-        // Singleton para que solo exista uno
         if (instance == null)
         {
             instance = this;
@@ -25,32 +21,55 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Método para pausar / resumir juego
-    public void TogglePause()
+    // =========================
+    // PAUSE
+    // =========================
+
+    public void PauseGame()
     {
-        isPaused = !isPaused;
-        Time.timeScale = isPaused ? 0f : 1f;
+        isPaused = true;
+
+        Time.timeScale = 0f;
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
-    // Método para reiniciar nivel actual
+    public void ResumeGame()
+    {
+        isPaused = false;
+
+        Time.timeScale = 1f;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    // =========================
+    // SCENES
+    // =========================
+
     public void RestartLevel()
     {
+        Time.timeScale = 1f;
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Método para cargar nivel específico
     public void LoadLevel(string levelName)
     {
+        Time.timeScale = 1f;
+
         SceneManager.LoadScene(levelName);
     }
 
-    // Método para cargar menú
     public void LoadMenu()
     {
+        Time.timeScale = 1f;
+
         SceneManager.LoadScene("MainMenu");
     }
 
-    // Método para salir del juego
     public void QuitGame()
     {
         Application.Quit();

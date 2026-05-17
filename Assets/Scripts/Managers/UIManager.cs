@@ -3,25 +3,52 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager instance;
+
     private Stack<GameObject> panelStack = new Stack<GameObject>();
 
-    public void ShowPanel(GameObject panel)
+    private void Awake()
     {
-        if (panelStack.Count > 0)
-            panelStack.Peek().SetActive(false);
-
-        panel.SetActive(true);
-        panelStack.Push(panel);
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
     }
 
-    public void ClosePanel()
+    public void ShowOnly(params GameObject[] panelsToShow)
     {
-        if (panelStack.Count == 0) return;
+        // Desactivar todos los paneles conocidos
+        foreach (GameObject panel in panelStack)
+        {
+            if (panel != null)
+                panel.SetActive(false);
+        }
 
-        GameObject topPanel = panelStack.Pop();
-        topPanel.SetActive(false);
+        panelStack.Clear();
 
-        if (panelStack.Count > 0)
-            panelStack.Peek().SetActive(true);
+        // Activar los nuevos
+        foreach (GameObject panel in panelsToShow)
+        {
+            if (panel != null)
+            {
+                panel.SetActive(true);
+                panelStack.Push(panel);
+            }
+        }
+    }
+
+    public void Hide(params GameObject[] panels)
+    {
+        foreach (GameObject panel in panels)
+        {
+            if (panel != null)
+                panel.SetActive(false);
+        }
+    }
+
+    public void Show(GameObject panel)
+    {
+        if (panel != null)
+            panel.SetActive(true);
     }
 }
