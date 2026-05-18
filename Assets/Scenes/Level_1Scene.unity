@@ -4030,7 +4030,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3409698550240816972, guid: 6d9b21e519c2453418e3d4a675a21129, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5942337216807520402, guid: 6d9b21e519c2453418e3d4a675a21129, type: 3}
       propertyPath: player
@@ -5386,6 +5386,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: enemy2Test (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6069624679989443303, guid: 99595386e80d8e643860c79d45c48a68, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9128092974948825026, guid: 99595386e80d8e643860c79d45c48a68, type: 3}
       propertyPath: player
       value: 
@@ -6683,6 +6687,10 @@ PrefabInstance:
     - target: {fileID: 6069624679989443303, guid: 99595386e80d8e643860c79d45c48a68, type: 3}
       propertyPath: m_Name
       value: enemy2Test
+      objectReference: {fileID: 0}
+    - target: {fileID: 6069624679989443303, guid: 99595386e80d8e643860c79d45c48a68, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6423634326189433918, guid: 99595386e80d8e643860c79d45c48a68, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -24517,7 +24525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3409698550240816972, guid: 6d9b21e519c2453418e3d4a675a21129, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5942337216807520402, guid: 6d9b21e519c2453418e3d4a675a21129, type: 3}
       propertyPath: player
