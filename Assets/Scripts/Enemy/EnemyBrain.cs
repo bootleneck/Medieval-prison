@@ -9,6 +9,7 @@ public class EnemyBrain : MonoBehaviour
     public EnemyStun stun;
     public EnemyMeleeAttack attack;
     public Animator animator;
+    private Health health; // ← 1. Añadimos la referencia de vida aquí
 
     [Header("Stats")]
     public float detectionRange = 10f;
@@ -27,6 +28,18 @@ public class EnemyBrain : MonoBehaviour
         stun = GetComponent<EnemyStun>();
         attack = GetComponent<EnemyMeleeAttack>();
         animator = GetComponent<Animator>();
+        health = GetComponent<Health>(); // ← 2. Buscamos el componente Health aquí
+    }
+
+    // ← 3. Añadimos estos dos métodos nuevos obligatorios para escuchar el evento de muerte
+    private void OnEnable()
+    {
+        if (health != null) health.OnDeath += HandleDeath;
+    }
+
+    private void OnDisable()
+    {
+        if (health != null) health.OnDeath -= HandleDeath;
     }
 
     private void Start()
@@ -36,6 +49,9 @@ public class EnemyBrain : MonoBehaviour
 
     private void Update()
     {
+        // ← 4. Si ya está muerto, salimos del Update de inmediato para congelar la IA
+        if (health != null && health.IsDead) return;
+
         stun.Tick(Time.deltaTime);
 
         if (stun.IsStunned)
@@ -50,6 +66,12 @@ public class EnemyBrain : MonoBehaviour
         currentState?.Update(this);
 
         UpdateAnimation();
+    }
+
+    // ← 5. Añadimos este método nuevo que se ejecuta automáticamente al morir
+    private void HandleDeath()
+    {
+        ChangeState(new DeadState());
     }
 
     // =========================================================
