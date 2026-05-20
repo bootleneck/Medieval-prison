@@ -10,27 +10,15 @@ public class PauseMenuController : MonoBehaviour
     public GameObject ControlsPanel;
     public GameObject VolumePanel;
 
-    [Header("Buttons")]
-    public GameObject DefaultPauseButton;
-    public GameObject DefaultOptionButton;
+    [Header("Buttons")]    
     public GameObject BackButtonControls;
     public GameObject BackButtonVolume;
+
+    [SerializeField] private PlayerInput playerInput;
 
     private void Start()
     {
         HideAll();
-    }
-
-    private void Update()
-    {
-        if (Keyboard.current != null &&
-            Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            if (GameManager.instance.isPaused)
-                ResumeGame();
-            else
-                PauseGame();
-        }
     }
 
     // =========================
@@ -41,9 +29,9 @@ public class PauseMenuController : MonoBehaviour
     {
         GameManager.instance.PauseGame();
 
-        UIManager.instance.ShowOnly(PausePanel);
+        playerInput.SwitchCurrentActionMap("UI");
 
-        EventSystem.current.SetSelectedGameObject(DefaultPauseButton);
+        UIManager.instance.ShowOnly(PausePanel);
     }
 
     public void ResumeGame()
@@ -53,6 +41,9 @@ public class PauseMenuController : MonoBehaviour
         HideAll();
 
         EventSystem.current.SetSelectedGameObject(null);
+
+        playerInput.SwitchCurrentActionMap("Player");
+
     }
 
     // =========================
@@ -62,8 +53,6 @@ public class PauseMenuController : MonoBehaviour
     public void ShowOptions()
     {
         UIManager.instance.ShowOnly(PauseOptionsPanel);
-
-        EventSystem.current.SetSelectedGameObject(DefaultOptionButton);
     }
 
     public void ShowControls()
@@ -89,8 +78,6 @@ public class PauseMenuController : MonoBehaviour
     public void BackToPause()
     {
         UIManager.instance.ShowOnly(PausePanel);
-
-        EventSystem.current.SetSelectedGameObject(DefaultPauseButton);
     }
 
     private void HideAll()
