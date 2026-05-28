@@ -7,6 +7,10 @@ public class GateBreak : MonoBehaviour, IHitReaction
     [SerializeField] private float pushOutDistance = 0.2f;
     [SerializeField] private int hitsToBreak = 5;
 
+    [Header("Audio")]
+    [SerializeField] private string hitSound = "mallet_impact";
+    [SerializeField] private string breakSound = "gate_break";
+
     private Rigidbody rb;
     private int currentHits = 0;
     private Vector3 playerPosition;
@@ -34,7 +38,11 @@ public class GateBreak : MonoBehaviour, IHitReaction
         playerPosition = playerPos;
         AddHitForce();
 
+        // 🔊 sonido de impacto
+        AudioManager.Instance.PlaySFX3D(hitSound, transform.position);
+
         currentHits++;
+
         if (currentHits >= hitsToBreak)
         {
             BreakGate();
@@ -53,6 +61,9 @@ public class GateBreak : MonoBehaviour, IHitReaction
     private void BreakGate()
     {
         if (rb == null) return;
+
+        // 🔊 sonido de ruptura
+        AudioManager.Instance.PlaySFX3D(breakSound, transform.position);
 
         rb.isKinematic = false;
         rb.useGravity = true;

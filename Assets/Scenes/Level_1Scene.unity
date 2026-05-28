@@ -2113,6 +2113,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: IronDoor_Open
+    doorClose: IronDoor_Close
+    doorLocked: door_locked
 --- !u!65 &315265591
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2187,6 +2191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &319669395
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2526,6 +2531,8 @@ MonoBehaviour:
   torqueForce: 3
   pushOutDistance: 0.2
   hitsToBreak: 5
+  hitSound: gate_hit
+  breakSound: gate_break
 --- !u!114 &390271330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3799,6 +3806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &665250074
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3857,6 +3865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &680887105
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4858,6 +4867,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &812910241
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5572,8 +5582,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealingFountain
   hasBeenUsed: 0
---- !u!64 &912739798
-MeshCollider:
+  ambientSource: {fileID: 912739802}
+  interactSFXID: fountain_repair
+--- !u!135 &912739801
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5590,10 +5602,106 @@ MeshCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6522372316600196270, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
+  serializedVersion: 3
+  m_Radius: 1.0105746
+  m_Center: {x: 0, y: 0.9361599, z: 0.0000019073486}
+--- !u!82 &912739802
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268887103}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 50e03b127398cb7409d0a2350bda6e76, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 2
+  MaxDistance: 12
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &917963171
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6078,6 +6186,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: 
+    doorClose: 
+    doorLocked: door_locked
 --- !u!65 &925278024
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6533,6 +6645,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: 
+    doorClose: 
+    doorLocked: door_locked
 --- !u!65 &1038319484
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6709,6 +6825,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   item: {fileID: 11400000, guid: c358f387c93023740bad6e7577bea0ab, type: 2}
   amount: 1
+  audioProfile:
+    pickupSound: mallet_pickup
 --- !u!1 &1039323304 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 151766, guid: 731670d05affd0045a25600d2045889f, type: 3}
@@ -7244,6 +7362,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   item: {fileID: 11400000, guid: c358f387c93023740bad6e7577bea0ab, type: 2}
   amount: 1
+  audioProfile:
+    pickupSound: mallet_pickup
 --- !u!114 &1127614103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7317,6 +7437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1144862751
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7494,6 +7615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!1 &1193927396 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7106139032651209836, guid: 1d5248e0749682044af7c99f1f5c0b52, type: 3}
@@ -7516,6 +7638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1193927399
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8297,6 +8420,8 @@ MonoBehaviour:
   torqueForce: 3
   pushOutDistance: 0.2
   hitsToBreak: 5
+  hitSound: mallet_impact
+  breakSound: gate_break
 --- !u!114 &1293972279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8503,6 +8628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1307858700
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9058,6 +9184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1373796392
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9218,6 +9345,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: 
+    doorClose: 
+    doorLocked: door_locked
 --- !u!65 &1383818433
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9454,6 +9585,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   item: {fileID: 11400000, guid: 7af198c7b4523ee4e8e96bdd847db6ac, type: 2}
   amount: 1
+  audioProfile:
+    pickupSound: Sword_pickup
 --- !u!114 &1413041710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9666,6 +9799,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: IronDoor_Open
+    doorClose: IronDoor_Close
+    doorLocked: door_locked
 --- !u!4 &1485749449 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 4aa5a7ef56dd26f4d8cdad18e6dd51d2, type: 3}
@@ -10423,6 +10560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!4 &1557740306 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 93c9fb3e60489064791596a9de87878f, type: 3}
@@ -10548,6 +10686,10 @@ PrefabInstance:
     - target: {fileID: 3098983900756086687, guid: 3015342fb65fb214aa8f42816d475d95, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4853441402835464050, guid: 3015342fb65fb214aa8f42816d475d95, type: 3}
+      propertyPath: audioProfile.pickupSound
+      value: Key_pickup
       objectReference: {fileID: 0}
     - target: {fileID: 6508815143995160982, guid: 3015342fb65fb214aa8f42816d475d95, type: 3}
       propertyPath: m_Name
@@ -10728,6 +10870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1593221616
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10859,6 +11002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1653832543
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11155,6 +11299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1721469125
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11496,6 +11641,8 @@ MonoBehaviour:
   torqueForce: 3
   pushOutDistance: 0.2
   hitsToBreak: 5
+  hitSound: mallet_impact
+  breakSound: gate_break
 --- !u!54 &1825553165
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11826,6 +11973,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: IronDoor_Open
+    doorClose: IronDoor_Close
+    doorLocked: door_locked
 --- !u!65 &1862297385
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12014,6 +12165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1888268099
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12057,6 +12209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &1896823795
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12310,6 +12463,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   item: {fileID: 11400000, guid: b9d9024320b3d9341b910daba51607a8, type: 2}
   amount: 1
+  audioProfile:
+    pickupSound: health_pickup
 --- !u!135 &1960355888
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12382,6 +12537,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   item: {fileID: 11400000, guid: b778f7b28854c784784b9e81679b2bb7, type: 2}
   amount: 1
+  audioProfile:
+    pickupSound: Key_pickup
 --- !u!135 &1980393698
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12479,6 +12636,10 @@ MonoBehaviour:
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
+  audioProfile:
+    doorOpen: IronDoor_Open
+    doorClose: IronDoor_Close
+    doorLocked: door_locked
 --- !u!65 &1998603926
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12590,6 +12751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &2003844836
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16069,6 +16231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d56fc41082c9f5488cf825a774cf3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
+  breakSound: web_break
 --- !u!65 &2048018893546031802
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17577,6 +17740,8 @@ MonoBehaviour:
   torqueForce: 3
   pushOutDistance: 0.3
   hitsToBreak: 5
+  hitSound: mallet_impact
+  breakSound: gate_break
 --- !u!54 &2733342670909283004
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -19567,6 +19732,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a264dce65e4ae004bbc6be99c68d94c2, type: 3}
+--- !u!1001 &3955667753573083147
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2097294915800633497, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 773.15234
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9008.303
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578132197300425416, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
 --- !u!1001 &3994747802230373435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22842,6 +23064,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4853441402835464050, guid: 3015342fb65fb214aa8f42816d475d95, type: 3}
+      propertyPath: audioProfile.pickupSound
+      value: Key_pickup
+      objectReference: {fileID: 0}
     - target: {fileID: 6508815143995160982, guid: 3015342fb65fb214aa8f42816d475d95, type: 3}
       propertyPath: m_Name
       value: DoorA_Key
@@ -23116,7 +23342,10 @@ PrefabInstance:
       addedObject: {fileID: 912739795}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 912739798}
+      addedObject: {fileID: 912739801}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 912739802}
   m_SourcePrefab: {fileID: 100100000, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
 --- !u!1001 &5930612262151331155
 PrefabInstance:
@@ -27130,6 +27359,11 @@ MonoBehaviour:
   stunCost: 35
   stunRange: 2
   stunDuration: 5
+  slashHitSound: sword_hit
+  slashWhiffSound: sword_whiff
+  stunCastSound: sword_stun_cast
+  stunHitSound: sword_stun_hit
+  consumeSound: pumpkin_drink
 --- !u!114 &8109110820744107103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27965,6 +28199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gate
   gateAnimator: {fileID: 8728880128129381611}
+  openGateSFX: gate_open
 --- !u!65 &8728880128129381613
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28591,3 +28826,4 @@ SceneRoots:
   - {fileID: 2128138204294535234}
   - {fileID: 1773987244}
   - {fileID: 6974392182680545852}
+  - {fileID: 3955667753573083147}

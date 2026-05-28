@@ -11,13 +11,14 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [SerializeField] private bool permanentlyUnlock = true;
 
     [Header("Mensajes")]
-    [SerializeField]
-    private string lockedMessage =
-        "La puerta está cerrada con llave";
+    [SerializeField] private string lockedMessage = "La puerta está cerrada con llave";
 
     [Header("Animación")]
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 2f;
+
+    [Header("Audio")]
+    [SerializeField] private DoorAudioProfile audioProfile;
 
     private Quaternion closedRotation;
     private Quaternion targetRotation;
@@ -35,8 +36,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     {
         if (!isMoving) return;
 
-        Quaternion target =
-            isOpen ? targetRotation : closedRotation;
+        Quaternion target = isOpen ? targetRotation : closedRotation;
 
         transform.rotation = Quaternion.Slerp(
             transform.rotation,
@@ -53,49 +53,45 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     public void Interact(GameObject interactor)
     {
-        // Evita spam mientras la puerta se mueve
         if (isMoving) return;
 
-        // Si está abierta → cerrar
+        // Cerrar si está abierta
         if (isOpen)
         {
             CloseDoor();
             return;
         }
 
-        // Ya desbloqueada previamente
+        // Ya desbloqueada
         if (unlocked)
         {
             OpenDoor(interactor);
             return;
         }
 
-        // Puerta normal (sin llave)
+        // Puerta libre
         if (!requiresKey)
         {
             OpenDoor(interactor);
             return;
         }
 
-        // Verificar llave
+        // Tiene llave
         if (InventorySystem.Instance.HasKey(requiredKey))
         {
             OpenDoor(interactor);
 
-            // Consumir llave
-         /*   if (consumeKey)
-            {
-                InventorySystem.Instance.UseKey(requiredKey);
-            }
-         */
-            // Desbloqueo permanente
             if (permanentlyUnlock)
-            {
                 unlocked = true;
-            }
         }
         else
         {
+            // 🔊 sonido de puerta bloqueada
+            if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.doorLocked))
+            {
+                AudioManager.Instance.PlaySFX3D(audioProfile.doorLocked, transform.position);
+            }
+
             Debug.Log(lockedMessage);
         }
     }
@@ -105,29 +101,34 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         isOpen = true;
         isMoving = true;
 
-        // Dirección del jugador respecto a la puerta
-        Vector3 directionToPlayer =
-            interactor.transform.position - transform.position;
+        // 🔊 sonido abrir
+        if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.doorOpen))
+        {
+            AudioManager.Instance.PlaySFX3D(audioProfile.doorOpen, transform.position);
+        }
 
-        // Detecta de qué lado está el jugador
-        float dot =
-            Vector3.Dot(transform.right, directionToPlayer);
+        Vector3 directionToPlayer = interactor.transform.position - transform.position;
 
-        // Define dirección de apertura
+        float dot = Vector3.Dot(transform.right, directionToPlayer);
+
         float direction = dot >= 0 ? 1f : -1f;
 
-        // Calcula rotación objetivo
-        targetRotation =
-            Quaternion.Euler(
-                0f,
-                openAngle * direction,
-                0f
-            ) * closedRotation;
+        targetRotation = Quaternion.Euler(
+            0f,
+            openAngle * direction,
+            0f
+        ) * closedRotation;
     }
 
     private void CloseDoor()
     {
         isOpen = false;
         isMoving = true;
+
+        // 🔊 sonido cerrar
+        if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.doorClose))
+        {
+            AudioManager.Instance.PlaySFX3D(audioProfile.doorClose, transform.position);
+        }
     }
 }
