@@ -9,7 +9,8 @@ public class EnemyBrain : MonoBehaviour
     public EnemyStun stun;
     public EnemyMeleeAttack attack;
     public Animator animator;
-    private Health health; // ← 1. Añadimos la referencia de vida aquí
+    private Health health;
+    private EnemyAudio enemyAudio;
 
     [Header("Stats")]
     public float detectionRange = 10f;
@@ -28,10 +29,10 @@ public class EnemyBrain : MonoBehaviour
         stun = GetComponent<EnemyStun>();
         attack = GetComponent<EnemyMeleeAttack>();
         animator = GetComponent<Animator>();
-        health = GetComponent<Health>(); // ← 2. Buscamos el componente Health aquí
+        health = GetComponent<Health>();
+        enemyAudio = GetComponent<EnemyAudio>();
     }
 
-    // ← 3. Añadimos estos dos métodos nuevos obligatorios para escuchar el evento de muerte
     private void OnEnable()
     {
         if (health != null) health.OnDeath += HandleDeath;
@@ -49,7 +50,6 @@ public class EnemyBrain : MonoBehaviour
 
     private void Update()
     {
-        // ← 4. Si ya está muerto, salimos del Update de inmediato para congelar la IA
         if (health != null && health.IsDead) return;
 
         stun.Tick(Time.deltaTime);
@@ -68,7 +68,6 @@ public class EnemyBrain : MonoBehaviour
         UpdateAnimation();
     }
 
-    // ← 5. Añadimos este método nuevo que se ejecuta automáticamente al morir
     private void HandleDeath()
     {
         ChangeState(new DeadState());
@@ -81,7 +80,6 @@ public class EnemyBrain : MonoBehaviour
     private void UpdateAnimation()
     {
         bool isMoving = movement.IsMovingTowardsTarget();
-
         animator.SetBool("IsMoving", isMoving);
     }
 
@@ -100,7 +98,6 @@ public class EnemyBrain : MonoBehaviour
             return false;
 
         Vector3 dirNormalized = dirToPlayer.normalized;
-
         float angle = Vector3.Angle(transform.forward, dirNormalized);
 
         if (angle > viewAngle * 0.5f)
@@ -120,8 +117,32 @@ public class EnemyBrain : MonoBehaviour
 
     public void ChangeState(EnemyState newState)
     {
+        if (currentState != null &&
+            currentState.GetType() == newState.GetType())
+        {
+            return;
+        }
+
         currentState?.Exit(this);
         currentState = newState;
+
+        // =====================================================
+        // CONTROL DE AUDIO POR ESTADOS (CON LOS NUEVOS NOMBRES)
+        // =====================================================
+        if (enemyAudio != null)
+        {
+            // Si entra en persecución, suena el loop de persecución
+            if (newState is ChaseState)
+            {
+                enemyAudio.PlayChaseLoop();
+            }
+            // Si pasa a cualquier otro estado, el loop de persecución se apaga
+            else if (newState is PatrolState || newState is DeadState || newState is StunnedState)
+            {
+                enemyAudio.StopChaseLoop();
+            }
+        }
+
         currentState.Enter(this);
     }
 }

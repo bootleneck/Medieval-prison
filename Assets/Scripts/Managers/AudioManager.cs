@@ -6,22 +6,20 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    [Header("Music")]
+    [Header("Music & Ambient")]
     [SerializeField] private AudioSource musicSource;
-
-    [Header("Ambient")]
     [SerializeField] private AudioSource ambientSource;
 
-    [Header("SFX Pool")]
-    [SerializeField] private AudioSource[] sfxSources;
+    [Header("Pool Settings")]
+    [Tooltip("Cantidad de AudioSources que se crearán al iniciar el juego")]
+    [SerializeField] private int initialPoolSize = 8;
 
-    [Header("Music Library")]
+    // Cambiamos el array fijo por una Lista dinámica
+    private List<AudioSource> sfxPool;
+
+    [Header("Libraries")]
     [SerializeField] private AudioData[] musicList;
-
-    [Header("Ambient Library")]
     [SerializeField] private AudioData[] ambientList;
-
-    [Header("SFX Library")]
     [SerializeField] private AudioData[] sfxList;
 
     private Dictionary<string, AudioClip> musicDictionary;
@@ -37,7 +35,6 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -47,8 +44,33 @@ public class AudioManager : MonoBehaviour
         }
 
         BuildDictionaries();
+        InitializeSFXPool(); // <-- Inicialización automática
 
-        Debug.Log("AudioManager inicializado");
+        // Garantizar que music y ambient existan si te olvidaste de asignarlos
+        if (musicSource == null) musicSource = gameObject.AddComponent<AudioSource>();
+        if (ambientSource == null) ambientSource = gameObject.AddComponent<AudioSource>();
+
+        Debug.Log("AudioManager inicializado automáticamente");
+    }
+
+    private void InitializeSFXPool()
+    {
+        sfxPool = new List<AudioSource>();
+
+        for (int i = 0; i < initialPoolSize; i++)
+        {
+            CreateNewNewPoolSource();
+        }
+    }
+
+    private AudioSource CreateNewNewPoolSource()
+    {
+        // Crea un AudioSource limpio directamente adjunto a este objeto
+        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        newSource.playOnAwake = false;
+
+        sfxPool.Add(newSource);
+        return newSource;
     }
 
     private void BuildDictionaries()
@@ -57,46 +79,22 @@ public class AudioManager : MonoBehaviour
         ambientDictionary = new Dictionary<string, AudioClip>();
         sfxDictionary = new Dictionary<string, AudioClip>();
 
-        // MUSIC
         foreach (AudioData music in musicList)
         {
-            if (music == null) continue;
-            if (music.clip == null) continue;
-
-            if (!musicDictionary.ContainsKey(music.id))
-            {
+            if (music != null && music.clip != null && !musicDictionary.ContainsKey(music.id))
                 musicDictionary.Add(music.id, music.clip);
-
-                Debug.Log($"Music loaded: {music.id}");
-            }
         }
 
-        // AMBIENT
         foreach (AudioData ambient in ambientList)
         {
-            if (ambient == null) continue;
-            if (ambient.clip == null) continue;
-
-            if (!ambientDictionary.ContainsKey(ambient.id))
-            {
+            if (ambient != null && ambient.clip != null && !ambientDictionary.ContainsKey(ambient.id))
                 ambientDictionary.Add(ambient.id, ambient.clip);
-
-                Debug.Log($"Ambient loaded: {ambient.id}");
-            }
         }
 
-        // SFX
         foreach (AudioData sfx in sfxList)
         {
-            if (sfx == null) continue;
-            if (sfx.clip == null) continue;
-
-            if (!sfxDictionary.ContainsKey(sfx.id))
-            {
+            if (sfx != null && sfx.clip != null && !sfxDictionary.ContainsKey(sfx.id))
                 sfxDictionary.Add(sfx.id, sfx.clip);
-
-                Debug.Log($"SFX loaded: {sfx.id}");
-            }
         }
     }
 
@@ -108,32 +106,19 @@ public class AudioManager : MonoBehaviour
     {
         if (musicDictionary.TryGetValue(id, out AudioClip clip))
         {
-            if (musicSource.clip == clip)
-                return;
+            if (musicSource.clip == clip) return;
 
             musicSource.clip = clip;
             musicSource.loop = loop;
-
             musicSource.volume = 1f;
             musicSource.mute = false;
-
             musicSource.Play();
         }
-        else
-        {
-            Debug.LogWarning($"Music ID not found: {id}");
-        }
+        else Debug.LogWarning($"Music ID not found: {id}");
     }
 
-    public void StopMusic()
-    {
-        musicSource.Stop();
-    }
-
-    public void FadeOutMusic(float duration)
-    {
-        StartCoroutine(FadeOutCoroutine(musicSource, duration));
-    }
+    public void StopMusic() => musicSource.Stop();
+    public void FadeOutMusic(float duration) => StartCoroutine(FadeOutCoroutine(musicSource, duration));
 
     // =====================================================
     // AMBIENT
@@ -143,50 +128,29 @@ public class AudioManager : MonoBehaviour
     {
         if (ambientDictionary.TryGetValue(id, out AudioClip clip))
         {
-            if (ambientSource.clip == clip)
-                return;
+            if (ambientSource.clip == clip) return;
 
             ambientSource.clip = clip;
             ambientSource.loop = loop;
-
             ambientSource.volume = 1f;
             ambientSource.mute = false;
-
             ambientSource.Play();
         }
-        else
-        {
-            Debug.LogWarning($"Ambient ID not found: {id}");
-        }
+        else Debug.LogWarning($"Ambient ID not found: {id}");
     }
 
-    public void StopAmbient()
-    {
-        ambientSource.Stop();
-    }
-
-    public void FadeOutAmbient(float duration)
-    {
-        StartCoroutine(FadeOutCoroutine(ambientSource, duration));
-    }
-
-    // =====================================================
-    // FADE
-    // =====================================================
+    public void StopAmbient() => ambientSource.Stop();
+    public void FadeOutAmbient(float duration) => StartCoroutine(FadeOutCoroutine(ambientSource, duration));
 
     private IEnumerator FadeOutCoroutine(AudioSource source, float duration)
     {
         float startVolume = source.volume;
-
         while (source.volume > 0)
         {
             source.volume -= startVolume * Time.deltaTime / duration;
-
             yield return null;
         }
-
         source.Stop();
-
         source.volume = startVolume;
     }
 
@@ -204,22 +168,12 @@ public class AudioManager : MonoBehaviour
 
         AudioSource source = GetAvailableSFXSource();
 
-        if (source == null)
-        {
-            Debug.LogWarning("No available SFX AudioSource");
-            return;
-        }
-
         source.volume = 1f;
         source.pitch = Random.Range(0.95f, 1.05f);
-
         source.spatialBlend = 0f;
-
         source.mute = false;
 
         source.PlayOneShot(clip);
-
-        Debug.Log($"Playing SFX: {id}");
     }
 
     // =====================================================
@@ -235,55 +189,47 @@ public class AudioManager : MonoBehaviour
         }
 
         GameObject tempObject = new GameObject($"3D_SFX_{id}");
-
         tempObject.transform.position = position;
 
         AudioSource source = tempObject.AddComponent<AudioSource>();
-
         source.clip = clip;
-
         source.volume = 1f;
-
-        source.spatialBlend = 1f;
-
+        source.spatialBlend = 1f; // 3D puro
         source.minDistance = 1f;
         source.maxDistance = 20f;
-
         source.rolloffMode = AudioRolloffMode.Linear;
-
         source.pitch = Random.Range(0.95f, 1.05f);
 
         source.Play();
 
         Destroy(tempObject, clip.length + 0.1f);
+    }
 
-        Debug.Log($"Playing 3D SFX: {id}");
+    public AudioClip GetSFXClip(string id)
+    {
+        if (sfxDictionary.TryGetValue(id, out AudioClip clip)) return clip;
+        Debug.LogWarning($"SFX ID not found: {id}");
+        return null;
     }
 
     // =====================================================
-    // POOL
+    // POOL DINÁMICO INTELIGENTE
     // =====================================================
 
     private AudioSource GetAvailableSFXSource()
     {
-        if (sfxSources == null || sfxSources.Length == 0)
+        // 1. Buscamos si hay alguno libre actualmente
+        foreach (AudioSource source in sfxPool)
         {
-            Debug.LogWarning("SFX pool vacío");
-            return null;
-        }
-
-        foreach (AudioSource source in sfxSources)
-        {
-            if (source == null)
-                continue;
-
-            if (!source.isPlaying)
+            if (source != null && !source.isPlaying)
             {
                 return source;
             }
         }
 
-        // fallback
-        return sfxSources[0];
+        // 2. Si llegamos aquí, significa que TODOS los del pool están sonando.
+        // ¡Creamos uno nuevo bajo demanda para expandir el pool automáticamente!
+        Debug.LogWarning("Pool saturado. Creando un nuevo AudioSource de emergencia.");
+        return CreateNewNewPoolSource();
     }
 }
