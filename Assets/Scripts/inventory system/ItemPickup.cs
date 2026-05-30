@@ -6,9 +6,6 @@ public class ItemPickup : MonoBehaviour, IInteractable
     public ItemData item;
     public int amount = 1;
 
-    [Header("Audio")]
-    [SerializeField] private ItemAudioProfile audioProfile;
-
     private bool hasBeenPickedUp = false;
 
     public void Interact(GameObject interactor)
@@ -22,9 +19,12 @@ public class ItemPickup : MonoBehaviour, IInteractable
         if (added)
         {
             // 🔊 sonido de pickup
-            if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.pickupSound))
+            if (!string.IsNullOrEmpty(item.pickupSound))
             {
-                AudioManager.Instance.PlaySFX3D(audioProfile.pickupSound, transform.position);
+                AudioManager.Instance.PlaySFX3D(
+                    item.pickupSound,
+                    transform.position
+                );
             }
 
             Debug.Log($"[Pickup] {item.itemName} recogido correctamente con máximos usos");

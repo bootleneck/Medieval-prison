@@ -27,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
     private float _verticalVelocity;
     private bool _isSprinting;
 
+    private bool _jumpStarted;
+    private bool _wasGrounded;
+
     public MovementState CurrentState { get; private set; }
 
     private void Awake()
@@ -36,10 +39,31 @@ public class PlayerMovement : MonoBehaviour
         _stamina = GetComponent<PlayerStamina>();
     }
 
+    private void Start()
+    {
+        _wasGrounded = _characterController.isGrounded;
+    }
+
     private void Update()
     {
         HandleMovement();
         UpdateState();
+
+        CheckLanding();
+    }
+
+    private void CheckLanding()
+    {
+        if (_jumpStarted &&
+            !_wasGrounded &&
+            _characterController.isGrounded)
+        {
+            AudioManager.Instance.PlaySFX3D("land", transform.position);
+
+            _jumpStarted = false;
+        }
+
+        _wasGrounded = _characterController.isGrounded;
     }
 
     private void HandleMovement()
@@ -116,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
         _move.sqrMagnitude > 0.01f;
 
     // INPUTS
+
     public void OnMove(InputAction.CallbackContext context)
         => _move = context.ReadValue<Vector2>();
 
@@ -124,7 +149,19 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed && _characterController.isGrounded)
-            _verticalVelocity = _jumpForce;
+        if (!context.performed)
+            return;
+
+        if (!_characterController.isGrounded)
+            return;
+
+        if (_jumpStarted)
+            return;
+
+        _jumpStarted = true;
+
+        _verticalVelocity = _jumpForce;
+
+        AudioManager.Instance.PlaySFX3D("jump", transform.position);
     }
 }

@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   stackable: 0
   visualPrefab: {fileID: 1787449969038238197, guid: c40d2185cb4358e4d9ea532334d0397b, type: 3}
+  pickupSound: health_pickup
   itemType: 2
   damage: 0
   range: 0

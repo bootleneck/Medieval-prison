@@ -1,25 +1,28 @@
 using UnityEngine;
+using System.Collections;
 
 public class Lever : MonoBehaviour
 {
     [Header("Animator")]
-    public Animator leverAnimator; // Asignar Animator de la palanca
+    public Animator leverAnimator;
 
     [Header("Connected Gates")]
     public Gate[] gates;
 
     private bool activated = false;
+    private bool isBusy = false;    
 
-    // Alterna estado de palanca y puertas
     public void Toggle()
     {
+        if (isBusy) return;
+
         activated = !activated;
 
-        // Activar animación de la palanca
         if (leverAnimator != null)
             leverAnimator.SetBool("Activated", activated);
 
-        // Abrir o cerrar las puertas conectadas
+        isBusy = true;
+
         foreach (Gate g in gates)
         {
             if (g != null)
@@ -30,39 +33,29 @@ public class Lever : MonoBehaviour
                     g.Close();
             }
         }
+
+        StartCoroutine(WaitForGates());
+    }
+    
+    private IEnumerator WaitForGates()
+    {
+        // espera mínima para evitar spam (puede ajustarse)
+        yield return new WaitForSeconds(0.1f);
+
+        // espera hasta que todas terminen animación
+        while (AnyGateAnimating())
+            yield return null;
+
+        isBusy = false;
     }
 
-    // Activar directamente
-    public void Activate()
+    private bool AnyGateAnimating()
     {
-        if (activated) return;
-
-        activated = true;
-
-        if (leverAnimator != null)
-            leverAnimator.SetBool("Activated", true);
-
         foreach (Gate g in gates)
         {
-            if (g != null)
-                g.Open();
+            if (g != null && g.CanInteract == false)
+                return true;
         }
-    }
-
-    // Desactivar directamente
-    public void Deactivate()
-    {
-        if (!activated) return;
-
-        activated = false;
-
-        if (leverAnimator != null)
-            leverAnimator.SetBool("Activated", false);
-
-        foreach (Gate g in gates)
-        {
-            if (g != null)
-                g.Close();
-        }
+        return false;
     }
 }
