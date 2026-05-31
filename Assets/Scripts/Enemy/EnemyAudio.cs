@@ -11,11 +11,12 @@ public class EnemyAudio : MonoBehaviour
     [SerializeField] private AudioSource loopSource;
 
     [Header("Loop IDs")]
-    [SerializeField] private string chaseLoopID = "enemy_chase"; // ¡Mucho mejor nombre!
+    [SerializeField] private string chaseLoopID = "enemy_chase";
 
     [Header("SFX IDs")]
     [SerializeField] private string meleeAttackSFX = "enemy_melee_attack";
     [SerializeField] private string rangedAttackSFX = "enemy_ranged_attack";
+    [SerializeField] private string deathSFX = "enemy_dead";
 
     [Header("Footsteps SFX (Editable en Inspector)")]
     [SerializeField] private string[] patrolSteps = { "enemy_footstep1", "enemy_footstep2" };
@@ -44,13 +45,9 @@ public class EnemyAudio : MonoBehaviour
 
     private void Update()
     {
-        // El Update SOLO maneja los pasos. Cero conflictos de lógica.
         HandleFootsteps();
     }
 
-    // =====================================================
-    // FOOTSTEPS (CON ALTERNANCIA SECUENCIAL)
-    // =====================================================
     private void HandleFootsteps()
     {
         if (enemyMovement == null || agent == null) return;
@@ -101,12 +98,14 @@ public class EnemyAudio : MonoBehaviour
 
         string clipId = array[index];
         index = (index + 1) % array.Length;
+
         return clipId;
     }
 
     // =====================================================
-    // CHASE LOOP (MÉTODOS PUBLICOS PARA EL BRAIN)
+    // CHASE LOOP
     // =====================================================
+
     public void PlayChaseLoop()
     {
         if (loopSource == null) return;
@@ -132,8 +131,23 @@ public class EnemyAudio : MonoBehaviour
     }
 
     // =====================================================
+    // DEATH
+    // =====================================================
+
+    public void PlayDeath()
+    {
+        StopChaseLoop();
+
+        AudioManager.Instance.PlaySFX3D(
+            deathSFX,
+            transform.position
+        );
+    }
+
+    // =====================================================
     // ATTACKS
     // =====================================================
+
     public void PlayMeleeAttack()
     {
         AudioManager.Instance.PlaySFX3D(meleeAttackSFX, transform.position);

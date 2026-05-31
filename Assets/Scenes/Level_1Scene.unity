@@ -1727,6 +1727,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -2122,6 +2123,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -12001,6 +12003,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -14494,6 +14497,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -23504,6 +23508,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.size
+      value: 44
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[8].id
+      value: player_pain
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[9].id
+      value: heart_beat
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[42].id
+      value: player_death
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[43].id
+      value: enemy_dead
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[42].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: dc38289edaac717449c97ff76e43bab4, type: 3}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[43].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 54afeed0a8f82a14ba80f3bb765a4304, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23868,6 +23900,7 @@ GameObject:
   - component: {fileID: 8109110820744107099}
   - component: {fileID: 8109110820744107104}
   - component: {fileID: 8109110820744107101}
+  - component: {fileID: 8109110820744107105}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -32982,6 +33015,24 @@ MonoBehaviour:
   sprintInterval: 0.3
   crouchInterval: 0.7
   proneInterval: 0.8
+--- !u!114 &8109110820744107105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250229f5033420141aa3fe235043bcde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAudio
+  painSFX: player_pain
+  deathSFX: player_death
+  heartbeatSFX: heart_beat
+  heartbeatThreshold: 25
+  heartbeatCooldown: 1
+  playerHealth: {fileID: 8109110820744107099}
 --- !u!4 &8128246444328440418
 Transform:
   m_ObjectHideFlags: 0
