@@ -13,6 +13,9 @@ public class EquipmentManager : MonoBehaviour
     public GameObject CurrentItemInHand => currentItemInHand;
     public ItemData currentEquippedItem;
 
+    // Guardamos la referencia de la UI para no buscarla en cada frame
+    private WeaponDurabilityUI _durabilityUI;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -21,6 +24,12 @@ public class EquipmentManager : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    private void Start()
+    {
+        // VERIFICADO: Se usa la función moderna de Unity para solucionar la advertencia de desuso
+        _durabilityUI = FindAnyObjectByType<WeaponDurabilityUI>();
     }
 
     public void EquipByIndex(int index)
@@ -47,7 +56,7 @@ public class EquipmentManager : MonoBehaviour
             return;
         }
 
-        // Guardar usos del objeto actual ANTES de destruirlo
+        // Guardar usos del objeto actual ANTES de destruirlo y ocultar su texto en la UI
         if (currentItemInHand != null)
         {
             DurableItem old = currentItemInHand.GetComponent<DurableItem>();
@@ -56,6 +65,9 @@ public class EquipmentManager : MonoBehaviour
                 old.SaveUsesToInventory();
             }
             Destroy(currentItemInHand);
+
+            // Ocultamos ambos textos antes de evaluar el nuevo objeto equipado
+            OcultarTodaLaUI();
         }
 
         currentEquippedItem = item;
@@ -85,7 +97,35 @@ public class EquipmentManager : MonoBehaviour
 
         playerCombat?.EndAttack();
 
+        // --- ACTUALIZACIÓN DE LA UI SEGÚN EL ÍTEM EQUIPADO ---
+        ActualizarUIPorItem(item, durable);
+
         Debug.Log($"[Equip] Equipado: {item.itemName}");
+    }
+
+    // VERIFICADO: El método ahora lee los datos genéricos del ScriptableObject (item) o inicializa de manera segura
+    private void ActualizarUIPorItem(ItemData item, DurableItem durable)
+    {
+        if (_durabilityUI == null) return;
+
+        // El EquipmentManager solo se encarga de MOSTRAR el recuadro correspondiente
+        if (item.itemType == ItemType.Weapon)
+        {
+            _durabilityUI.SetSwordVisibility(true);
+        }
+        else if (item.itemType == ItemType.Consumable)
+        {
+            _durabilityUI.SetPumpkinVisibility(true);
+        }
+    }
+
+    private void OcultarTodaLaUI()
+    {
+        if (_durabilityUI != null)
+        {
+            _durabilityUI.SetSwordVisibility(false);
+            _durabilityUI.SetPumpkinVisibility(false);
+        }
     }
 
     private void OnDestroy()

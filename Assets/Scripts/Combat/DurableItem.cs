@@ -6,6 +6,18 @@ public class DurableItem : MonoBehaviour
     public int maxUses;
     public int currentUses;
 
+    // Guardamos la referencia de la UI para no buscarla repetidamente
+    private WeaponDurabilityUI _durabilityUI;
+
+    private void Start()
+    {
+        // Busca el controlador de la interfaz al instanciarse en la mano
+        _durabilityUI = FindAnyObjectByType<WeaponDurabilityUI>();
+
+        // Fuerza la actualización visual inicial apenas aparece en la mano
+        ActualizarInterfaz();
+    }
+
     public void Initialize(ItemData data)
     {
         if (data == null)
@@ -22,6 +34,9 @@ public class DurableItem : MonoBehaviour
         currentUses = LoadSavedUses();
 
         Debug.Log($"[DurableItem] {itemData.itemName} ({itemData.itemType}) → Cargado: {currentUses}/{maxUses}");
+
+        // Actualiza al inicializar
+        ActualizarInterfaz();
     }
 
     private int LoadSavedUses()
@@ -32,7 +47,6 @@ public class DurableItem : MonoBehaviour
 
         if (slot != null)
         {
-            // Para consumibles respetamos SIEMPRE el valor guardado (incluso 0)
             if (itemData.itemType == ItemType.Consumable)
             {
                 Debug.Log($"[Load Consumible] {itemData.itemName} → {slot.currentUses}/{maxUses}");
@@ -40,7 +54,6 @@ public class DurableItem : MonoBehaviour
             }
             else
             {
-                // Para armas
                 return slot.currentUses > 0 ? slot.currentUses : maxUses;
             }
         }
@@ -58,6 +71,13 @@ public class DurableItem : MonoBehaviour
 
         currentUses--;
         Debug.Log($"[Uso] {itemData.itemName} → {currentUses}/{maxUses}");
+
+        // CORRECCIÓN: Nos aseguramos de guardar los usos en el inventario inmediatamente
+        SaveUsesToInventory();
+
+        // CORRECCIÓN: Forzamos la actualización de la interfaz con los usos vigentes
+        ActualizarInterfaz();
+
         return true;
     }
 
@@ -65,6 +85,9 @@ public class DurableItem : MonoBehaviour
     {
         currentUses = maxUses;
         SaveUsesToInventory();
+
+        // Actualiza al recargar en la fuente
+        ActualizarInterfaz();
     }
 
     public void SaveUsesToInventory()
@@ -76,6 +99,21 @@ public class DurableItem : MonoBehaviour
         {
             slot.currentUses = currentUses;
             Debug.Log($"[GUARDADO] {itemData.itemName} → {currentUses}/{maxUses}");
+        }
+    }
+
+    // Método propio auxiliar que automatiza el envío de datos al HUD
+    private void ActualizarInterfaz()
+    {
+        if (_durabilityUI == null || itemData == null) return;
+
+        if (itemData.itemType == ItemType.Weapon)
+        {
+            _durabilityUI.ActualizarTextoEspada(currentUses);
+        }
+        else if (itemData.itemType == ItemType.Consumable)
+        {
+            _durabilityUI.ActualizarTextoCalabaza(currentUses);
         }
     }
 
