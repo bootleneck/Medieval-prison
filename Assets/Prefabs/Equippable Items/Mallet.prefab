@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7481632378624190763}
   m_Layer: 0
-  m_Name: rotacion
+  m_Name: Mallet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
