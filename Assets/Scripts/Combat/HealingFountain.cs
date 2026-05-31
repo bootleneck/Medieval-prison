@@ -9,17 +9,21 @@ public class HealingFountain : MonoBehaviour, IInteractable
     [Header("Audio 3D")]
     [SerializeField] private AudioSource ambientSource;
     [SerializeField] private string interactSFXID = "fountain_repair";
+    [SerializeField] private string emptySFXID = "empty_fountain";
+
+    [SerializeField] private GameObject[] waterObjects;
 
     private void Awake()
     {
         SphereCollider col = GetComponent<SphereCollider>();
-        col.isTrigger = true;        
+        col.isTrigger = true;
     }
 
     public void Interact(GameObject interactor)
     {
         if (hasBeenUsed)
         {
+            AudioManager.Instance.PlaySFX3D(emptySFXID, transform.position);
             Debug.Log("[Fuente] Esta fuente ya ha sido usada.");
             return;
         }
@@ -27,9 +31,7 @@ public class HealingFountain : MonoBehaviour, IInteractable
         bool rechargedAnything = false;
 
         // Item en mano
-        DurableItem handDurable =
-            EquipmentManager.Instance.CurrentItemInHand?.GetComponent<DurableItem>();
-
+        DurableItem handDurable = EquipmentManager.Instance.CurrentItemInHand?.GetComponent<DurableItem>();
         if (handDurable != null)
         {
             handDurable.RechargeToFull();
@@ -61,11 +63,20 @@ public class HealingFountain : MonoBehaviour, IInteractable
         {
             hasBeenUsed = true;
 
-            // 🔊 SFX 3D desde AudioManager (evento puntual)
             AudioManager.Instance.PlaySFX3D(interactSFXID, transform.position);
 
+            foreach (GameObject water in waterObjects)
+            {
+                if (water != null)
+                    water.SetActive(false);
+            }
+            // Detener sonido ambiente
+            if (ambientSource != null)
+            {
+                ambientSource.Stop();
+                ambientSource.enabled = false; // opcional
+            }
             Debug.Log("[Fuente] ¡Todos los items han sido recargados!");
         }
     }
-   
 }
