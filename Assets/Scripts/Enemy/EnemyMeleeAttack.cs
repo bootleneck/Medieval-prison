@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,10 +19,18 @@ public class EnemyMeleeAttack : MonoBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform attackPoint;
+    private EnemyAudio enemyAudio;
 
     private float lastAttackTime;
 
     public bool CanAttack => Time.time >= lastAttackTime + attackCooldown;
+
+
+    private void Awake()
+    {        
+        enemyAudio = GetComponent<EnemyAudio>();
+    }
+
 
     // =========================================================
     // Inicia el ataque
@@ -31,7 +40,10 @@ public class EnemyMeleeAttack : MonoBehaviour
         if (!CanAttack) return;
 
         lastAttackTime = Time.time;
+
         animator.SetTrigger("Attack");
+
+        enemyAudio?.PlayMeleeAttack();
 
         Debug.Log("⚔ Enemy inicia ataque melee");
     }

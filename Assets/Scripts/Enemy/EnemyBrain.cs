@@ -9,7 +9,8 @@ public class EnemyBrain : MonoBehaviour
     public EnemyStun stun;
     public EnemyMeleeAttack attack;
     public Animator animator;
-    private Health health; // ← 1. Añadimos la referencia de vida aquí
+    private Health health;
+    private EnemyAudio enemyAudio;
 
     [Header("Stats")]
     public float detectionRange = 10f;
@@ -28,18 +29,20 @@ public class EnemyBrain : MonoBehaviour
         stun = GetComponent<EnemyStun>();
         attack = GetComponent<EnemyMeleeAttack>();
         animator = GetComponent<Animator>();
-        health = GetComponent<Health>(); // ← 2. Buscamos el componente Health aquí
+        health = GetComponent<Health>();
+        enemyAudio = GetComponent<EnemyAudio>();
     }
 
-    // ← 3. Añadimos estos dos métodos nuevos obligatorios para escuchar el evento de muerte
     private void OnEnable()
     {
-        if (health != null) health.OnDeath += HandleDeath;
+        if (health != null)
+            health.OnDeath += HandleDeath;
     }
 
     private void OnDisable()
     {
-        if (health != null) health.OnDeath -= HandleDeath;
+        if (health != null)
+            health.OnDeath -= HandleDeath;
     }
 
     private void Start()
@@ -49,8 +52,8 @@ public class EnemyBrain : MonoBehaviour
 
     private void Update()
     {
-        // ← 4. Si ya está muerto, salimos del Update de inmediato para congelar la IA
-        if (health != null && health.IsDead) return;
+        if (health != null && health.IsDead)
+            return;
 
         stun.Tick(Time.deltaTime);
 
@@ -63,31 +66,24 @@ public class EnemyBrain : MonoBehaviour
             return;
         }
 
+        // Si acaba de salir del stun, el StunnedState ya se encarga de cambiar de estado
         currentState?.Update(this);
-
         UpdateAnimation();
     }
 
-    // ← 5. Añadimos este método nuevo que se ejecuta automáticamente al morir
     private void HandleDeath()
     {
         ChangeState(new DeadState());
-    }
 
-    // =========================================================
-    // ANIMACIÓN SIMPLE Y ROBUSTA
-    // =========================================================
+        // 🔥 seguridad extra por si acaso
+        CombatMusicController.Instance?.UnregisterEnemyCombat(this);
+    }
 
     private void UpdateAnimation()
     {
         bool isMoving = movement.IsMovingTowardsTarget();
-
         animator.SetBool("IsMoving", isMoving);
     }
-
-    // =========================================================
-    // VISIÓN
-    // =========================================================
 
     public bool CanSeePlayer()
     {
@@ -100,14 +96,12 @@ public class EnemyBrain : MonoBehaviour
             return false;
 
         Vector3 dirNormalized = dirToPlayer.normalized;
-
         float angle = Vector3.Angle(transform.forward, dirNormalized);
 
         if (angle > viewAngle * 0.5f)
             return false;
 
-        if (Physics.Raycast(
-            transform.position + Vector3.up,
+        if (Physics.Raycast(transform.position + Vector3.up,
             dirNormalized,
             distance,
             obstacleMask))
@@ -120,8 +114,36 @@ public class EnemyBrain : MonoBehaviour
 
     public void ChangeState(EnemyState newState)
     {
+        if (currentState != null &&
+            currentState.GetType() == newState.GetType())
+            return;
+
         currentState?.Exit(this);
         currentState = newState;
+
+        if (enemyAudio != null)
+        {
+            if (newState is ChaseState)
+                enemyAudio.PlayChaseLoop();
+            else
+                enemyAudio.StopChaseLoop();
+        }
+
+        // === MÚSICA DE COMBATE ===
+        bool isCombatState =
+            newState is ChaseState ||
+            newState is AttackState ||
+            newState is StunnedState;        // ← Importante
+
+        if (isCombatState)
+        {
+            CombatMusicController.Instance?.RegisterEnemyCombat(this);
+        }
+        else if (newState is PatrolState || newState is DeadState)
+        {
+            CombatMusicController.Instance?.UnregisterEnemyCombat(this);
+        }
+
         currentState.Enter(this);
     }
 }

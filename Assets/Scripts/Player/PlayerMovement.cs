@@ -25,8 +25,12 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 _move;
     private float _verticalVelocity;
+    private bool _isSprinting;
 
-    private bool _isSprinting;    
+    private bool _jumpStarted;
+    private bool _wasGrounded;
+
+    public MovementState CurrentState { get; private set; }
 
     private void Awake()
     {
@@ -37,17 +41,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        _wasGrounded = _characterController.isGrounded;
     }
 
     private void Update()
     {
         HandleMovement();
+        UpdateState();
+
+        CheckLanding();
     }
 
-    // =========================================================
-    // MOVEMENT CORE (UNIFICADO)
-    // =========================================================
+    private void CheckLanding()
+    {
+        if (_jumpStarted &&
+            !_wasGrounded &&
+            _characterController.isGrounded)
+        {
+            AudioManager.Instance.PlaySFX3D("land", transform.position);
+
+            _jumpStarted = false;
+        }
+
+        _wasGrounded = _characterController.isGrounded;
+    }
 
     private void HandleMovement()
     {
@@ -62,42 +79,49 @@ public class PlayerMovement : MonoBehaviour
 
         // Gravity
         if (_characterController.isGrounded && _verticalVelocity < 0)
-        {
             _verticalVelocity = -2f;
-        }
         else
-        {
             _verticalVelocity += _gravity * Time.deltaTime;
-        }
 
         movement.y = _verticalVelocity;
 
         _characterController.Move(movement * Time.deltaTime);
     }
 
-    // =========================================================
-    // SPEED LOGIC (UNA SOLA FUENTE DE VERDAD)
-    // =========================================================
+    private void UpdateState()
+    {
+        if (_crouchScript != null && _crouchScript.IsProne)
+        {
+            CurrentState = MovementState.Prone;
+            return;
+        }
+
+        if (_crouchScript != null && _crouchScript.IsLowered)
+        {
+            CurrentState = MovementState.Crouch;
+            return;
+        }
+
+        if (IsActuallySprinting)
+        {
+            CurrentState = MovementState.Sprint;
+            return;
+        }
+
+        CurrentState = MovementState.Walk;
+    }
 
     private float GetBaseSpeed()
     {
         if (_crouchScript != null && _crouchScript.IsLowered)
-        {
             return _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
-        }
 
         return _normalSpeed;
     }
 
     private float ApplySprint(float baseSpeed)
     {
-        bool canSprint =
-            _isSprinting &&
-            _move != Vector2.zero &&
-            (_crouchScript == null || !_crouchScript.IsLowered) &&
-            _stamina.HasStamina(0.1f);
-
-        if (canSprint)
+        if (IsActuallySprinting)
         {
             _stamina.UseStamina(_sprintStaminaCostPerSecond * Time.deltaTime);
             return _sprintSpeed;
@@ -106,30 +130,38 @@ public class PlayerMovement : MonoBehaviour
         return baseSpeed;
     }
 
-    // =========================================================
+    public bool IsActuallySprinting =>
+        _isSprinting &&
+        _move.sqrMagnitude > 0.01f &&
+        (_crouchScript == null || !_crouchScript.IsLowered) &&
+        _stamina.HasStamina(0.1f);
+
+    public bool IsMoving =>
+        _move.sqrMagnitude > 0.01f;
+
     // INPUTS
-    // =========================================================
 
     public void OnMove(InputAction.CallbackContext context)
-    {
-        _move = context.ReadValue<Vector2>();
-    }
+        => _move = context.ReadValue<Vector2>();
 
     public void OnSprint(InputAction.CallbackContext context)
-    {
-        _isSprinting = context.performed;
-    }
+        => _isSprinting = context.performed;
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        bool canJump =
-            context.performed &&
-            _characterController.isGrounded &&
-            (_crouchScript == null || !_crouchScript.IsLowered);
+        if (!context.performed)
+            return;
 
-        if (canJump)
-        {
-            _verticalVelocity = _jumpForce;
-        }
+        if (!_characterController.isGrounded)
+            return;
+
+        if (_jumpStarted)
+            return;
+
+        _jumpStarted = true;
+
+        _verticalVelocity = _jumpForce;
+
+        AudioManager.Instance.PlaySFX3D("jump", transform.position);
     }
 }

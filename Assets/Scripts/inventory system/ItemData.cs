@@ -3,10 +3,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject
 {
+    [Header("Basic")]
     public string itemName;
     public Sprite icon;
     public bool stackable;
     public GameObject visualPrefab;
+
+    [Header("Audio")]
+    public string pickupSound;
 
     [Header("Item Type")]
     public ItemType itemType;
@@ -17,7 +21,7 @@ public class ItemData : ScriptableObject
     public int maxUses = 100;
 
     [Header("Consumable (solo consumibles)")]
-    public int healAmount = 0;          // cuánto cura
-    public int maxConsumableUses = 3;   // cuántas veces se puede usar antes de recargar
-    public bool isEquippableConsumable; // si puede ir a la mano
+    public int healAmount = 0;
+    public int maxConsumableUses = 3;
+    public bool isEquippableConsumable;
 }

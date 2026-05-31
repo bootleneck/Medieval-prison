@@ -71,6 +71,11 @@ public class EquipmentManager : MonoBehaviour
         currentItemInHand.transform.localPosition = Vector3.zero;
         currentItemInHand.transform.localRotation = Quaternion.identity;
 
+        if (!string.IsNullOrEmpty(item.pickupSound))
+        {
+            AudioManager.Instance.PlaySFX(item.pickupSound);
+        }
+
         // Agregar o obtener DurableItem
         DurableItem durable = currentItemInHand.GetComponent<DurableItem>();
         if (durable == null)

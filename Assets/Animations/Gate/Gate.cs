@@ -3,26 +3,45 @@ using UnityEngine;
 public class Gate : MonoBehaviour
 {
     [Header("Animator")]
-    public Animator gateAnimator; // Asignar Animator de la puerta
+    public Animator gateAnimator;
+
+    [Header("Audio")]
+    [SerializeField] private string openGateSFX = "gate_open";
 
     private bool isOpen = false;
+    private bool isAnimating = false;
 
-    // Abre la puerta (bool Open = true)
+    public bool CanInteract => !isAnimating;
+
     public void Open()
     {
-        Debug.Log("Gate Open called on " + gameObject.name);
-        if (isOpen || gateAnimator == null) return;
+        if (isOpen || isAnimating || gateAnimator == null) return;
+
+        isAnimating = true;
 
         gateAnimator.SetBool("Open", true);
         isOpen = true;
+
+        if (!string.IsNullOrEmpty(openGateSFX))
+            AudioManager.Instance.PlaySFX3D(openGateSFX, transform.position);
     }
 
-    // Cierra la puerta (bool Open = false)
     public void Close()
     {
-        if (!isOpen || gateAnimator == null) return;
+        if (!isOpen || isAnimating || gateAnimator == null) return;
+
+        isAnimating = true;
 
         gateAnimator.SetBool("Open", false);
         isOpen = false;
+
+        if (!string.IsNullOrEmpty(openGateSFX))
+            AudioManager.Instance.PlaySFX3D(openGateSFX, transform.position);
+    }
+
+    // 👇 llamado desde Animation Event
+    public void OnAnimationFinished()
+    {
+        isAnimating = false;
     }
 }

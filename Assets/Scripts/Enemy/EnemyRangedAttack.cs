@@ -13,10 +13,17 @@ public class EnemyRangedAttack : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Animator animator;
+    private EnemyAudio enemyAudio;
 
     private float lastAttackTime;
 
     public bool CanAttack => Time.time >= lastAttackTime + attackCooldown;
+
+
+    private void Awake()
+    {
+        enemyAudio = GetComponent<EnemyAudio>();
+    }
 
     // =========================================================
     // Inicio de ataque (Animation Trigger)
@@ -26,7 +33,11 @@ public class EnemyRangedAttack : MonoBehaviour
         if (!CanAttack) return;
 
         lastAttackTime = Time.time;
+
         animator.SetTrigger("RangedAttack");
+
+        enemyAudio?.PlayRangedAttack();
+
         Debug.Log("🏹 Enemy dispara ataque ranged");
     }
 

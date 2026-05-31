@@ -12,6 +12,15 @@ public class PlayerCombatActions : MonoBehaviour
     [SerializeField] private float stunRange = 2f;
     [SerializeField] private float stunDuration = 5f;
 
+    [Header("Audio")]
+    [SerializeField] private string slashHitSound = "sword_hit";
+    [SerializeField] private string slashWhiffSound = "sword_whiff";
+    [SerializeField] private string stunCastSound = "sword_stun_cast";
+    [SerializeField] private string stunHitSound = "sword_stun_hit";
+
+    [Header("Consumible Audio")]
+    [SerializeField] private string consumeSound = "pumpkin_drink";
+
     private void Awake()
     {
         stamina = GetComponent<PlayerStamina>();
@@ -25,27 +34,29 @@ public class PlayerCombatActions : MonoBehaviour
         float range = equipped.range > 0 ? equipped.range : 2f;
 
         Collider[] hits = Physics.OverlapSphere(attackPoint.position, range, hitLayers);
-        bool hitSomething = false;
+        bool validHit = false;
 
         foreach (var hit in hits)
         {
-            // Registrar que impactó con algo válido
-            hitSomething = true;
-
             IHitReaction reaction = hit.GetComponentInParent<IHitReaction>();
             reaction?.Hit(equipped, transform.root.position);
 
-            if (equipped.itemType == ItemType.Weapon)
+            IDamageable dmg = hit.GetComponentInParent<IDamageable>();
+            if (dmg != null)
             {
-                IDamageable dmg = hit.GetComponentInParent<IDamageable>();
-                dmg?.TakeDamage(equipped.damage);
+                dmg.TakeDamage(equipped.damage);
+                validHit = true;
             }
         }
 
-        // ✅ SOLO gasta durabilidad si impactó contra algo
-        if (hitSomething)
+        if (validHit)
         {
+            AudioManager.Instance.PlaySFX(slashHitSound);
             ConsumeDurability();
+        }
+        else
+        {
+            AudioManager.Instance.PlaySFX(slashWhiffSound);
         }
     }
 
@@ -54,9 +65,10 @@ public class PlayerCombatActions : MonoBehaviour
         var equipped = EquipmentManager.Instance.currentEquippedItem;
         if (equipped == null || equipped.itemType != ItemType.Weapon) return;
 
-        // Stun NO consume durabilidad (como antes)
+        AudioManager.Instance.PlaySFX(stunCastSound);
 
         Collider[] hits = Physics.OverlapSphere(attackPoint.position, stunRange, hitLayers);
+        bool hitSomething = false;
 
         foreach (var hit in hits)
         {
@@ -65,7 +77,13 @@ public class PlayerCombatActions : MonoBehaviour
             {
                 stun.Stun(stunDuration);
                 stamina.UseStamina(stunCost);
+                hitSomething = true;
             }
+        }
+
+        if (hitSomething)
+        {
+            AudioManager.Instance.PlaySFX(stunHitSound);
         }
     }
 
@@ -83,6 +101,9 @@ public class PlayerCombatActions : MonoBehaviour
             return;
         }
 
+        // 🔊 SONIDO DE CONSUMO (CALABAZA / HEAL)
+        AudioManager.Instance.PlaySFX(consumeSound);
+
         Health health = GetComponent<Health>();
         health?.Heal(equipped.healAmount);
 
@@ -95,5 +116,13 @@ public class PlayerCombatActions : MonoBehaviour
         var handItem = EquipmentManager.Instance.CurrentItemInHand;
         DurableItem durable = handItem?.GetComponent<DurableItem>();
         durable?.Use();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, 2f);
     }
 }
