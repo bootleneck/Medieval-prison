@@ -1727,6 +1727,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -2122,6 +2123,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -12001,6 +12003,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -14494,6 +14497,7 @@ MonoBehaviour:
   chaseLoopID: enemy_chase
   meleeAttackSFX: enemy_melee_attack
   rangedAttackSFX: enemy_ranged_attack
+  deathSFX: enemy_dead
   patrolSteps:
   - enemy_footstep1
   - enemy_footstep2
@@ -23504,6 +23508,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.size
+      value: 44
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[42].id
+      value: player_dead
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[43].id
+      value: enemy_dead
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[42].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: dc38289edaac717449c97ff76e43bab4, type: 3}
+    - target: {fileID: 7533404453090064150, guid: a780c8c74174e3e4c8fed605eef74524, type: 3}
+      propertyPath: sfxList.Array.data[43].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 54afeed0a8f82a14ba80f3bb765a4304, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
