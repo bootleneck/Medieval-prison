@@ -10,6 +10,9 @@ public class MouseLook : MonoBehaviour
     private PlayerInput _playerInput;
     private InputAction _lookAction;
 
+    // Variable añadida para almacenar el valor del slider de configuración
+    private float _sensitivityMultiplier = 1f;
+
     void Awake()
     {
         // Buscamos el componente PlayerInput que está en el padre
@@ -28,10 +31,14 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
+        // Lee en cada frame el valor guardado por el slider (por defecto es 1f si no existe)
+        _sensitivityMultiplier = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
+
         Vector2 lookInput = _lookAction.ReadValue<Vector2>();
 
-        float mouseX = lookInput.x * _sensitivity * Time.deltaTime;
-        float mouseY = lookInput.y * _sensitivity * Time.deltaTime;
+        // Multiplicamos los valores de entrada por el _sensitivityMultiplier que viene del menú
+        float mouseX = lookInput.x * _sensitivity * _sensitivityMultiplier * Time.deltaTime;
+        float mouseY = lookInput.y * _sensitivity * _sensitivityMultiplier * Time.deltaTime;
 
         // Rotación Vertical (Cámara)
         _xRotation -= mouseY;
