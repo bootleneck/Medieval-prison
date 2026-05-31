@@ -35,12 +35,14 @@ public class EnemyBrain : MonoBehaviour
 
     private void OnEnable()
     {
-        if (health != null) health.OnDeath += HandleDeath;
+        if (health != null)
+            health.OnDeath += HandleDeath;
     }
 
     private void OnDisable()
     {
-        if (health != null) health.OnDeath -= HandleDeath;
+        if (health != null)
+            health.OnDeath -= HandleDeath;
     }
 
     private void Start()
@@ -50,7 +52,8 @@ public class EnemyBrain : MonoBehaviour
 
     private void Update()
     {
-        if (health != null && health.IsDead) return;
+        if (health != null && health.IsDead)
+            return;
 
         stun.Tick(Time.deltaTime);
 
@@ -63,29 +66,24 @@ public class EnemyBrain : MonoBehaviour
             return;
         }
 
+        // Si acaba de salir del stun, el StunnedState ya se encarga de cambiar de estado
         currentState?.Update(this);
-
         UpdateAnimation();
     }
 
     private void HandleDeath()
     {
         ChangeState(new DeadState());
-    }
 
-    // =========================================================
-    // ANIMACIÓN SIMPLE Y ROBUSTA
-    // =========================================================
+        // 🔥 seguridad extra por si acaso
+        CombatMusicController.Instance?.UnregisterEnemyCombat(this);
+    }
 
     private void UpdateAnimation()
     {
         bool isMoving = movement.IsMovingTowardsTarget();
         animator.SetBool("IsMoving", isMoving);
     }
-
-    // =========================================================
-    // VISIÓN
-    // =========================================================
 
     public bool CanSeePlayer()
     {
@@ -103,8 +101,7 @@ public class EnemyBrain : MonoBehaviour
         if (angle > viewAngle * 0.5f)
             return false;
 
-        if (Physics.Raycast(
-            transform.position + Vector3.up,
+        if (Physics.Raycast(transform.position + Vector3.up,
             dirNormalized,
             distance,
             obstacleMask))
@@ -119,28 +116,32 @@ public class EnemyBrain : MonoBehaviour
     {
         if (currentState != null &&
             currentState.GetType() == newState.GetType())
-        {
             return;
-        }
 
         currentState?.Exit(this);
         currentState = newState;
 
-        // =====================================================
-        // CONTROL DE AUDIO POR ESTADOS (CON LOS NUEVOS NOMBRES)
-        // =====================================================
         if (enemyAudio != null)
         {
-            // Si entra en persecución, suena el loop de persecución
             if (newState is ChaseState)
-            {
                 enemyAudio.PlayChaseLoop();
-            }
-            // Si pasa a cualquier otro estado, el loop de persecución se apaga
-            else if (newState is PatrolState || newState is DeadState || newState is StunnedState)
-            {
+            else
                 enemyAudio.StopChaseLoop();
-            }
+        }
+
+        // === MÚSICA DE COMBATE ===
+        bool isCombatState =
+            newState is ChaseState ||
+            newState is AttackState ||
+            newState is StunnedState;        // ← Importante
+
+        if (isCombatState)
+        {
+            CombatMusicController.Instance?.RegisterEnemyCombat(this);
+        }
+        else if (newState is PatrolState || newState is DeadState)
+        {
+            CombatMusicController.Instance?.UnregisterEnemyCombat(this);
         }
 
         currentState.Enter(this);

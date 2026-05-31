@@ -10,6 +10,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource ambientSource;
 
+    private Coroutine musicFadeCoroutine;
+
+    [Header("Music Settings")]
+    [SerializeField] private float musicFadeDuration = 1f;
+
     [Header("Pool Settings")]
     [Tooltip("Cantidad de AudioSources que se crearán al iniciar el juego")]
     [SerializeField] private int initialPoolSize = 8;
@@ -104,17 +109,70 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(string id, bool loop = true)
     {
-        if (musicDictionary.TryGetValue(id, out AudioClip clip))
+        if (!musicDictionary.TryGetValue(id, out AudioClip clip))
         {
-            if (musicSource.clip == clip) return;
-
-            musicSource.clip = clip;
-            musicSource.loop = loop;
-            musicSource.volume = 1f;
-            musicSource.mute = false;
-            musicSource.Play();
+            Debug.LogWarning($"Music ID not found: {id}");
+            return;
         }
-        else Debug.LogWarning($"Music ID not found: {id}");
+
+        // Evita reiniciar la misma canción
+        if (musicSource.clip == clip && musicSource.isPlaying)
+            return;
+
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+        }
+
+        musicFadeCoroutine = StartCoroutine(FadeToMusicCoroutine(clip, loop));
+    }
+
+    private IEnumerator FadeToMusicCoroutine(AudioClip newClip, bool loop)
+    {
+        float fadeDuration = musicFadeDuration;
+        float targetVolume = 1f;
+
+        // Fade Out
+        if (musicSource.isPlaying)
+        {
+            float startVolume = musicSource.volume;
+            float timer = 0f;
+
+            while (timer < fadeDuration)
+            {
+                timer += Time.deltaTime;
+
+                musicSource.volume =
+                    Mathf.Lerp(startVolume, 0f, timer / fadeDuration);
+
+                yield return null;
+            }
+
+            musicSource.Stop();
+        }
+
+        // Cambiar canción
+        musicSource.clip = newClip;
+        musicSource.loop = loop;
+        musicSource.volume = 0f;
+        musicSource.Play();
+
+        // Fade In
+        float fadeInTimer = 0f;
+
+        while (fadeInTimer < fadeDuration)
+        {
+            fadeInTimer += Time.deltaTime;
+
+            musicSource.volume =
+                Mathf.Lerp(0f, targetVolume, fadeInTimer / fadeDuration);
+
+            yield return null;
+        }
+
+        musicSource.volume = targetVolume;
+
+        musicFadeCoroutine = null;
     }
 
     public void StopMusic() => musicSource.Stop();
