@@ -405,5 +405,13 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: dc38289edaac717449c97ff76e43bab4, type: 3}
   - id: enemy_dead
     clip: {fileID: 8300000, guid: 54afeed0a8f82a14ba80f3bb765a4304, type: 3}
-  - id: empty_ fountain
+  - id: empty_fountain
     clip: {fileID: 8300000, guid: 74788f60d307b7b498bfcb249bd2c670, type: 3}
+  - id: tool_no_damage
+    clip: {fileID: 8300000, guid: 04d55773dfde69d4e8cb8a6688ebe833, type: 3}
+  - id: empty_pumpkin
+    clip: {fileID: 8300000, guid: 6bfae8fa6698e8a4eb3163c75c15a204, type: 3}
+  - id: tool_whiff
+    clip: {fileID: 8300000, guid: db1b0a2dd6b63164c8b8543620333d7f, type: 3}
+  - id: tool_hit
+    clip: {fileID: 8300000, guid: 4f434747bd97b7d46960f8383d996790, type: 3}

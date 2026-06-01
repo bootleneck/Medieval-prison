@@ -12,14 +12,31 @@ public class PlayerCombatActions : MonoBehaviour
     [SerializeField] private float stunRange = 2f;
     [SerializeField] private float stunDuration = 5f;
 
+    [Header("Attack")]
+    [SerializeField] private float slashStaminaCost = 10f;
+
     [Header("Audio")]
     [SerializeField] private string slashHitSound = "sword_hit";
     [SerializeField] private string slashWhiffSound = "sword_whiff";
     [SerializeField] private string stunCastSound = "sword_stun_cast";
     [SerializeField] private string stunHitSound = "sword_stun_hit";
 
-    [Header("Consumible Audio")]
+    [Header("Tool Audio")]
+    [SerializeField] private string toolHitSound = "tool_hit";
+    [SerializeField] private string toolWhiffSound = "tool_whiff";
+    [SerializeField] private string toolNoDamageSound = "tool_no_damage";
+    [SerializeField] private int hitsBeforeWarning = 3;
+    [SerializeField] private float warningCooldown = 5f;
+
+    [Header("Consumable Audio")]
     [SerializeField] private string consumeSound = "pumpkin_drink";
+    [SerializeField] private string empty_pumpkin = "empty_pumpkin";
+
+    public float SlashStaminaCost => slashStaminaCost;
+    public float StunStaminaCost => stunCost;
+
+    private int toolHitCounter = 0;
+    private float lastToolWarningTime = 0f;
 
     private void Awake()
     {
@@ -28,13 +45,18 @@ public class PlayerCombatActions : MonoBehaviour
 
     public void DealSlashDamage()
     {
+        stamina.UseStamina(slashStaminaCost);
+
         var equipped = EquipmentManager.Instance.currentEquippedItem;
         if (equipped == null) return;
+
+        bool isTool = equipped.itemType == ItemType.Tool;
 
         float range = equipped.range > 0 ? equipped.range : 2f;
 
         Collider[] hits = Physics.OverlapSphere(attackPoint.position, range, hitLayers);
         bool validHit = false;
+        bool playedToolNoDamage = false;
 
         foreach (var hit in hits)
         {
@@ -42,26 +64,55 @@ public class PlayerCombatActions : MonoBehaviour
             reaction?.Hit(equipped, transform.root.position);
 
             IDamageable dmg = hit.GetComponentInParent<IDamageable>();
+
             if (dmg != null)
             {
+                if (isTool)
+                {
+                    // Sonido de impacto del mazo
+                    AudioManager.Instance.PlaySFX(toolHitSound);
+
+                    toolHitCounter++;
+
+                    // Reproducir warning solo si se insiste
+                    if (!playedToolNoDamage &&
+                        toolHitCounter >= hitsBeforeWarning &&
+                        Time.time > lastToolWarningTime + warningCooldown)
+                    {
+                        AudioManager.Instance.PlaySFX(toolNoDamageSound);
+                        lastToolWarningTime = Time.time;
+                        playedToolNoDamage = true;
+                        toolHitCounter = 0;
+                    }
+
+                    continue; // No hace daño
+                }
+
+                // Armas normales
                 dmg.TakeDamage(equipped.damage);
                 validHit = true;
             }
         }
 
-        if (validHit)
+        // Sonido de whiff
+        if (!validHit)
+        {
+            if (isTool)
+                AudioManager.Instance.PlaySFX(toolWhiffSound);
+            else
+                AudioManager.Instance.PlaySFX(slashWhiffSound);
+        }
+        else if (!isTool)
         {
             AudioManager.Instance.PlaySFX(slashHitSound);
             ConsumeDurability();
-        }
-        else
-        {
-            AudioManager.Instance.PlaySFX(slashWhiffSound);
         }
     }
 
     public void DealStunAttack()
     {
+        stamina.UseStamina(stunCost);
+
         var equipped = EquipmentManager.Instance.currentEquippedItem;
         if (equipped == null || equipped.itemType != ItemType.Weapon) return;
 
@@ -76,7 +127,6 @@ public class PlayerCombatActions : MonoBehaviour
             if (stun != null)
             {
                 stun.Stun(stunDuration);
-                stamina.UseStamina(stunCost);
                 hitSomething = true;
             }
         }
@@ -97,11 +147,11 @@ public class PlayerCombatActions : MonoBehaviour
 
         if (durable == null || !durable.Use())
         {
+            AudioManager.Instance.PlaySFX(empty_pumpkin); 
             Debug.Log("No se pudo usar el consumible");
             return;
         }
 
-        // 🔊 SONIDO DE CONSUMO (CALABAZA / HEAL)
         AudioManager.Instance.PlaySFX(consumeSound);
 
         Health health = GetComponent<Health>();
