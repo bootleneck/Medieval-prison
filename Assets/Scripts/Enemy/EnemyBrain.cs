@@ -7,7 +7,8 @@ public class EnemyBrain : MonoBehaviour
 
     public EnemyMovement movement;
     public EnemyStun stun;
-    public EnemyMeleeAttack attack;
+    public EnemyMeleeAttack meleeAttack;
+    public EnemyRangedAttack rangedAttack;
     public Animator animator;
     private Health health;
     private EnemyAudio enemyAudio;
@@ -23,11 +24,20 @@ public class EnemyBrain : MonoBehaviour
 
     private EnemyState currentState;
 
+    // 🔒 Lock para ataques
+    public bool IsAttacking { get; private set; }
+
+    public void SetAttacking(bool value)
+    {
+        IsAttacking = value;
+    }
+
     private void Awake()
     {
         movement = GetComponent<EnemyMovement>();
         stun = GetComponent<EnemyStun>();
-        attack = GetComponent<EnemyMeleeAttack>();
+        meleeAttack = GetComponent<EnemyMeleeAttack>();
+        rangedAttack = GetComponent<EnemyRangedAttack>();
         animator = GetComponent<Animator>();
         health = GetComponent<Health>();
         enemyAudio = GetComponent<EnemyAudio>();
@@ -52,8 +62,7 @@ public class EnemyBrain : MonoBehaviour
 
     private void Update()
     {
-        if (health != null && health.IsDead)
-            return;
+        if (health != null && health.IsDead) return;
 
         stun.Tick(Time.deltaTime);
 
@@ -66,7 +75,6 @@ public class EnemyBrain : MonoBehaviour
             return;
         }
 
-        // Si acaba de salir del stun, el StunnedState ya se encarga de cambiar de estado
         currentState?.Update(this);
         UpdateAnimation();
     }
@@ -74,8 +82,6 @@ public class EnemyBrain : MonoBehaviour
     private void HandleDeath()
     {
         ChangeState(new DeadState());
-
-        // 🔥 seguridad extra por si acaso
         CombatMusicController.Instance?.UnregisterEnemyCombat(this);
     }
 
@@ -92,14 +98,12 @@ public class EnemyBrain : MonoBehaviour
         Vector3 dirToPlayer = player.position - transform.position;
         float distance = dirToPlayer.magnitude;
 
-        if (distance > viewDistance)
-            return false;
+        if (distance > viewDistance) return false;
 
         Vector3 dirNormalized = dirToPlayer.normalized;
         float angle = Vector3.Angle(transform.forward, dirNormalized);
 
-        if (angle > viewAngle * 0.5f)
-            return false;
+        if (angle > viewAngle * 0.5f) return false;
 
         if (Physics.Raycast(transform.position + Vector3.up,
             dirNormalized,
@@ -114,8 +118,7 @@ public class EnemyBrain : MonoBehaviour
 
     public void ChangeState(EnemyState newState)
     {
-        if (currentState != null &&
-            currentState.GetType() == newState.GetType())
+        if (currentState != null && currentState.GetType() == newState.GetType())
             return;
 
         currentState?.Exit(this);
@@ -129,20 +132,15 @@ public class EnemyBrain : MonoBehaviour
                 enemyAudio.StopChaseLoop();
         }
 
-        // === MÚSICA DE COMBATE ===
         bool isCombatState =
             newState is ChaseState ||
             newState is AttackState ||
-            newState is StunnedState;        // ← Importante
+            newState is StunnedState;
 
         if (isCombatState)
-        {
             CombatMusicController.Instance?.RegisterEnemyCombat(this);
-        }
         else if (newState is PatrolState || newState is DeadState)
-        {
             CombatMusicController.Instance?.UnregisterEnemyCombat(this);
-        }
 
         currentState.Enter(this);
     }

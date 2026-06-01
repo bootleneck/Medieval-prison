@@ -1,32 +1,43 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class AcidProjectile : MonoBehaviour
 {
-    public float speed = 10f;
-    public int damage = 15;
+    public float speed = 20f;
+    public int damage = 20;
     public float lifetime = 3f;
+
+    private Rigidbody rb;
+    private bool hasHit = false;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+    }
 
     private void Start()
     {
         Destroy(gameObject, lifetime);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        rb.MovePosition(rb.position + transform.forward * speed * Time.fixedDeltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<IDamageable>(out var dmg))
+        if (hasHit) return;
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) return;
+
+        if (other.GetComponentInParent<IDamageable>() is IDamageable dmg)
         {
             dmg.TakeDamage(damage);
-            Destroy(gameObject);
+            hasHit = true;
         }
-        else if (other.gameObject.layer != LayerMask.NameToLayer("Enemy"))
-        {
-            // destruir al impactar con cualquier cosa que no sea la capa Enemy
-            Destroy(gameObject);
-        }
+
+        Destroy(gameObject);
     }
 }

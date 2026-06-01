@@ -10,7 +10,9 @@ public class AttackState : EnemyState
     {
         this.brain = brain;
         brain.movement.Stop();
-        meleeRange = brain.attack.AttackRange;
+
+        if (brain.meleeAttack != null)
+            meleeRange = brain.meleeAttack.AttackRange;
     }
 
     public override void Update(EnemyBrain brain)
@@ -23,36 +25,37 @@ public class AttackState : EnemyState
         // -----------------------
         // PRIORIDAD RANGED
         // -----------------------
-        if (dist <= rangedRange)
+        if (brain.TryGetComponent<EnemyRangedAttack>(out var rangedAttack))
         {
-            if (brain.TryGetComponent<EnemyRangedAttack>(out var rangedAttack) && rangedAttack.CanAttack)
+            if (dist <= rangedRange && rangedAttack.CanAttack)
             {
                 // Dispara ranged y detiene el movimiento
                 rangedAttack.StartRangedAttack();
                 brain.movement.Stop();
-            }
-            else
-            {
-                // Si ranged está en cooldown
-                if (dist <= meleeRange)
-                {
-                    // Ejecuta melee si está en rango
-                    if (brain.attack.CanAttack)
-                        brain.attack.StartAttack();
-                }
-                else
-                {
-                    // Persigue al jugador mientras el ranged recarga
-                    brain.movement.MoveTo(brain.player.position);
-                }
+                return; // no hacer melee en el mismo frame
             }
         }
+
+        // -----------------------
+        // ATAQUE MELEE
+        // -----------------------
+        if (brain.meleeAttack != null && dist <= meleeRange && brain.meleeAttack.CanAttack)
+        {
+            brain.meleeAttack.StartAttack();
+            return;
+        }
+
         // -----------------------
         // FUERA DE RANGED → CHASE
         // -----------------------
-        else
+        if (dist > rangedRange)
         {
             brain.ChangeState(new ChaseState());
+        }
+        else
+        {
+            // Persigue al jugador mientras el ataque está en cooldown
+            brain.movement.MoveTo(brain.player.position);
         }
     }
 

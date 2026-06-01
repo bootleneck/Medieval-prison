@@ -11,57 +11,71 @@ public class EnemyMeleeAttack : MonoBehaviour
 
     [Header("Attack Range")]
     [SerializeField] private float attackRange = 2f;
-    public float AttackRange => attackRange; // <--- propiedad pública
+    public float AttackRange => attackRange;
 
     [Header("Box Settings")]
-    [SerializeField] private Vector3 boxHalfExtents = new Vector3(1f, 1f, 2f); // x=ancho, y=alto, z=profundidad
+    [SerializeField] private Vector3 boxHalfExtents = new Vector3(1f, 1f, 2f);
+
+    [Header("Hit Timing")]
+    [SerializeField] private float windupTime = 0.4f;
+    [SerializeField] private float recoveryTime = 0.3f;
 
     [Header("References")]
-    [SerializeField] private Animator animator;
     [SerializeField] private Transform attackPoint;
+    [SerializeField] private Animator animator;
+
     private EnemyAudio enemyAudio;
 
     private float lastAttackTime;
+    private bool isAttacking;
 
-    public bool CanAttack => Time.time >= lastAttackTime + attackCooldown;
-
+    public bool CanAttack => Time.time >= lastAttackTime + attackCooldown && !isAttacking;
 
     private void Awake()
-    {        
+    {
         enemyAudio = GetComponent<EnemyAudio>();
+
+        if (attackPoint == null)
+            Debug.LogWarning("[EnemyMeleeAttack] No se asignó attackPoint");
     }
 
-
-    // =========================================================
-    // Inicia el ataque
-    // =========================================================
     public void StartAttack()
     {
-        if (!CanAttack) return;
+        var brain = GetComponent<EnemyBrain>();
 
+        if (!CanAttack || brain.IsAttacking)
+            return;
+
+        StartCoroutine(AttackRoutine(brain));
+    }
+
+    private IEnumerator AttackRoutine(EnemyBrain brain)
+    {
+        brain.SetAttacking(true);
+
+        isAttacking = true;
         lastAttackTime = Time.time;
 
         animator.SetTrigger("Attack");
-
         enemyAudio?.PlayMeleeAttack();
 
-        Debug.Log("⚔ Enemy inicia ataque melee");
+        // WINDUP (telegraph)
+        yield return new WaitForSeconds(windupTime);
+
+        // 🔥 UN SOLO HIT
+        DealDamageOnce();
+
+        // RECOVERY
+        yield return new WaitForSeconds(recoveryTime);
+
+        isAttacking = false;
+        brain.SetAttacking(false);
     }
 
-    // =========================================================
-    // Animation Event
-    // =========================================================
-    public void DealDamage()
+    private void DealDamageOnce()
     {
-        if (attackPoint == null)
-        {
-            Debug.LogWarning("❌ Falta asignar Attack Point");
-            return;
-        }
+        if (attackPoint == null) return;
 
-        Debug.Log("⚔ Hit frame ejecutado");
-
-        // Detectamos colliders en el box
         Collider[] hits = Physics.OverlapBox(
             attackPoint.position,
             boxHalfExtents,
@@ -69,39 +83,36 @@ public class EnemyMeleeAttack : MonoBehaviour
             hitLayers
         );
 
-        bool hitSomeone = false;
-        HashSet<IDamageable> damagedTargets = new();
+        HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
         foreach (var hit in hits)
         {
             IDamageable dmg = hit.GetComponentInParent<IDamageable>();
-            if (dmg != null && !damagedTargets.Contains(dmg))
+
+            if (dmg != null && !hitTargets.Contains(dmg))
             {
-                damagedTargets.Add(dmg);
+                hitTargets.Add(dmg);
                 dmg.TakeDamage(attackDamage);
 
-                var dmgGO = (dmg as Component).gameObject;
-                Debug.Log($"💥 {dmgGO.name} recibió {attackDamage} de daño");
-
-                hitSomeone = true;
+                if (dmg is Component comp)
+                {
+                    Debug.Log($"💥 {comp.gameObject.name} recibió {attackDamage} de daño");
+                }
             }
-        }
-
-        if (!hitSomeone)
-        {
-            Debug.Log("❌ No hay nadie en rango");
         }
     }
 
-    // =========================================================
-    // Gizmos para visualizar el box
-    // =========================================================
     private void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;
 
         Gizmos.color = Color.red;
-        Gizmos.matrix = Matrix4x4.TRS(attackPoint.position, attackPoint.rotation, Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, boxHalfExtents * 2); // OverlapBox usa half extents, Gizmos requiere tamaño completo
+        Gizmos.matrix = Matrix4x4.TRS(
+            attackPoint.position,
+            attackPoint.rotation,
+            Vector3.one
+        );
+
+        Gizmos.DrawWireCube(Vector3.zero, boxHalfExtents * 2);
     }
 }
