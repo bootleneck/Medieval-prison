@@ -3979,6 +3979,81 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 680887108}
   m_SourcePrefab: {fileID: 100100000, guid: 1d5248e0749682044af7c99f1f5c0b52, type: 3}
+--- !u!1 &568667610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 568667611}
+  - component: {fileID: 568667613}
+  - component: {fileID: 568667612}
+  m_Layer: 5
+  m_Name: BloodFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &568667611
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568667610}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 23.5, y: 12, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 912110543}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &568667612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568667610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.49056602, g: 0.22404492, b: 0.19206122, a: 0.40392157}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 86d7cd170bff5144f946130e2c9e4218, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &568667613
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568667610}
+  m_CullTransparentMesh: 1
 --- !u!4 &569147934 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 91d652779ec7140488b6b8e360497937, type: 3}
@@ -4281,6 +4356,8 @@ GameObject:
   - component: {fileID: 612684575}
   - component: {fileID: 612684578}
   - component: {fileID: 612684579}
+  - component: {fileID: 612684580}
+  - component: {fileID: 612684581}
   m_Layer: 5
   m_Name: PlayerStatsUIController
   m_TagString: Untagged
@@ -4362,10 +4439,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BloodFlashEffect
   playerHealth: {fileID: 8109110820744107099}
-  damageImage: {fileID: 792257831}
+  damageImage: {fileID: 568667612}
   flashSpeed: 4
   maxAlpha: 0.5
   durationTime: 0.5
+--- !u!114 &612684580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612684574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167688468845e74293a1b20fa641875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AcidFlashEffect
+  acidPrefab: {fileID: 6922192608491334385, guid: cadb0a386fb80cc48adec370349a94c8, type: 3}
+  canvasRect: {fileID: 912110543}
+  spawnDelay: 0.25
+  maxAlpha: 0.5
+  fadeDuration: 1.5
+--- !u!114 &612684581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612684574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac90c7067d126a408707214251faca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeartbeatUIEffect
+  heartbeatImage: {fileID: 792257831}
+  maxAlpha: 0.4
+  pulseInTime: 0.1
+  pulseOutTime: 0.4
 --- !u!4 &615246434 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 499060, guid: a264dce65e4ae004bbc6be99c68d94c2, type: 3}
@@ -7209,6 +7319,11 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!224 &912110543 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6647265228598137063, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+  m_PrefabInstance: {fileID: 1028453209440145246}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &912739792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 38ae520c3c8a8d54b8d9f8e43aa89dd3, type: 3}
@@ -19664,6 +19779,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasController
       objectReference: {fileID: 0}
+    - target: {fileID: 3821350038369429609, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4952917796127752513, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -19754,7 +19873,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6647265228598137063, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 568667611}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
 --- !u!4 &1032025684107698507
@@ -23191,6 +23313,7 @@ GameObject:
   - component: {fileID: 8109110820744107104}
   - component: {fileID: 8109110820744107101}
   - component: {fileID: 8109110820744107105}
+  - component: {fileID: 8109110820744107106}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -32350,6 +32473,22 @@ MonoBehaviour:
   heartbeatThreshold: 25
   heartbeatCooldown: 1
   playerHealth: {fileID: 8109110820744107099}
+  heartbeatUI: {fileID: 612684581}
+--- !u!114 &8109110820744107106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb55e1fcd4d421a4599ba09e7855387a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StickyAcidEffect
+  slowMultiplier: 0.4
+  duration: 3
+  flashUI: {fileID: 612684580}
 --- !u!4 &8128246444328440418
 Transform:
   m_ObjectHideFlags: 0

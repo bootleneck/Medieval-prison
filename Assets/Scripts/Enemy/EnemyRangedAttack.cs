@@ -5,7 +5,7 @@ public class EnemyRangedAttack : MonoBehaviour
 {
     [Header("Ranged Settings")]
     [SerializeField] private float attackCooldown = 2f;
-    [SerializeField] private int damage = 15;
+    [SerializeField] private int damage = 5;
     [SerializeField] private Transform attackPoint;
     [SerializeField] private GameObject acidPrefab;
 
@@ -15,8 +15,8 @@ public class EnemyRangedAttack : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Animator animator;
-    private EnemyAudio enemyAudio;
 
+    private EnemyAudio enemyAudio;
     private float lastAttackTime;
     private bool isAttacking;
 

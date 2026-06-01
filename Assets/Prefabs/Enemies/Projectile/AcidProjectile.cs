@@ -4,8 +4,9 @@ using UnityEngine;
 public class AcidProjectile : MonoBehaviour
 {
     public float speed = 20f;
-    public int damage = 20;
+    public int damage = 5;
     public float lifetime = 3f;
+    public float slowDuration = 3f;  // duración del ácido
 
     private Rigidbody rb;
     private bool hasHit = false;
@@ -30,11 +31,20 @@ public class AcidProjectile : MonoBehaviour
     {
         if (hasHit) return;
 
+        // ignorar enemigos
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) return;
 
+        // daño normal
         if (other.GetComponentInParent<IDamageable>() is IDamageable dmg)
         {
             dmg.TakeDamage(damage);
+            hasHit = true;
+        }
+
+        // efecto ácido en player
+        if (other.GetComponentInParent<StickyAcidEffect>() is StickyAcidEffect acid)
+        {
+            acid.ApplyStickyAcid();
             hasHit = true;
         }
 

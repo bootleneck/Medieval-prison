@@ -30,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
     private bool _jumpStarted;
     private bool _wasGrounded;
 
+    // ==========================
+    // SLOW / ACID EFFECT
+    // ==========================
+    private float _speedMultiplier = 1f;
+
     public MovementState CurrentState { get; private set; }
 
     private void Awake()
@@ -48,22 +53,7 @@ public class PlayerMovement : MonoBehaviour
     {
         HandleMovement();
         UpdateState();
-
         CheckLanding();
-    }
-
-    private void CheckLanding()
-    {
-        if (_jumpStarted &&
-            !_wasGrounded &&
-            _characterController.isGrounded)
-        {
-            AudioManager.Instance.PlaySFX3D("land", transform.position);
-
-            _jumpStarted = false;
-        }
-
-        _wasGrounded = _characterController.isGrounded;
     }
 
     private void HandleMovement()
@@ -113,21 +103,27 @@ public class PlayerMovement : MonoBehaviour
 
     private float GetBaseSpeed()
     {
-        if (_crouchScript != null && _crouchScript.IsLowered)
-            return _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
+        float speed;
 
-        return _normalSpeed;
+        if (_crouchScript != null && _crouchScript.IsLowered)
+            speed = _crouchScript.IsProne ? _proneSpeed : _crouchSpeed;
+        else
+            speed = _normalSpeed;
+
+        return speed;
     }
 
     private float ApplySprint(float baseSpeed)
     {
+        float speed = baseSpeed * _speedMultiplier;
+
         if (IsActuallySprinting)
         {
             _stamina.UseStamina(_sprintStaminaCostPerSecond * Time.deltaTime);
-            return _sprintSpeed;
+            return _sprintSpeed * _speedMultiplier;
         }
 
-        return baseSpeed;
+        return speed;
     }
 
     public bool IsActuallySprinting =>
@@ -139,7 +135,36 @@ public class PlayerMovement : MonoBehaviour
     public bool IsMoving =>
         _move.sqrMagnitude > 0.01f;
 
+    private void CheckLanding()
+    {
+        if (_jumpStarted &&
+            !_wasGrounded &&
+            _characterController.isGrounded)
+        {
+            AudioManager.Instance.PlaySFX3D("land", transform.position);
+            _jumpStarted = false;
+        }
+
+        _wasGrounded = _characterController.isGrounded;
+    }
+
+    // ==========================
+    // ACID / SLOW EFFECT API
+    // ==========================
+
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        _speedMultiplier = Mathf.Clamp(multiplier, 0.1f, 1f);
+    }
+
+    public void ResetSpeedMultiplier()
+    {
+        _speedMultiplier = 1f;
+    }
+
+    // ==========================
     // INPUTS
+    // ==========================
 
     public void OnMove(InputAction.CallbackContext context)
         => _move = context.ReadValue<Vector2>();
@@ -149,17 +174,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.performed)
-            return;
-
-        if (!_characterController.isGrounded)
-            return;
-
-        if (_jumpStarted)
-            return;
+        if (!context.performed) return;
+        if (!_characterController.isGrounded) return;
+        if (_jumpStarted) return;
 
         _jumpStarted = true;
-
         _verticalVelocity = _jumpForce;
 
         AudioManager.Instance.PlaySFX3D("jump", transform.position);

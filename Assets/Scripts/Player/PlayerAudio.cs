@@ -15,6 +15,9 @@ public class PlayerAudio : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] private Health playerHealth;
 
+    [Header("UI")]
+    [SerializeField] private HeartbeatUIEffect heartbeatUI;
+
     private bool canPlayHeartbeat = true;
 
     private void Awake()
@@ -85,6 +88,10 @@ public class PlayerAudio : MonoBehaviour
         if (!canPlayHeartbeat) return;
 
         AudioManager.Instance.PlaySFX3D(heartbeatSFX, transform.position);
+
+        // UI sync
+        heartbeatUI?.PlayPulse();
+
         StartCoroutine(HeartbeatCooldown());
     }
 
