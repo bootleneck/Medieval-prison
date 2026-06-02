@@ -7,7 +7,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [SerializeField] private ItemData requiredKey;
 
     [Header("Comportamiento")]
-    [SerializeField] private bool consumeKey = false;
+ // [SerializeField] private bool consumeKey = false;
     [SerializeField] private bool permanentlyUnlock = true;
 
     [Header("Mensajes")]

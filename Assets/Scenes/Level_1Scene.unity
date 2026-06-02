@@ -2695,6 +2695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &319669395
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5005,6 +5006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &665250074
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5366,6 +5368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &680887105
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6430,6 +6433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &812910241
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7614,6 +7618,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!4 &918760598 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 63f3b47f3e60f074abce25f9a68f9853, type: 3}
@@ -8783,6 +8788,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!4 &1028698166 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442594, guid: 24579a71f306fa349abdad24a69e4d08, type: 3}
@@ -9347,6 +9353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!4 &1091561181 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 91d652779ec7140488b6b8e360497937, type: 3}
@@ -9531,6 +9538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!1 &1105958205 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: cffd77da92125de43beff28f0051721e, type: 3}
@@ -9842,6 +9850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1144862751
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10181,6 +10190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!208 &1193160678
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -10220,6 +10230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1193927399
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10375,6 +10386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!1 &1215317960 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5708632171715856097, guid: 428c06f72b7e67343b83b6720f9a26f8, type: 3}
@@ -11096,6 +11108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1307858700
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11831,6 +11844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1373796392
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13635,6 +13649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!208 &1556090625
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -13964,6 +13979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1593221616
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14122,6 +14138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1653832543
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14911,6 +14928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1721469125
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15713,9 +15731,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74eafa6d5bc81da4db8313833bb8ecc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Lever
-  leverAnimator: {fileID: 1856556552}
   gates:
-  - {fileID: 8728880128129381612}
+  - {fileID: 8728880128129381615}
 --- !u!114 &1856556554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16085,6 +16102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1888268099
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16145,6 +16163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &1896823795
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17193,6 +17212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &2003844836
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17296,6 +17316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!1 &2027406986 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 93c9fb3e60489064791596a9de87878f, type: 3}
@@ -21037,6 +21058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Web
   breakSound: web_break
+  destroyDelay: 0.4
 --- !u!65 &2048018893546031802
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33359,9 +33381,8 @@ GameObject:
   - component: {fileID: 8033490212432286850}
   - component: {fileID: 6992517561337811366}
   - component: {fileID: 7541873617958895790}
-  - component: {fileID: 8728880128129381612}
-  - component: {fileID: 8728880128129381611}
   - component: {fileID: 8728880128129381613}
+  - component: {fileID: 8728880128129381615}
   - component: {fileID: 8728880128129381614}
   m_Layer: 0
   m_Name: Arch_Gate
@@ -33370,42 +33391,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &8728880128129381611
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8728880128129381610}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f2f386e6ef7ccc947bcc4c2a6c44a344, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8728880128129381612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8728880128129381610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fd58e087291dad43b890c9bcce5b475, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gate
-  gateAnimator: {fileID: 8728880128129381611}
-  openGateSFX: gate_open
 --- !u!65 &8728880128129381613
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33443,6 +33428,21 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 0
   m_Center: {x: 2.538, y: 0, z: 0.014}
   m_TimeToStationary: 0.5
+--- !u!114 &8728880128129381615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8728880128129381610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd58e087291dad43b890c9bcce5b475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gate
+  openHeight: 4.5
+  moveSpeed: 0.8
+  gateSFX: gate_open
 --- !u!1001 &8746642320489595219
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -3,26 +3,24 @@ using System.Collections;
 
 public class Lever : MonoBehaviour
 {
-    [Header("Animator")]
-    public Animator leverAnimator;
+    // Removido el Header de Animator si ya no lo usas
+    // Si aún quieres una rotación simple por código para la palanca, me avisas.
 
     [Header("Connected Gates")]
     public Gate[] gates;
 
     private bool activated = false;
-    private bool isBusy = false;    
+    private bool isBusy = false;
 
     public void Toggle()
     {
+        // Si las puertas aún se están moviendo, no permite interactuar
         if (isBusy) return;
 
         activated = !activated;
-
-        if (leverAnimator != null)
-            leverAnimator.SetBool("Activated", activated);
-
         isBusy = true;
 
+        // Activar o desactivar cada puerta
         foreach (Gate g in gates)
         {
             if (g != null)
@@ -36,13 +34,13 @@ public class Lever : MonoBehaviour
 
         StartCoroutine(WaitForGates());
     }
-    
+
     private IEnumerator WaitForGates()
     {
-        // espera mínima para evitar spam (puede ajustarse)
-        yield return new WaitForSeconds(0.1f);
+        // Espera un frame para asegurarse de que las puertas cambiaron su estado 'isMoving' a true
+        yield return null;
 
-        // espera hasta que todas terminen animación
+        // Espera hasta que todas las puertas dejen de moverse
         while (AnyGateAnimating())
             yield return null;
 
@@ -53,7 +51,8 @@ public class Lever : MonoBehaviour
     {
         foreach (Gate g in gates)
         {
-            if (g != null && g.CanInteract == false)
+            // CORRECCIÓN: Cambiado 'CanInteract' por 'IsMoving'
+            if (g != null && g.IsMoving)
                 return true;
         }
         return false;
