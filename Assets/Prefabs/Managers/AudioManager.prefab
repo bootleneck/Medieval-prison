@@ -315,6 +315,12 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 0562e2eac6f0fa740a40f48f1b3e5c9f, type: 3}
   - id: music_combat
     clip: {fileID: 8300000, guid: 93329077f4018e14ba90037d947b4f11, type: 3}
+  - id: music_defeat
+    clip: {fileID: 8300000, guid: a4fd31f0766e2bf45b22e0957401080d, type: 3}
+  - id: music_victory
+    clip: {fileID: 8300000, guid: 354e251b721d93248b64711767907325, type: 3}
+  - id: music_combat_final
+    clip: {fileID: 8300000, guid: 589b327cd675e5d478dff0d2476e4dd0, type: 3}
   ambientList: []
   sfxList:
   - id: IronDoor_Open

@@ -1264,9 +1264,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8211720577797033929}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: VictoryScreenController, Assembly-CSharp
-        m_MethodName: OnMainMenu
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1312,6 +1312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VictoryScreenController
   victoryPanel: {fileID: 7115081050204707049}
+  nextLevelButton: {fileID: 0}
   mainMenuButton: {fileID: 7765716027054823446}
 --- !u!114 &8294753486821205277
 MonoBehaviour:

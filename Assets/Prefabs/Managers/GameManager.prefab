@@ -45,3 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   isPaused: 0
+  mainMenuScene: MainMenu
+  victoryScene: VictoryScene
+  gameOverScene: DefeatScene
+  levels:
+  - Level_1Scene

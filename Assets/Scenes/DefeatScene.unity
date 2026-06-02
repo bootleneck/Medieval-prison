@@ -240,9 +240,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8211720577797033929}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DefeatScreenController, Assembly-CSharp
-        m_MethodName: OnRetry
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1535,9 +1535,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8211720577797033929}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DefeatScreenController, Assembly-CSharp
-        m_MethodName: OnMainMenu
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

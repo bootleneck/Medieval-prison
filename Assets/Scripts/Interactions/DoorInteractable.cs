@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
@@ -7,8 +8,10 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [SerializeField] private ItemData requiredKey;
 
     [Header("Comportamiento")]
- // [SerializeField] private bool consumeKey = false;
     [SerializeField] private bool permanentlyUnlock = true;
+
+    [Header("Puerta especial")]
+    [SerializeField] private bool isVictoryDoor = false; // ← Solo esta puerta cargará VictoryScene
 
     [Header("Mensajes")]
     [SerializeField] private string lockedMessage = "La puerta está cerrada con llave";
@@ -22,7 +25,6 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     private Quaternion closedRotation;
     private Quaternion targetRotation;
-
     private bool isOpen = false;
     private bool isMoving = false;
     private bool unlocked = false;
@@ -37,12 +39,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         if (!isMoving) return;
 
         Quaternion target = isOpen ? targetRotation : closedRotation;
-
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            target,
-            Time.deltaTime * openSpeed
-        );
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * openSpeed);
 
         if (Quaternion.Angle(transform.rotation, target) < 0.1f)
         {
@@ -55,69 +52,48 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     {
         if (isMoving) return;
 
-        // Cerrar si está abierta
         if (isOpen)
         {
             CloseDoor();
             return;
         }
 
-        // Ya desbloqueada
-        if (unlocked)
+        if (unlocked || !requiresKey || InventorySystem.Instance.HasKey(requiredKey))
         {
-            OpenDoor(interactor);
-            return;
-        }
+            StartCoroutine(OpenDoorCoroutine(interactor));
 
-        // Puerta libre
-        if (!requiresKey)
-        {
-            OpenDoor(interactor);
-            return;
-        }
-
-        // Tiene llave
-        if (InventorySystem.Instance.HasKey(requiredKey))
-        {
-            OpenDoor(interactor);
-
-            if (permanentlyUnlock)
-                unlocked = true;
+            if (requiresKey && InventorySystem.Instance.HasKey(requiredKey))
+                unlocked = permanentlyUnlock;
         }
         else
         {
-            // 🔊 sonido de puerta bloqueada
             if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.doorLocked))
-            {
                 AudioManager.Instance.PlaySFX3D(audioProfile.doorLocked, transform.position);
-            }
 
             Debug.Log(lockedMessage);
         }
     }
 
-    private void OpenDoor(GameObject interactor)
+    private IEnumerator OpenDoorCoroutine(GameObject interactor)
     {
         isOpen = true;
         isMoving = true;
 
-        // 🔊 sonido abrir
         if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.doorOpen))
-        {
             AudioManager.Instance.PlaySFX3D(audioProfile.doorOpen, transform.position);
-        }
 
         Vector3 directionToPlayer = interactor.transform.position - transform.position;
-
         float dot = Vector3.Dot(transform.right, directionToPlayer);
-
         float direction = dot >= 0 ? 1f : -1f;
 
-        targetRotation = Quaternion.Euler(
-            0f,
-            openAngle * direction,
-            0f
-        ) * closedRotation;
+        targetRotation = Quaternion.Euler(0f, openAngle * direction, 0f) * closedRotation;
+
+        // Espera que termine la animación
+        yield return new WaitForSeconds(1f);
+
+        // Solo si es puerta de victoria
+        if (isVictoryDoor && GameManager.instance != null)
+            GameManager.instance.LoadVictory();
     }
 
     private void CloseDoor()
@@ -125,10 +101,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         isOpen = false;
         isMoving = true;
 
-        // 🔊 sonido cerrar
         if (audioProfile != null && !string.IsNullOrEmpty(audioProfile.doorClose))
-        {
             AudioManager.Instance.PlaySFX3D(audioProfile.doorClose, transform.position);
-        }
     }
 }

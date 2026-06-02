@@ -2595,8 +2595,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: b778f7b28854c784784b9e81679b2bb7, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -3402,6 +3402,161 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 467194, guid: cf6bc68452c25054fb498f2ea44db0b9, type: 3}
   m_PrefabInstance: {fileID: 2122401461369515661}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &464155207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 464155208}
+  - component: {fileID: 464155213}
+  - component: {fileID: 464155212}
+  - component: {fileID: 464155211}
+  - component: {fileID: 464155210}
+  - component: {fileID: 464155209}
+  m_Layer: 6
+  m_Name: Door_C
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &464155208
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464155207}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -16.23, y: 5.8232427, z: -17.943169}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6576563499931268274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &464155209
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464155207}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.30400002, y: 2.078, z: 1.2160001}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.171, y: 2.0770001, z: -1.215}
+  m_TimeToStationary: 0.5
+--- !u!114 &464155210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464155207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1884c170a3d887347b91455fa93affea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
+  requiresKey: 1
+  requiredKey: {fileID: 11400000, guid: f912c39fdab5d9d438e3249ddd22578d, type: 2}
+  permanentlyUnlock: 1
+  isVictoryDoor: 1
+  lockedMessage: "La puerta est\xE1 cerrada con llave"
+  openAngle: 90
+  openSpeed: 2
+  audioProfile:
+    doorOpen: WoodenDoor_Open
+    doorClose: WoodenDoor_Close
+    doorLocked: door_locked
+--- !u!65 &464155211
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464155207}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6083889, y: 4.156709, z: 2.4315577}
+  m_Center: {x: 0.17091325, y: 2.076937, z: -1.2153094}
+--- !u!23 &464155212
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464155207}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 02c07345313cb814eb6dcd63462e338a, type: 2}
+  - {fileID: 2100000, guid: 556a0ec4707c1314996b87c43416357b, type: 2}
+  - {fileID: 2100000, guid: 199644c02aaad764ab340ad4746e055d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &464155213
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464155207}
+  m_Mesh: {fileID: 4300000, guid: c2155ffe2a264a143a77825d2c95977d, type: 3}
 --- !u!1 &466891856 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3251572158054792916, guid: 9a96e34b03d2fe24199de9df3dfb8cba, type: 3}
@@ -8039,8 +8194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: 4d202fa26cc07b245826f29a692fd0f6, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -8813,8 +8968,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: 4d202fa26cc07b245826f29a692fd0f6, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -9146,6 +9301,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1980393696}
+  - {fileID: 1155090086}
   - {fileID: 1572341906}
   - {fileID: 1896823793}
   - {fileID: 2003844834}
@@ -9948,6 +10104,114 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2067753486}
   m_SourcePrefab: {fileID: 100100000, guid: cffd77da92125de43beff28f0051721e, type: 3}
+--- !u!1001 &1155090085
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1042621310}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.689891
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.899376
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -21.491268
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      propertyPath: m_Name
+      value: Key_End
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1155090089}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1155090088}
+  m_SourcePrefab: {fileID: 100100000, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+--- !u!4 &1155090086 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+  m_PrefabInstance: {fileID: 1155090085}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1155090087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}
+  m_PrefabInstance: {fileID: 1155090085}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &1155090088
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155090087}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.006989496
+  m_Center: {x: 0.00037820934, y: 0.00021259667, z: 0.0019031948}
+--- !u!114 &1155090089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155090087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb012b2dc2e806545abdd16646346bc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
+  item: {fileID: 11400000, guid: f912c39fdab5d9d438e3249ddd22578d, type: 2}
+  amount: 1
 --- !u!4 &1178197542 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 4aa5a7ef56dd26f4d8cdad18e6dd51d2, type: 3}
@@ -12148,8 +12412,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: 4d202fa26cc07b245826f29a692fd0f6, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -12654,8 +12918,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: b778f7b28854c784784b9e81679b2bb7, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -15786,8 +16050,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: b778f7b28854c784784b9e81679b2bb7, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -17075,8 +17339,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LockedDoor
   requiresKey: 1
   requiredKey: {fileID: 11400000, guid: b778f7b28854c784784b9e81679b2bb7, type: 2}
-  consumeKey: 0
   permanentlyUnlock: 1
+  isVictoryDoor: 0
   lockedMessage: "La puerta est\xE1 cerrada con llave"
   openAngle: 90
   openSpeed: 2
@@ -23336,6 +23600,7 @@ GameObject:
   - component: {fileID: 8109110820744107101}
   - component: {fileID: 8109110820744107105}
   - component: {fileID: 8109110820744107106}
+  - component: {fileID: 8109110820744107107}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -29970,6 +30235,7 @@ Transform:
   - {fileID: 1140657069}
   - {fileID: 924915904}
   - {fileID: 526323059127605473}
+  - {fileID: 464155208}
   - {fileID: 11435583}
   - {fileID: 749332169}
   - {fileID: 1848746398}
@@ -32511,6 +32777,19 @@ MonoBehaviour:
   slowMultiplier: 0.4
   duration: 3
   flashUI: {fileID: 612684580}
+--- !u!114 &8109110820744107107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103786805990135485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eea5c1e9769221543aba53982edaa4c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDeathHandler
+  playerHealth: {fileID: 8109110820744107099}
 --- !u!4 &8128246444328440418
 Transform:
   m_ObjectHideFlags: 0

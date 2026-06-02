@@ -75,21 +75,19 @@ public class MainMenuController : MonoBehaviour
     // SCENES
     // =========================
 
-    public void LoadScene(string sceneName)
+    // Botón "Jugar" → carga siempre el primer nivel
+    public void StartGame()
     {
-        GameManager.instance.LoadLevel(sceneName);
+        GameManager.instance.LoadLevel(0);
     }
 
-    public void RestartCurrentScene()
+    // Botón "Opciones" → abre panel de opciones
+    public void OpenOptions()
     {
-        GameManager.instance.RestartLevel();
+        ShowOptions();
     }
 
-    public void LoadMenu()
-    {
-        GameManager.instance.LoadMenu();
-    }
-
+    // Botón "Salir" → cierra el juego
     public void QuitGame()
     {
         GameManager.instance.QuitGame();

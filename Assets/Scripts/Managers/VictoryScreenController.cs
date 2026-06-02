@@ -1,30 +1,41 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class VictoryScreenController : MonoBehaviour
 {
     [Header("UI Elements")]
-    [SerializeField] private GameObject victoryPanel; // Panel de la pantalla de derrota
-   
+    [SerializeField] private GameObject victoryPanel;
+    [SerializeField] private Button nextLevelButton;
     [SerializeField] private Button mainMenuButton;
 
-    private void Start()
+    private void Awake()
     {
-        // Activar el panel
         if (victoryPanel != null)
-            victoryPanel.SetActive(true);      
+            victoryPanel.SetActive(true);
 
-        if (mainMenuButton != null)
-            mainMenuButton.onClick.AddListener(OnMainMenu);
-    }    
+        // Solo tienes 1 nivel → ocultar botón
+        if (nextLevelButton != null)
+            nextLevelButton.gameObject.SetActive(false);
 
-    /// <summary>
-    /// Volver al menú principal
-    /// </summary>
-    public void OnMainMenu()
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void OnEnable()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        if (mainMenuButton != null)
+            mainMenuButton.onClick.AddListener(OnMenu);
+    }
+
+    private void OnDisable()
+    {
+        if (mainMenuButton != null)
+            mainMenuButton.onClick.RemoveListener(OnMenu);
+    }
+
+    private void OnMenu()
+    {
+        if (GameManager.instance != null)
+            GameManager.instance.LoadMenu();
     }
 }
