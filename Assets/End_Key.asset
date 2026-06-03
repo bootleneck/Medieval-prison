@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cafa7a4af6efd74da3629a557691b7f, type: 3}
-  m_Name: Key_End
+  m_Name: End_Key
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Key_End
+  itemName: End_Key
   icon: {fileID: 0}
   stackable: 0
   visualPrefab: {fileID: 919132149155446097, guid: e405539adfab0304babc9fdfbed74b5c, type: 3}

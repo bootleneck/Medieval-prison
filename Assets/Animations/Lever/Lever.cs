@@ -7,10 +7,10 @@ public class Lever : MonoBehaviour
     [SerializeField] private Animator leverAnimator;
 
     [Header("Connected Gates")]
-    public Gate[] gates;
+    [SerializeField] private Gate[] gates;
 
-    private bool activated = false;
-    private bool isBusy = false;
+    private bool activated;
+    private bool isBusy;
 
     public void Toggle()
     {
@@ -19,40 +19,46 @@ public class Lever : MonoBehaviour
         activated = !activated;
         isBusy = true;
 
-        // Activar animación de la palanca
-        if (leverAnimator != null)
-            leverAnimator.SetBool("Activated", activated);
+        UpdateAnimation();
 
-        // Activar o desactivar puertas
-        foreach (Gate g in gates)
+        foreach (Gate gate in gates)
         {
-            if (g != null)
-            {
-                if (activated)
-                    g.Open();
-                else
-                    g.Close();
-            }
+            if (gate == null) continue;
+
+            if (activated)
+                gate.Open();
+            else
+                gate.Close();
         }
 
         StartCoroutine(WaitForGates());
     }
 
+    private void UpdateAnimation()
+    {
+        if (leverAnimator == null) return;
+
+        leverAnimator.SetBool("Activated", activated);
+    }
+
     private IEnumerator WaitForGates()
     {
         yield return null;
+
         while (AnyGateAnimating())
             yield return null;
+
         isBusy = false;
     }
 
     private bool AnyGateAnimating()
     {
-        foreach (Gate g in gates)
+        foreach (Gate gate in gates)
         {
-            if (g != null && g.IsMoving)
+            if (gate != null && gate.IsMoving)
                 return true;
         }
+
         return false;
     }
 }
