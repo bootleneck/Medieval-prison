@@ -18,10 +18,13 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float _crouchHeight = 1.2f;
     [SerializeField] private float _proneHeight = 0.6f;
 
-    [Header("Altura de Cámara")]
-    [SerializeField] private float _camStandY = 1.6f;
-    [SerializeField] private float _camCrouchY = 1.0f;
-    [SerializeField] private float _camProneY = 0.45f;
+    [Header("Referencia Eyes (Cinemachine Follow)")]
+    [SerializeField] private Transform _eyes;
+
+    [Header("Altura de Eyes")]
+    [SerializeField] private float _camStandY = 2.5f;
+    [SerializeField] private float _camCrouchY = 1.8f;
+    [SerializeField] private float _camProneY = 0.6f;
 
     [Header("Suavizado")]
     [SerializeField] private float _smoothSpeed = 10f;
@@ -31,36 +34,37 @@ public class PlayerCrouch : MonoBehaviour
     [SerializeField] private float _spherePadding = 0.9f;
 
     private CharacterController _controller;
-    private Camera _cam;
 
     private float _targetHeight;
     private float _targetCamY;
 
     private bool _wantsToRise;
 
-    // =========================
-    // INICIO
-    // =========================
-
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-        _cam = GetComponentInChildren<Camera>();
 
-        // Mantiene altura original del controller
-        _targetHeight = _standHeight;
-
-        // Guarda la posición REAL de la cámara
-        if (_cam != null)
+        if (_eyes == null)
         {
-            _camStandY = _cam.transform.localPosition.y;
+            Transform foundEyes = transform.Find("Eyes");
 
-            // Ajusta crouch y prone relativos
+            if (foundEyes != null)
+                _eyes = foundEyes;
+        }
+
+        if (_eyes != null)
+        {
+            _camStandY = _eyes.localPosition.y;
+
+            // Ajustes relativos.
+            // Modifícalos si quieres otra altura.
             _camCrouchY = _camStandY - 0.7f;
             _camProneY = _camStandY - 1.9f;
 
             _targetCamY = _camStandY;
         }
+
+        _targetHeight = _standHeight;
 
         _controller.height = _standHeight;
 
@@ -69,14 +73,10 @@ public class PlayerCrouch : MonoBehaviour
         _controller.center = center;
     }
 
-    // =========================
-    // UPDATE
-    // =========================
-
     private void Update()
     {
         SmoothCharacterHeight();
-        SmoothCameraHeight();
+        SmoothEyesHeight();
 
         if (_wantsToRise)
         {
@@ -173,7 +173,6 @@ public class PlayerCrouch : MonoBehaviour
 
         _controller.height = newHeight;
 
-        // Mantiene X y Z originales
         Vector3 center = _controller.center;
         center.y = newHeight / 2f;
         _controller.center = center;
@@ -182,23 +181,23 @@ public class PlayerCrouch : MonoBehaviour
     }
 
     // =========================
-    // SUAVIZADO DE CÁMARA
+    // SUAVIZADO DE EYES
     // =========================
 
-    private void SmoothCameraHeight()
+    private void SmoothEyesHeight()
     {
-        if (_cam == null) return;
+        if (_eyes == null)
+            return;
 
-        float newY = Mathf.Lerp(
-            _cam.transform.localPosition.y,
+        Vector3 pos = _eyes.localPosition;
+
+        pos.y = Mathf.Lerp(
+            pos.y,
             _targetCamY,
             Time.deltaTime * _smoothSpeed
         );
 
-        Vector3 camPos = _cam.transform.localPosition;
-        camPos.y = newY;
-
-        _cam.transform.localPosition = camPos;
+        _eyes.localPosition = pos;
     }
 
     // =========================
@@ -221,9 +220,12 @@ public class PlayerCrouch : MonoBehaviour
             targetHeight = _standHeight;
         }
 
-        Vector3 origin = transform.position + Vector3.up * (_controller.height / 2f);
+        Vector3 origin =
+            transform.position +
+            Vector3.up * (_controller.height / 2f);
 
-        float castDistance = targetHeight - _controller.height;
+        float castDistance =
+            Mathf.Max(0f, targetHeight - _controller.height);
 
         bool blocked = Physics.SphereCast(
             origin,

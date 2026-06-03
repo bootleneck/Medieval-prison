@@ -8835,6 +8835,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1689775709}
+  - {fileID: 5525733449383956465}
   m_Father: {fileID: 8109110820744107094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &927253880
@@ -29633,13 +29634,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2817213134487895437}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00399971, y: 2.5, z: -0.049999237}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1312828239}
-  m_Father: {fileID: 8109110820744107094}
+  m_Father: {fileID: 926971853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5543323729997539479
 PrefabInstance:
@@ -34459,7 +34460,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2410671076424181083}
-  - {fileID: 5525733449383956465}
   - {fileID: 926971853}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -34478,6 +34478,7 @@ MonoBehaviour:
   _standHeight: 2
   _crouchHeight: 1.6
   _proneHeight: 0.5
+  _eyes: {fileID: 926971853}
   _camStandY: 1.6
   _camCrouchY: 1.3
   _camProneY: 0.1
