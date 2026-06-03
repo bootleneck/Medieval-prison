@@ -489,7 +489,8 @@ MonoBehaviour:
   player: {fileID: 0}
   movement: {fileID: 3122047333412261002}
   stun: {fileID: 5620917429815566869}
-  attack: {fileID: 4243658167309936669}
+  meleeAttack: {fileID: 4243658167309936669}
+  rangedAttack: {fileID: 0}
   animator: {fileID: 4942995655884713130}
   detectionRange: 10
   attackRange: 2
@@ -560,8 +561,10 @@ MonoBehaviour:
     m_Bits: 8
   attackRange: 2
   boxHalfExtents: {x: 0.5, y: 0.5, z: 1}
-  animator: {fileID: 4942995655884713130}
+  windupTime: 0.4
+  recoveryTime: 0.3
   attackPoint: {fileID: 8691480247409300909}
+  animator: {fileID: 4942995655884713130}
 --- !u!114 &4601583178938780204
 MonoBehaviour:
   m_ObjectHideFlags: 0

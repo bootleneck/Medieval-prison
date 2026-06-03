@@ -1197,7 +1197,8 @@ MonoBehaviour:
   player: {fileID: 0}
   movement: {fileID: 3112429985271811249}
   stun: {fileID: 6798228852503423793}
-  attack: {fileID: 3400613663000346735}
+  meleeAttack: {fileID: 3400613663000346735}
+  rangedAttack: {fileID: 2040790848628008065}
   animator: {fileID: 9008041484042052471}
   detectionRange: 10
   attackRange: 2
@@ -1268,8 +1269,10 @@ MonoBehaviour:
     m_Bits: 8
   attackRange: 4
   boxHalfExtents: {x: 0.5, y: 0.5, z: 1}
-  animator: {fileID: 9008041484042052471}
+  windupTime: 0.4
+  recoveryTime: 0.3
   attackPoint: {fileID: 7748108320134097992}
+  animator: {fileID: 9008041484042052471}
 --- !u!114 &2040790848628008065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284,9 +1287,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRangedAttack
   attackCooldown: 2
   damage: 5
-  maxDistance: 10
   attackPoint: {fileID: 6767417153086955730}
   acidPrefab: {fileID: 8838868366892513884, guid: 1776827de13d2994e97b43484440a890, type: 3}
+  windupTime: 0.4
+  recoveryTime: 0.3
   animator: {fileID: 9008041484042052471}
 --- !u!114 &1707576069208643699
 MonoBehaviour:
