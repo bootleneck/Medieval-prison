@@ -494,6 +494,7 @@ MonoBehaviour:
   animator: {fileID: 4942995655884713130}
   detectionRange: 10
   attackRange: 2
+  rangedAttackRange: 10
   viewDistance: 10
   viewAngle: 270
   obstacleMask:
@@ -992,7 +993,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e7a3fc885ad9beb4db673d796ea315af, type: 2}
+  - {fileID: 2100000, guid: 5e3a812a67f898e439bc3dae00ba4d60, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

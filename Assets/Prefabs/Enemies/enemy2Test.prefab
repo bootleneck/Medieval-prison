@@ -858,7 +858,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e7a3fc885ad9beb4db673d796ea315af, type: 2}
+  - {fileID: 2100000, guid: a8f1b3aa05b5af54bb66b2e7e27cfd18, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1200,8 +1200,9 @@ MonoBehaviour:
   meleeAttack: {fileID: 3400613663000346735}
   rangedAttack: {fileID: 2040790848628008065}
   animator: {fileID: 9008041484042052471}
-  detectionRange: 10
+  detectionRange: 15
   attackRange: 2
+  rangedAttackRange: 15
   viewDistance: 10
   viewAngle: 270
   obstacleMask:
