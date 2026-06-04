@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Gate : MonoBehaviour
 {
@@ -12,9 +13,14 @@ public class Gate : MonoBehaviour
     private Vector3 closedPosition;
     private Vector3 openPosition;
 
-    private bool isOpen = false;
-    private bool isMoving = false;
+    private bool isOpen;
+    private bool isMoving;
+
     public bool IsMoving => isMoving;
+    public bool IsOpen => isOpen;
+
+    // Lista de palancas que controlan esta puerta
+    private readonly List<SharedLever> linkedLevers = new();
 
     private void Start()
     {
@@ -27,12 +33,7 @@ public class Gate : MonoBehaviour
         if (!isMoving) return;
 
         Vector3 target = isOpen ? openPosition : closedPosition;
-
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target,
-            moveSpeed * Time.deltaTime
-        );
+        transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, target) < 0.01f)
         {
@@ -41,25 +42,50 @@ public class Gate : MonoBehaviour
         }
     }
 
-    // Llamado por la palanca
+    // Método para registrar palancas
+    public void RegisterLever(SharedLever lever)
+    {
+        if (!linkedLevers.Contains(lever))
+            linkedLevers.Add(lever);
+    }
+
+    // Método para desregistrar palancas si se destruyen
+    public void UnregisterLever(SharedLever lever)
+    {
+        linkedLevers.Remove(lever);
+    }
+
     public void Open()
     {
         if (isOpen || isMoving) return;
-
         isOpen = true;
         isMoving = true;
-
         PlaySFX();
+        NotifyLevers();
     }
 
     public void Close()
     {
         if (!isOpen || isMoving) return;
-
         isOpen = false;
         isMoving = true;
-
         PlaySFX();
+        NotifyLevers();
+    }
+
+    public void Toggle()
+    {
+        if (isMoving) return;
+        if (isOpen) Close(); else Open();
+    }
+
+    private void NotifyLevers()
+    {
+        foreach (SharedLever lever in linkedLevers)
+        {
+            if (lever != null)
+                lever.RefreshAnimation();
+        }
     }
 
     private void PlaySFX()
