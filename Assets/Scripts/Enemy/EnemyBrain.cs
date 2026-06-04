@@ -16,6 +16,7 @@ public class EnemyBrain : MonoBehaviour
     [Header("Stats")]
     public float detectionRange = 10f;
     public float attackRange = 2f;
+    public float rangedAttackRange = 10f;
 
     [Header("Vision")]
     [SerializeField] private float viewDistance = 10f;

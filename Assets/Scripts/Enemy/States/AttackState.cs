@@ -4,7 +4,8 @@ public class AttackState : EnemyState
 {
     private EnemyBrain brain;
     private float meleeRange;
-    private float rangedRange = 10f;
+    private float rangedRange;
+    private bool mustMelee = false; // ← tras ranged, fuerza melee
 
     public override void Enter(EnemyBrain brain)
     {
@@ -13,6 +14,8 @@ public class AttackState : EnemyState
 
         if (brain.meleeAttack != null)
             meleeRange = brain.meleeAttack.AttackRange;
+
+        rangedRange = brain.rangedAttackRange;
     }
 
     public override void Update(EnemyBrain brain)
@@ -23,39 +26,67 @@ public class AttackState : EnemyState
         FacePlayer();
 
         // -----------------------
-        // PRIORIDAD RANGED
+        // FUERA DE RANGO → CHASE
         // -----------------------
-        if (brain.TryGetComponent<EnemyRangedAttack>(out var rangedAttack))
+        if (dist > rangedRange && !mustMelee)
         {
-            if (dist <= rangedRange && rangedAttack.CanAttack)
-            {
-                // Dispara ranged y detiene el movimiento
-                rangedAttack.StartRangedAttack();
-                brain.movement.Stop();
-                return; // no hacer melee en el mismo frame
-            }
-        }
-
-        // -----------------------
-        // ATAQUE MELEE
-        // -----------------------
-        if (brain.meleeAttack != null && dist <= meleeRange && brain.meleeAttack.CanAttack)
-        {
-            brain.meleeAttack.StartAttack();
+            brain.ChangeState(new ChaseState());
             return;
         }
 
         // -----------------------
-        // FUERA DE RANGED → CHASE
+        // MODO PERSECUCIÓN FORZADA (después de ranged)
         // -----------------------
-        if (dist > rangedRange)
+        if (mustMelee)
         {
-            brain.ChangeState(new ChaseState());
+            if (dist <= meleeRange)
+            {
+                // llegó cerca → hace melee y resetea el flag
+                if (brain.meleeAttack != null && brain.meleeAttack.CanAttack)
+                {
+                    brain.meleeAttack.StartAttack();
+                    mustMelee = false;
+                }
+            }
+            else
+            {
+                // persigue hasta llegar a rango melee
+                brain.movement.MoveTo(brain.player.position);
+            }
+            return;
         }
-        else
+
+        // -----------------------
+        // LEJOS: RANGED o acercarse
+        // -----------------------
+        if (dist > meleeRange)
         {
-            // Persigue al jugador mientras el ataque está en cooldown
-            brain.movement.MoveTo(brain.player.position);
+            if (brain.TryGetComponent<EnemyRangedAttack>(out var rangedAttack))
+            {
+                if (rangedAttack.CanAttack)
+                {
+                    rangedAttack.StartRangedAttack();
+                    brain.movement.Stop();
+                    mustMelee = true; // ← próximo ataque será melee
+                }
+                else
+                {
+                    brain.movement.Stop();
+                }
+            }
+            else
+            {
+                brain.movement.MoveTo(brain.player.position);
+            }
+            return;
+        }
+
+        // -----------------------
+        // CERCA: solo MELEE
+        // -----------------------
+        if (brain.meleeAttack != null && brain.meleeAttack.CanAttack)
+        {
+            brain.meleeAttack.StartAttack();
         }
     }
 
@@ -75,6 +106,7 @@ public class AttackState : EnemyState
 
     public override void Exit(EnemyBrain brain)
     {
+        mustMelee = false; // limpiamos el flag al salir del estado
         brain.movement.Resume();
     }
 }
