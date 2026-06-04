@@ -15,7 +15,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void TryInteract()
     {
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.red, 2f);
 
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
