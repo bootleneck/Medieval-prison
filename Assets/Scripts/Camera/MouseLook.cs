@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Colocar este script en el objeto "Eyes" (hijo de Player)
 public class MouseLook : MonoBehaviour
 {
     [SerializeField] private float _sensitivity = 25f;
-    [SerializeField] private Transform _playerBody; // Arrastra aquí al objeto "Player" (la cápsula)
+    [SerializeField] private Transform _playerBody; // Arrastrá el objeto "Player" aquí
 
     private float _xRotation = 0f;
     private PlayerInput _playerInput;
@@ -13,7 +14,7 @@ public class MouseLook : MonoBehaviour
 
     void Awake()
     {
-        // Buscamos el componente PlayerInput que está en el personaje
+        // Eyes es hijo de Player, entonces GetComponentInParent encuentra el PlayerInput del Player
         _playerInput = GetComponentInParent<PlayerInput>();
         if (_playerInput != null)
         {
@@ -25,7 +26,6 @@ public class MouseLook : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Sincronización inicial para evitar el "salto" de cámara
         _xRotation = transform.localEulerAngles.x;
         if (_xRotation > 180) _xRotation -= 360;
     }
@@ -34,21 +34,19 @@ public class MouseLook : MonoBehaviour
     {
         if (_lookAction == null) return;
 
-        // Lee en cada frame el valor guardado por el slider de pausa
         _sensitivityMultiplier = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
 
         Vector2 lookInput = _lookAction.ReadValue<Vector2>();
 
-        // Multiplicamos los valores de entrada por la sensibilidad base y el multiplicador del menú
         float mouseX = lookInput.x * _sensitivity * _sensitivityMultiplier * Time.deltaTime;
         float mouseY = lookInput.y * _sensitivity * _sensitivityMultiplier * Time.deltaTime;
 
-        // Rotación Vertical (La cabeza/Main Camera)
+        // Rotación vertical: rota Eyes (y con él el VirtualCamera_POV)
         _xRotation -= mouseY;
         _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
         transform.localRotation = Quaternion.Euler(_xRotation, 0, 0);
 
-        // Rotación Horizontal (El cuerpo/Cápsula)
+        // Rotación horizontal: rota el cuerpo del Player
         if (_playerBody != null)
         {
             _playerBody.Rotate(Vector3.up * mouseX);
