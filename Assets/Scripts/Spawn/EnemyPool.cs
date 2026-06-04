@@ -3,38 +3,44 @@ using UnityEngine;
 
 public class EnemyPool : MonoBehaviour
 {
-    [Header("Configuración del Pool")]
-    [SerializeField] private GameObject enemyPrefab; // Prefab de tu enemigo con IA
-    [SerializeField] private int poolSize = 10;        // Cantidad inicial reservada
+    [Header("Pool Settings")]
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private int poolSize = 10;
 
-    private List<GameObject> _pool = new List<GameObject>();
+    private readonly List<GameObject> pool = new List<GameObject>();
 
-    void Start()
+    private void Awake()
     {
-        // Llenamos el pool con enemigos desactivados al iniciar el nivel
         for (int i = 0; i < poolSize; i++)
         {
             GameObject enemy = Instantiate(enemyPrefab, transform);
-            enemy.SetActive(false); // Oculto por defecto
-            _pool.Add(enemy);
+            enemy.SetActive(false);
+            pool.Add(enemy);
         }
     }
 
-    // Función para solicitar un enemigo disponible
     public GameObject GetEnemy()
     {
-        foreach (var enemy in _pool)
+        foreach (var enemy in pool)
         {
-            if (!enemy.activeInHierarchy)
-            {
-                enemy.SetActive(true);
+            if (!enemy.activeSelf)
                 return enemy;
-            }
         }
 
-        // Si el pool se queda corto, creamos uno extra por seguridad (KISS)
         GameObject newEnemy = Instantiate(enemyPrefab, transform);
-        _pool.Add(newEnemy);
+        newEnemy.SetActive(false);
+        pool.Add(newEnemy);
         return newEnemy;
+    }
+
+    public int GetActiveCount()
+    {
+        int count = 0;
+        for (int i = 0; i < pool.Count; i++)
+        {
+            if (pool[i].activeSelf)
+                count++;
+        }
+        return count;
     }
 }

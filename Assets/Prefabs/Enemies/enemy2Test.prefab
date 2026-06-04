@@ -1207,7 +1207,7 @@ MonoBehaviour:
   viewAngle: 270
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 705
+    m_Bits: 961
 --- !u!114 &3112429985271811249
 MonoBehaviour:
   m_ObjectHideFlags: 0

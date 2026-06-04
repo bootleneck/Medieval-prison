@@ -88,12 +88,15 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
         targetRotation = Quaternion.Euler(0f, openAngle * direction, 0f) * closedRotation;
 
-        // Espera que termine la animación
         yield return new WaitForSeconds(1f);
 
-        // Solo si es puerta de victoria
-        if (isVictoryDoor && GameManager.instance != null)
-            GameManager.instance.LoadVictory();
+        if (isVictoryDoor)
+        {
+            GameMusicController.Instance?.StopFinalCombatMusic();
+
+            if (GameManager.instance != null)
+                GameManager.instance.LoadVictory();
+        }
     }
 
     private void CloseDoor()
