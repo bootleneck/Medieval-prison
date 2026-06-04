@@ -25,6 +25,9 @@ public class PlayerDeathHandler : MonoBehaviour
     private void HandleDeath()
     {
         Debug.Log("[PlayerDeathHandler] Jugador muerto → Cargando pantalla de derrota");
+
+        GameMusicController.Instance?.StopFinalCombatMusic();
+
         GameManager.instance.LoadGameOver();
     }
 }

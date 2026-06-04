@@ -5,6 +5,7 @@ public class GameMusicController : MonoBehaviour
     public static GameMusicController Instance;
 
     private string currentSceneMusic;
+    private bool finalCombatMusicActive;
 
     private void Awake()
     {
@@ -26,14 +27,29 @@ public class GameMusicController : MonoBehaviour
 
     public void RestoreSceneMusic()
     {
+        if (finalCombatMusicActive)
+            return;
+
         if (!string.IsNullOrEmpty(currentSceneMusic))
-        {
             AudioManager.Instance.PlayMusic(currentSceneMusic);
-        }
     }
 
     public void PlayCombatMusic()
     {
+        if (finalCombatMusicActive)
+            return;
+
         AudioManager.Instance.PlayMusic("music_combat");
+    }
+
+    public void PlayFinalCombatMusic()
+    {
+        finalCombatMusicActive = true;
+        AudioManager.Instance.PlayMusic("music_combat_final");
+    }
+
+    public void StopFinalCombatMusic()
+    {
+        finalCombatMusicActive = false;
     }
 }
