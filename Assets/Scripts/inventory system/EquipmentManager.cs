@@ -13,7 +13,6 @@ public class EquipmentManager : MonoBehaviour
     public GameObject CurrentItemInHand => currentItemInHand;
     public ItemData currentEquippedItem;
 
-    // Guardamos la referencia de la UI para no buscarla en cada frame
     private WeaponDurabilityUI _durabilityUI;
 
     private void Awake()
@@ -28,7 +27,6 @@ public class EquipmentManager : MonoBehaviour
 
     private void Start()
     {
-        // VERIFICADO: Se usa la función moderna de Unity para solucionar la advertencia de desuso
         _durabilityUI = FindAnyObjectByType<WeaponDurabilityUI>();
     }
 
@@ -49,14 +47,12 @@ public class EquipmentManager : MonoBehaviour
     {
         if (item == null) return;
 
-        // Si ya está equipado el mismo ítem, no hacer nada
         if (currentEquippedItem == item && currentItemInHand != null)
         {
             Debug.Log($"[Equip] {item.itemName} ya está equipado.");
             return;
         }
 
-        // Guardar usos del objeto actual ANTES de destruirlo y ocultar su texto en la UI
         if (currentItemInHand != null)
         {
             DurableItem old = currentItemInHand.GetComponent<DurableItem>();
@@ -65,20 +61,16 @@ public class EquipmentManager : MonoBehaviour
                 old.SaveUsesToInventory();
             }
             Destroy(currentItemInHand);
-
-            // Ocultamos ambos textos antes de evaluar el nuevo objeto equipado
             OcultarTodaLaUI();
         }
 
         currentEquippedItem = item;
         currentItemInHand = null;
 
-        // Validaciones
         if (item.visualPrefab == null) return;
         if (item.itemType == ItemType.Key) return;
         if (item.itemType == ItemType.Consumable && !item.isEquippableConsumable) return;
 
-        // Instanciar el prefab visual
         currentItemInHand = Instantiate(item.visualPrefab, equipPoint);
         currentItemInHand.transform.localPosition = Vector3.zero;
         currentItemInHand.transform.localRotation = Quaternion.identity;
@@ -88,7 +80,6 @@ public class EquipmentManager : MonoBehaviour
             AudioManager.Instance.PlaySFX(item.pickupSound);
         }
 
-        // Agregar o obtener DurableItem
         DurableItem durable = currentItemInHand.GetComponent<DurableItem>();
         if (durable == null)
             durable = currentItemInHand.AddComponent<DurableItem>();
@@ -97,18 +88,15 @@ public class EquipmentManager : MonoBehaviour
 
         playerCombat?.EndAttack();
 
-        // --- ACTUALIZACIÓN DE LA UI SEGÚN EL ÍTEM EQUIPADO ---
         ActualizarUIPorItem(item, durable);
 
         Debug.Log($"[Equip] Equipado: {item.itemName}");
     }
 
-    // VERIFICADO: El método ahora lee los datos genéricos del ScriptableObject (item) o inicializa de manera segura
     private void ActualizarUIPorItem(ItemData item, DurableItem durable)
     {
         if (_durabilityUI == null) return;
 
-        // El EquipmentManager solo se encarga de MOSTRAR el recuadro correspondiente
         if (item.itemType == ItemType.Weapon)
         {
             _durabilityUI.SetSwordVisibility(true);
