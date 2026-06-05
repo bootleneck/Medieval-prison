@@ -54,8 +54,8 @@ public class ItemPickup : MonoBehaviour, IInteractable
                 return "End Key picked up!\nIt must open a door somewhere.";
             case "Sword":
                 return "Picked up Sword!\nPress 1 to equip.\nLeft click to attack.\nPres Q to stun.\nCan break spider webs.";
-            case "Hammer":
-                return "Picked up Hammer!\nPress 2 to equip.\nLeft click to hit and break barriers.";
+            case "Mallet":
+                return "Picked up Mallet!\nPress 2 to equip.\nLeft click to hit and break barriers.";
             case "Pumpkin":
                 return "Picked up Pumpkin!\nPress 3 to equip.\nLeft click to use.\nRestores health and sword durability.";
             default:
