@@ -134527,6 +134527,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 568667610}
   m_CullTransparentMesh: 1
+--- !u!1 &568814908
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 568814909}
+  - component: {fileID: 568814911}
+  - component: {fileID: 568814910}
+  m_Layer: 0
+  m_Name: HintTrigger (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &568814909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568814908}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -25.18, y: 1.54, z: 16.564}
+  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1998610530}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &568814910
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568814908}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &568814911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568814908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 573ca3759f631444dad244b4ab6b5bef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractHintTrigger
+  message: I press SHIFT to run
 --- !u!4 &569147934 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 91d652779ec7140488b6b8e360497937, type: 3}
@@ -408180,6 +408247,7 @@ Transform:
   - {fileID: 6297670164675455847}
   - {fileID: 1035542691}
   - {fileID: 1038609117}
+  - {fileID: 568814909}
   - {fileID: 1449408595}
   - {fileID: 725250058}
   - {fileID: 1766987005}
@@ -442544,11 +442612,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 385421021099469261, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 761.2
+      value: -771.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 385421021099469261, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -437
       objectReference: {fileID: 0}
     - target: {fileID: 743679896092616276, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 770.6
+      value: -760
+      objectReference: {fileID: 0}
+    - target: {fileID: 743679896092616276, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -396
       objectReference: {fileID: 0}
     - target: {fileID: 3734884815153907588, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_Name
