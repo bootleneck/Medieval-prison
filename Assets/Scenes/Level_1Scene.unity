@@ -133791,7 +133791,7 @@ GameObject:
   - component: {fileID: 561061616}
   - component: {fileID: 561061618}
   - component: {fileID: 561061617}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Trigger_Phase4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181305,7 +181305,7 @@ GameObject:
   - component: {fileID: 850371066}
   - component: {fileID: 850371067}
   - component: {fileID: 850371068}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Trigger_Phase2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -351108,7 +351108,7 @@ GameObject:
   - component: {fileID: 1685149480}
   - component: {fileID: 1685149481}
   - component: {fileID: 1685149482}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Trigger_Phase3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
