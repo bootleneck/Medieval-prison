@@ -442406,6 +442406,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 385421021099469261, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 761.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 743679896092616276, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 770.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3734884815153907588, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_Name
       value: CanvasController
@@ -442413,6 +442421,10 @@ PrefabInstance:
     - target: {fileID: 3821350038369429609, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4952917796127752513, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4952917796127752513, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_AnchorMax.y
@@ -442501,6 +442513,22 @@ PrefabInstance:
     - target: {fileID: 6647265228598137063, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6926930840795648915, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764737518900485469, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764737518900485469, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9214957657469890544, guid: 91e8dd1e7ec1c684493f049a3f3d2ceb, type: 3}
+      propertyPath: m_Value
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
