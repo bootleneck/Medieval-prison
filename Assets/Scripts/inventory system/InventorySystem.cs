@@ -22,8 +22,7 @@ public class InventorySystem : MonoBehaviour
     public bool AddItem(ItemData item, int amount = 1)
     {
         if (item == null) return false;
-
-        // ===== LLAVES =====
+        
         if (item.itemType == ItemType.Key)
         {
             foreach (InventorySlot slot in keyInventory)
@@ -37,11 +36,8 @@ public class InventorySystem : MonoBehaviour
 
             keyInventory.Add(new InventorySlot(item, amount));
             return true;
-        }
-
-        // ===== INVENTARIO NORMAL =====
-
-        // STACK
+        }           
+                
         if (item.stackable && item.itemType != ItemType.Consumable)
         {
             foreach (InventorySlot slot in inventory)
@@ -53,8 +49,7 @@ public class InventorySystem : MonoBehaviour
                 }
             }
         }
-
-        // NUEVO SLOT
+        
         if (inventory.Count < maxSlots)
         {
             inventory.Add(new InventorySlot(item, amount));
@@ -73,26 +68,6 @@ public class InventorySystem : MonoBehaviour
         }
 
         return false;
-    }
-
-    /*
-     // Consumir llave
-    public bool UseKey(ItemData keyItem)
-    {
-        foreach (InventorySlot slot in keyInventory)
-        {
-            if (slot.item == keyItem && slot.amount > 0)
-            {
-                slot.amount--;
-
-                if (slot.amount <= 0)
-                    keyInventory.Remove(slot);
-
-                return true;
-            }
-        }
-
-        return false;
-    }*/
+    }    
 
 }

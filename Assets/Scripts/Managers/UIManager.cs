@@ -16,8 +16,7 @@ public class UIManager : MonoBehaviour
     }
 
     public void ShowOnly(params GameObject[] panelsToShow)
-    {
-        // Desactivar todos los paneles conocidos
+    {        
         foreach (GameObject panel in panelStack)
         {
             if (panel != null)
@@ -25,8 +24,7 @@ public class UIManager : MonoBehaviour
         }
 
         panelStack.Clear();
-
-        // Activar los nuevos
+        
         foreach (GameObject panel in panelsToShow)
         {
             if (panel != null)

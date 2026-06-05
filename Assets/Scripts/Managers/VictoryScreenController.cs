@@ -12,8 +12,7 @@ public class VictoryScreenController : MonoBehaviour
     {
         if (victoryPanel != null)
             victoryPanel.SetActive(true);
-
-        // Solo tienes 1 nivel → ocultar botón
+       
         if (nextLevelButton != null)
             nextLevelButton.gameObject.SetActive(false);
 

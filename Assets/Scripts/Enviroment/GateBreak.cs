@@ -37,8 +37,7 @@ public class GateBreak : MonoBehaviour, IHitReaction
 
         playerPosition = playerPos;
         AddHitForce();
-
-        // 🔊 sonido de impacto
+        
         AudioManager.Instance.PlaySFX3D(hitSound, transform.position);
 
         currentHits++;
@@ -61,8 +60,7 @@ public class GateBreak : MonoBehaviour, IHitReaction
     private void BreakGate()
     {
         if (rb == null) return;
-
-        // 🔊 sonido de ruptura
+        
         AudioManager.Instance.PlaySFX3D(breakSound, transform.position);
 
         rb.isKinematic = false;

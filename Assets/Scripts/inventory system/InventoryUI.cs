@@ -20,8 +20,7 @@ public class InventoryUI : MonoBehaviour
     }
 
     void RefreshUI()
-    {
-        // BORRAR SLOTS VIEJOS
+    {        
         foreach (GameObject slot in currentSlots)
         {
             Destroy(slot);
@@ -29,7 +28,6 @@ public class InventoryUI : MonoBehaviour
 
         currentSlots.Clear();
 
-        // CREAR NUEVOS
         foreach (InventorySlot slotData in InventorySystem.Instance.inventory)
         {
             GameObject newSlot = Instantiate(slotPrefab, content);

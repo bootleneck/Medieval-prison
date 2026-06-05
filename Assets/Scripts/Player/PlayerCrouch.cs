@@ -55,9 +55,7 @@ public class PlayerCrouch : MonoBehaviour
         if (_eyes != null)
         {
             _camStandY = _eyes.localPosition.y;
-
-            // Ajustes relativos.
-            // Modifícalos si quieres otra altura.
+            
             _camCrouchY = _camStandY - 0.7f;
             _camProneY = _camStandY - 1.9f;
 
@@ -82,11 +80,7 @@ public class PlayerCrouch : MonoBehaviour
         {
             CheckIfCanRise();
         }
-    }
-
-    // =========================
-    // INPUTS
-    // =========================
+    }   
 
     public void OnCrouch(InputAction.CallbackContext context)
     {
@@ -123,11 +117,7 @@ public class PlayerCrouch : MonoBehaviour
             _wantsToRise = true;
         }
     }
-
-    // =========================
-    // CAMBIO DE ESTADOS
-    // =========================
-
+    
     private void SetState(CrouchState state)
     {
         _currentState = state;
@@ -149,11 +139,7 @@ public class PlayerCrouch : MonoBehaviour
                 _targetCamY = _camProneY;
                 break;
         }
-    }
-
-    // =========================
-    // SUAVIZADO DEL COLLIDER
-    // =========================
+    }    
 
     private void SmoothCharacterHeight()
     {
@@ -178,11 +164,7 @@ public class PlayerCrouch : MonoBehaviour
         _controller.center = center;
 
         _controller.enabled = true;
-    }
-
-    // =========================
-    // SUAVIZADO DE EYES
-    // =========================
+    }   
 
     private void SmoothEyesHeight()
     {
@@ -199,11 +181,7 @@ public class PlayerCrouch : MonoBehaviour
 
         _eyes.localPosition = pos;
     }
-
-    // =========================
-    // DETECCIÓN DE TECHO
-    // =========================
-
+   
     private void CheckIfCanRise()
     {
         CrouchState nextState;
@@ -251,11 +229,7 @@ public class PlayerCrouch : MonoBehaviour
                 _wantsToRise = false;
             }
         }
-    }
-
-    // =========================
-    // PROPIEDADES
-    // =========================
+    }    
 
     public bool IsLowered => _currentState != CrouchState.Standing;
 

@@ -44,11 +44,6 @@ public class PlayerFootsteps : MonoBehaviour
         HandleStateChange();
         HandleFootsteps();
     }
-
-    // =====================================================
-    // CAMBIO DE ESTADO
-    // =====================================================
-
     private void HandleStateChange()
     {
         if (movement.CurrentState == lastState)
@@ -65,10 +60,6 @@ public class PlayerFootsteps : MonoBehaviour
         proneIndex = 0;
     }
 
-    // =====================================================
-    // FOOTSTEPS
-    // =====================================================
-
     private void HandleFootsteps()
     {
         if (!controller.isGrounded)
@@ -76,8 +67,7 @@ public class PlayerFootsteps : MonoBehaviour
 
         Vector3 horizontalVelocity = controller.velocity;
         horizontalVelocity.y = 0f;
-
-        // 🔥 si realmente está quieto
+       
         if (horizontalVelocity.sqrMagnitude < 0.05f)
             return;
 

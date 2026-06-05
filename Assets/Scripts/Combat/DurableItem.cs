@@ -5,16 +5,13 @@ public class DurableItem : MonoBehaviour
     public ItemData itemData;
     public int maxUses;
     public int currentUses;
-
-    // Guardamos la referencia de la UI para no buscarla repetidamente
+    
     private WeaponDurabilityUI _durabilityUI;
 
     private void Start()
-    {
-        // Busca el controlador de la interfaz al instanciarse en la mano
+    {        
         _durabilityUI = FindAnyObjectByType<WeaponDurabilityUI>();
-
-        // Fuerza la actualización visual inicial apenas aparece en la mano
+        
         ActualizarInterfaz();
     }
 
@@ -34,8 +31,7 @@ public class DurableItem : MonoBehaviour
         currentUses = LoadSavedUses();
 
         Debug.Log($"[DurableItem] {itemData.itemName} ({itemData.itemType}) → Cargado: {currentUses}/{maxUses}");
-
-        // Actualiza al inicializar
+        
         ActualizarInterfaz();
     }
 
@@ -71,11 +67,9 @@ public class DurableItem : MonoBehaviour
 
         currentUses--;
         Debug.Log($"[Uso] {itemData.itemName} → {currentUses}/{maxUses}");
-
-        // CORRECCIÓN: Nos aseguramos de guardar los usos en el inventario inmediatamente
+        
         SaveUsesToInventory();
-
-        // CORRECCIÓN: Forzamos la actualización de la interfaz con los usos vigentes
+        
         ActualizarInterfaz();
 
         return true;
@@ -84,9 +78,7 @@ public class DurableItem : MonoBehaviour
     public void RechargeToFull()
     {
         currentUses = maxUses;
-        SaveUsesToInventory();
-
-        // Actualiza al recargar en la fuente
+        SaveUsesToInventory();        
         ActualizarInterfaz();
     }
 
@@ -101,8 +93,7 @@ public class DurableItem : MonoBehaviour
             Debug.Log($"[GUARDADO] {itemData.itemName} → {currentUses}/{maxUses}");
         }
     }
-
-    // Método propio auxiliar que automatiza el envío de datos al HUD
+        
     private void ActualizarInterfaz()
     {
         if (_durabilityUI == null || itemData == null) return;

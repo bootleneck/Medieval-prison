@@ -11,7 +11,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [SerializeField] private bool permanentlyUnlock = true;
 
     [Header("Puerta especial")]
-    [SerializeField] private bool isVictoryDoor = false; // ← Solo esta puerta cargará VictoryScene
+    [SerializeField] private bool isVictoryDoor = false;
 
     [Header("Mensajes")]
     [SerializeField] private string lockedMessage = "La puerta está cerrada con llave";

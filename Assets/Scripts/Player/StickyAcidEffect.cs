@@ -21,14 +21,12 @@ public class StickyAcidEffect : MonoBehaviour
     public void ApplyStickyAcid()
     {
         if (movement == null) return;
-
-        // reinicia si ya estaba activo
+        
         if (routine != null)
             StopCoroutine(routine);
 
         routine = StartCoroutine(EffectRoutine());
-
-        // UI correcta
+        
         flashUI?.ApplyAcid(duration);
     }
 

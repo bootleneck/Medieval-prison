@@ -1,21 +1,21 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI; // ← Añadido para poder usar el componente Slider
+using UnityEngine.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
     [Header("Panels")]
     public GameObject PausePanel;
-    public GameObject PauseOptionsPanel;
-    public GameObject ControlsPanel;
-    public GameObject VolumePanel;
+    public GameObject OptionsPanel;
 
     [Header("Buttons")]
-    public GameObject BackButtonControls;
-    public GameObject BackButtonVolume;
+    public GameObject ContinueButton;
+    public GameObject OptionsButton;
+    public GameObject QuitButton;
+    public GameObject BackButtonOptions;
 
-    [Header("Sensitivity Settings")] // ← Sección añadida
+    [Header("Sensitivity")]
     [SerializeField] private Slider sensitivitySlider;
 
     [SerializeField] private PlayerInput playerInput;
@@ -26,38 +26,29 @@ public class PauseMenuController : MonoBehaviour
     private void Start()
     {
         HideAll();
-        InitSensitivitySlider(); // ← Inicializa el slider al arrancar el juego
+        InitSensitivitySlider();
     }
 
-    // Configuración e inicialización del Slider
     private void InitSensitivitySlider()
     {
         if (sensitivitySlider != null)
         {
-            // Carga la sensibilidad guardada previamente o usa 1 por defecto
             float savedSens = PlayerPrefs.GetFloat(SENS_KEY, DEFAULT_SENS);
 
-            // Configura los límites y propiedades por código para asegurar su funcionamiento
             sensitivitySlider.minValue = 0.1f;
             sensitivitySlider.maxValue = 5f;
             sensitivitySlider.wholeNumbers = false;
             sensitivitySlider.value = savedSens;
 
-            // Escucha en tiempo real cuando el jugador arrastra la barra
             sensitivitySlider.onValueChanged.AddListener(SaveSensitivity);
         }
     }
 
     private void SaveSensitivity(float value)
     {
-        // Guarda el valor en la memoria de forma persistente
         PlayerPrefs.SetFloat(SENS_KEY, value);
         PlayerPrefs.Save();
-    }
-
-    // =========================
-    // PAUSE
-    // =========================
+    }   
 
     public void PauseGame()
     {
@@ -66,6 +57,8 @@ public class PauseMenuController : MonoBehaviour
         playerInput.SwitchCurrentActionMap("UI");
 
         UIManager.instance.ShowOnly(PausePanel);
+
+        EventSystem.current.SetSelectedGameObject(ContinueButton);
     }
 
     public void ResumeGame()
@@ -77,56 +70,36 @@ public class PauseMenuController : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
 
         playerInput.SwitchCurrentActionMap("Player");
-    }
-
-    // =========================
-    // OPTIONS
-    // =========================
+    }   
 
     public void ShowOptions()
     {
-        UIManager.instance.ShowOnly(PauseOptionsPanel);
-    }
-
-    public void ShowControls()
-    {
         UIManager.instance.ShowOnly(
-            ControlsPanel,
-            BackButtonControls
+            OptionsPanel,
+            BackButtonOptions
         );
 
-        EventSystem.current.SetSelectedGameObject(BackButtonControls);
-    }
-
-    public void ShowVolume()
-    {
-        UIManager.instance.ShowOnly(
-            VolumePanel,
-            BackButtonVolume
-        );
-
-        EventSystem.current.SetSelectedGameObject(BackButtonVolume);
+        EventSystem.current.SetSelectedGameObject(BackButtonOptions);
     }
 
     public void BackToPause()
     {
         UIManager.instance.ShowOnly(PausePanel);
-    }
 
-    private void HideAll()
-    {
-        UIManager.instance.Hide(
-            PausePanel,
-            PauseOptionsPanel,
-            ControlsPanel,
-            VolumePanel,
-            BackButtonControls,
-            BackButtonVolume
-        );
+        EventSystem.current.SetSelectedGameObject(OptionsButton);
     }
 
     public void QuitToMenu()
     {
         GameManager.instance.LoadMenu();
+    }   
+
+    private void HideAll()
+    {
+        UIManager.instance.Hide(
+            PausePanel,
+            OptionsPanel,
+            BackButtonOptions
+        );
     }
 }

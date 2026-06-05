@@ -17,8 +17,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         bool added = InventorySystem.Instance.AddItem(item, amount);
 
         if (added)
-        {
-            // 🔊 sonido de pickup
+        {            
             if (!string.IsNullOrEmpty(item.pickupSound))
             {
                 AudioManager.Instance.PlaySFX3D(
@@ -26,8 +25,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
                     transform.position
                 );
             }
-
-            // Tutorial al recoger por primera vez
+                       
             ItemTutorialUI.Instance?.ShowTutorial(GetTutorialMessage(), item.icon, item.itemName);
 
             Debug.Log($"[Pickup] {item.itemName} recogido correctamente con máximos usos");
@@ -47,17 +45,17 @@ public class ItemPickup : MonoBehaviour, IInteractable
         switch (item.itemName)
         {
             case "Cell Key":
-                return "Cell Key picked up!\nIt must open a door somewhere.";
+                return "Key found\nTry to escape now";
             case "Door A Key":
-                return "Door Key picked up!\nIt must open a door somewhere.";
+                return "Key found\nIt must open a door somewhere";
             case "End Key":
-                return "End Key picked up!\nIt must open a door somewhere.";
+                return "Key found\nSomething has changed...";
             case "Sword":
-                return "Picked up Sword!\nPress 1 to equip.\nLeft click to attack.\nPres Q to stun.\nCan break spider webs.";
+                return "Picked up Sword!\nPress 1 to equip.\nLeft click to attack";
             case "Mallet":
-                return "Picked up Mallet!\nPress 2 to equip.\nLeft click to hit and break barriers.";
+                return "Picked up Mallet!\nPress 2 to equip.\nLeft click to hit and break barriers";
             case "Pumpkin":
-                return "Picked up Pumpkin!\nPress 3 to equip.\nLeft click to use.\nRestores health and sword durability.";
+                return "Picked up Pumpkin!\nPress 3 to equip\nUse with left click to heal";
             default:
                 return $"Picked up {item.itemName}!\nCheck your inventory.";
         }

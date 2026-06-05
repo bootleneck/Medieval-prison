@@ -18,8 +18,7 @@ public class Gate : MonoBehaviour
 
     public bool IsMoving => isMoving;
     public bool IsOpen => isOpen;
-
-    // Lista de palancas que controlan esta puerta
+    
     private readonly List<SharedLever> linkedLevers = new();
 
     private void Start()
@@ -41,15 +40,13 @@ public class Gate : MonoBehaviour
             isMoving = false;
         }
     }
-
-    // Método para registrar palancas
+        
     public void RegisterLever(SharedLever lever)
     {
         if (!linkedLevers.Contains(lever))
             linkedLevers.Add(lever);
     }
-
-    // Método para desregistrar palancas si se destruyen
+        
     public void UnregisterLever(SharedLever lever)
     {
         linkedLevers.Remove(lever);

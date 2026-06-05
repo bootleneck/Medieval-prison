@@ -26,7 +26,7 @@ public class DropletSpawn : MonoBehaviour
             CreateDoplet();
             timer = 0f;
 
-            interval = Random.Range(minInterval, maxInterval); // nuevo intervalo aleatorio
+            interval = Random.Range(minInterval, maxInterval);
         }
     }
 

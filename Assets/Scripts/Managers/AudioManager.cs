@@ -18,8 +18,7 @@ public class AudioManager : MonoBehaviour
     [Header("Pool Settings")]
     [Tooltip("Cantidad de AudioSources que se crearán al iniciar el juego")]
     [SerializeField] private int initialPoolSize = 8;
-
-    // Cambiamos el array fijo por una Lista dinámica
+    
     private List<AudioSource> sfxPool;
 
     [Header("Libraries")]
@@ -29,11 +28,7 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<string, AudioClip> musicDictionary;
     private Dictionary<string, AudioClip> ambientDictionary;
-    private Dictionary<string, AudioClip> sfxDictionary;
-
-    // =====================================================
-    // INIT
-    // =====================================================
+    private Dictionary<string, AudioClip> sfxDictionary;    
 
     private void Awake()
     {
@@ -49,9 +44,8 @@ public class AudioManager : MonoBehaviour
         }
 
         BuildDictionaries();
-        InitializeSFXPool(); // <-- Inicialización automática
-
-        // Garantizar que music y ambient existan si te olvidaste de asignarlos
+        InitializeSFXPool();
+        
         if (musicSource == null) musicSource = gameObject.AddComponent<AudioSource>();
         if (ambientSource == null) ambientSource = gameObject.AddComponent<AudioSource>();
 
@@ -69,8 +63,7 @@ public class AudioManager : MonoBehaviour
     }
 
     private AudioSource CreateNewNewPoolSource()
-    {
-        // Crea un AudioSource limpio directamente adjunto a este objeto
+    {        
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
         newSource.playOnAwake = false;
 
@@ -101,12 +94,7 @@ public class AudioManager : MonoBehaviour
             if (sfx != null && sfx.clip != null && !sfxDictionary.ContainsKey(sfx.id))
                 sfxDictionary.Add(sfx.id, sfx.clip);
         }
-    }
-
-    // =====================================================
-    // MUSIC
-    // =====================================================
-
+    }       
     public void PlayMusic(string id, bool loop = true)
     {
         if (!musicDictionary.TryGetValue(id, out AudioClip clip))
@@ -114,8 +102,7 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning($"Music ID not found: {id}");
             return;
         }
-
-        // Evita reiniciar la misma canción
+       
         if (musicSource.clip == clip && musicSource.isPlaying)
             return;
 
@@ -131,8 +118,7 @@ public class AudioManager : MonoBehaviour
     {
         float fadeDuration = musicFadeDuration;
         float targetVolume = 1f;
-
-        // Fade Out
+        
         if (musicSource.isPlaying)
         {
             float startVolume = musicSource.volume;
@@ -150,14 +136,12 @@ public class AudioManager : MonoBehaviour
 
             musicSource.Stop();
         }
-
-        // Cambiar canción
+               
         musicSource.clip = newClip;
         musicSource.loop = loop;
         musicSource.volume = 0f;
         musicSource.Play();
-
-        // Fade In
+       
         float fadeInTimer = 0f;
 
         while (fadeInTimer < fadeDuration)
@@ -176,11 +160,7 @@ public class AudioManager : MonoBehaviour
     }
 
     public void StopMusic() => musicSource.Stop();
-    public void FadeOutMusic(float duration) => StartCoroutine(FadeOutCoroutine(musicSource, duration));
-
-    // =====================================================
-    // AMBIENT
-    // =====================================================
+    public void FadeOutMusic(float duration) => StartCoroutine(FadeOutCoroutine(musicSource, duration));    
 
     public void PlayAmbient(string id, bool loop = true)
     {
@@ -210,11 +190,7 @@ public class AudioManager : MonoBehaviour
         }
         source.Stop();
         source.volume = startVolume;
-    }
-
-    // =====================================================
-    // SFX 2D
-    // =====================================================
+    }   
 
     public void PlaySFX(string id)
     {
@@ -233,11 +209,7 @@ public class AudioManager : MonoBehaviour
 
         source.PlayOneShot(clip);
     }
-
-    // =====================================================
-    // SFX 3D
-    // =====================================================
-
+   
     public void PlaySFX3D(string id, Vector3 position)
     {
         if (!sfxDictionary.TryGetValue(id, out AudioClip clip))
@@ -252,7 +224,7 @@ public class AudioManager : MonoBehaviour
         AudioSource source = tempObject.AddComponent<AudioSource>();
         source.clip = clip;
         source.volume = 1f;
-        source.spatialBlend = 1f; // 3D puro
+        source.spatialBlend = 1f;
         source.minDistance = 1f;
         source.maxDistance = 20f;
         source.rolloffMode = AudioRolloffMode.Linear;
@@ -269,14 +241,9 @@ public class AudioManager : MonoBehaviour
         Debug.LogWarning($"SFX ID not found: {id}");
         return null;
     }
-
-    // =====================================================
-    // POOL DINÁMICO INTELIGENTE
-    // =====================================================
-
+   
     private AudioSource GetAvailableSFXSource()
-    {
-        // 1. Buscamos si hay alguno libre actualmente
+    {       
         foreach (AudioSource source in sfxPool)
         {
             if (source != null && !source.isPlaying)
@@ -284,9 +251,7 @@ public class AudioManager : MonoBehaviour
                 return source;
             }
         }
-
-        // 2. Si llegamos aquí, significa que TODOS los del pool están sonando.
-        // ¡Creamos uno nuevo bajo demanda para expandir el pool automáticamente!
+        
         Debug.LogWarning("Pool saturado. Creando un nuevo AudioSource de emergencia.");
         return CreateNewNewPoolSource();
     }

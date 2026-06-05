@@ -24,15 +24,14 @@ public class FinalCombatPhaseTrigger : MonoBehaviour
         if (state == null)
             return;
 
-        // 🔒 control de orden
+        
         if (!state.CanActivate(phaseIndex))
             return;
 
         activated = true;
 
         state.AdvancePhase();
-
-        // 🎵 música solo en primera fase
+                
         if (phaseIndex == 1)
             GameMusicController.Instance?.PlayFinalCombatMusic();
 

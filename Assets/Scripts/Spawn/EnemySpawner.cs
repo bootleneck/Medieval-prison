@@ -59,11 +59,9 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject enemy = enemyPool.GetEnemy();
 
-        // 1. Primero posicionamos el objeto base
         enemy.transform.position = spawnPos;
         enemy.transform.rotation = Quaternion.identity;
-
-        // 2. Activamos el objeto para despertar sus componentes
+       
         enemy.SetActive(true);
 
         NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();

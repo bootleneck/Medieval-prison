@@ -8,11 +8,9 @@ public class DeadState : EnemyState
 
         EnemyAudio enemyAudio = enemy.GetComponent<EnemyAudio>();
         enemyAudio?.PlayDeath();
-
-        // 🔒 cortar lógica de combate
+        
         enemy.SetAttacking(false);
-
-        // ❌ desactivar sistemas
+        
         if (enemy.movement != null)
             enemy.movement.enabled = false;
 
@@ -24,15 +22,13 @@ public class DeadState : EnemyState
 
         if (enemy.stun != null)
             enemy.stun.enabled = false;
-
-        // 🎬 animación de muerte
+        
         if (enemy.animator != null)
         {
             enemy.animator.SetBool("IsMoving", false);
             enemy.animator.SetTrigger("OnDead");
         }
-
-        // 🧱 collider off
+        
         Collider col = enemy.GetComponent<Collider>();
         if (col != null)
             col.enabled = false;

@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyBrain : MonoBehaviour
 {
     [Header("Refs")]
-    public Transform player; // Se completará automáticamente por script
+    public Transform player;
 
     public EnemyMovement movement;
     public EnemyStun stun;
@@ -24,8 +24,7 @@ public class EnemyBrain : MonoBehaviour
     public LayerMask obstacleMask;
 
     private EnemyState currentState;
-
-    // 🔒 Lock para ataques
+    
     public bool IsAttacking { get; private set; }
 
     public void SetAttacking(bool value)
@@ -43,25 +42,21 @@ public class EnemyBrain : MonoBehaviour
         health = GetComponent<Health>();
         enemyAudio = GetComponent<EnemyAudio>();
     }
-
-    // Método OnEnable unificado y corregido
+        
     private void OnEnable()
-    {
-        // SOLUCIÓN DEFINITIVA: Busca en la escena el script único de movimiento del jugador
-        // Reemplaza 'PlayerMovement' si tu clase de movimiento se llama de otra forma (ej: PlayerController)
+    {        
         PlayerMovement jugadorMovimiento = FindAnyObjectByType<PlayerMovement>();
 
         if (jugadorMovimiento != null)
         {
-            // Asignamos el Transform del objeto del jugador de forma infalible
+            
             player = jugadorMovimiento.transform;
         }
         else
         {
             Debug.LogWarning($"[EnemyBrain] {gameObject.name} no pudo encontrar el componente 'PlayerMovement' en la escena.");
         }
-
-        // Suscripción al evento de muerte propio del enemigo
+                
         if (health != null)
             health.OnDeath += HandleDeath;
     }

@@ -23,7 +23,7 @@ public class PlayerInteraction : MonoBehaviour
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                interactable.Interact(gameObject); // PASAMOS el jugador
+                interactable.Interact(gameObject);
             }
         }
     }

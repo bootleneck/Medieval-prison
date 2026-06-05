@@ -68,13 +68,11 @@ public class PlayerCombatActions : MonoBehaviour
             if (dmg != null)
             {
                 if (isTool)
-                {
-                    // Sonido de impacto del mazo
+                {                    
                     AudioManager.Instance.PlaySFX(toolHitSound);
 
                     toolHitCounter++;
-
-                    // Reproducir warning solo si se insiste
+                    
                     if (!playedToolNoDamage &&
                         toolHitCounter >= hitsBeforeWarning &&
                         Time.time > lastToolWarningTime + warningCooldown)
@@ -85,16 +83,14 @@ public class PlayerCombatActions : MonoBehaviour
                         toolHitCounter = 0;
                     }
 
-                    continue; // No hace daño
+                    continue;
                 }
-
-                // Armas normales
+                               
                 dmg.TakeDamage(equipped.damage);
                 validHit = true;
             }
         }
-
-        // Sonido de whiff
+       
         if (!validHit)
         {
             if (isTool)

@@ -1,95 +1,83 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MainMenuController : MonoBehaviour
 {
     [Header("Panels")]
     public GameObject MainMenuPanel;
     public GameObject OptionsPanel;
-    public GameObject OptionsSelectionPanel;
-    public GameObject ControlsPanel;
-    public GameObject VolumePanel;
+    public GameObject SensitivityPanel;
 
     [Header("Back Buttons")]
-    public GameObject BackButtonGeneral;
-    public GameObject BackButtonControls;
-    public GameObject BackButtonVolume;
+    public GameObject BackButtonOptions;
 
-    // =========================
-    // OPTIONS
-    // =========================
+    [Header("Sensitivity")]
+    [SerializeField] private Slider sensitivitySlider;
 
-    public void ShowOptions()
+    private const string SENS_KEY = "MouseSensitivity";
+    private const float DEFAULT_SENS = 1f;
+
+    private void Start()
     {
-        UIManager.instance.ShowOnly(
-            OptionsPanel,
-            OptionsSelectionPanel,
-            BackButtonGeneral
-        );
-
-        MainMenuPanel.SetActive(false);
-    }
-
-    public void ShowControls()
-    {
-        UIManager.instance.ShowOnly(
-            OptionsPanel,
-            ControlsPanel,
-            BackButtonControls
-        );
-    }
-
-    public void ShowVolume()
-    {
-        UIManager.instance.ShowOnly(
-            OptionsPanel,
-            VolumePanel,
-            BackButtonVolume
-        );
-    }
-
-    public void BackToOptionsSelection()
-    {
-        UIManager.instance.ShowOnly(
-            OptionsPanel,
-            OptionsSelectionPanel,
-            BackButtonGeneral
-        );
-    }
-
-    public void ShowMainMenuFromOptions()
-    {
-        UIManager.instance.Hide(
-            OptionsPanel,
-            ControlsPanel,
-            VolumePanel,
-            OptionsSelectionPanel,
-            BackButtonGeneral,
-            BackButtonControls,
-            BackButtonVolume
-        );
-
+        // Estado inicial
         MainMenuPanel.SetActive(true);
+        OptionsPanel.SetActive(false);
+        SensitivityPanel.SetActive(false);
+        BackButtonOptions.SetActive(false);
+
+        InitSensitivitySlider();
     }
 
-    // =========================
-    // SCENES
-    // =========================
+    private void InitSensitivitySlider()
+    {
+        if (sensitivitySlider != null)
+        {
+            float savedSens = PlayerPrefs.GetFloat("MouseSensitivity", DEFAULT_SENS);
 
-    // Botón "Jugar" → carga siempre el primer nivel
+            sensitivitySlider.minValue = 0.1f;
+            sensitivitySlider.maxValue = 5f;
+            sensitivitySlider.wholeNumbers = false;
+            sensitivitySlider.value = savedSens;
+
+            sensitivitySlider.onValueChanged.AddListener(SaveSensitivity);
+        }
+    }
+
+    private void SaveSensitivity(float value)
+    {
+        PlayerPrefs.SetFloat("MouseSensitivity", value);
+        PlayerPrefs.Save();
+    }  
+
     public void StartGame()
     {
         GameManager.instance.LoadLevel(0);
     }
 
-    // Botón "Opciones" → abre panel de opciones
-    public void OpenOptions()
-    {
-        ShowOptions();
-    }
-
-    // Botón "Salir" → cierra el juego
     public void QuitGame()
     {
         GameManager.instance.QuitGame();
+    }   
+
+    public void OpenOptions()
+    {
+        MainMenuPanel.SetActive(false);
+        OptionsPanel.SetActive(true);
+        SensitivityPanel.SetActive(true);
+        BackButtonOptions.SetActive(true);
+       
+        if (sensitivitySlider != null)
+            EventSystem.current.SetSelectedGameObject(sensitivitySlider.gameObject);
+    }
+
+    public void BackToMainMenu()
+    {
+        MainMenuPanel.SetActive(true);
+        OptionsPanel.SetActive(false);
+        SensitivityPanel.SetActive(false);
+        BackButtonOptions.SetActive(false);
+        
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }

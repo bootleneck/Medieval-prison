@@ -29,16 +29,14 @@ public class HealingFountain : MonoBehaviour, IInteractable
         }
 
         bool rechargedAnything = false;
-
-        // Item en mano
+        
         DurableItem handDurable = EquipmentManager.Instance.CurrentItemInHand?.GetComponent<DurableItem>();
         if (handDurable != null)
         {
             handDurable.RechargeToFull();
             rechargedAnything = true;
         }
-
-        // Inventario
+        
         foreach (var slot in InventorySystem.Instance.inventory)
         {
             if (slot.item == null) continue;
@@ -69,12 +67,11 @@ public class HealingFountain : MonoBehaviour, IInteractable
             {
                 if (water != null)
                     water.SetActive(false);
-            }
-            // Detener sonido ambiente
+            }            
             if (ambientSource != null)
             {
                 ambientSource.Stop();
-                ambientSource.enabled = false; // opcional
+                ambientSource.enabled = false;
             }
             Debug.Log("[Fuente] ¡Todos los items han sido recargados!");
         }

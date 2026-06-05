@@ -13,16 +13,14 @@ public class InventoryToggle : MonoBehaviour
     }
 
     public void ToggleInventory()
-    {
-        // No abrir si el juego está pausado
+    {        
         if (GameManager.instance.isPaused)
             return;
 
         isOpen = !isOpen;
 
         inventoryPanel.SetActive(isOpen);
-
-        // Cursor opcional
+        
         Cursor.visible = isOpen;
         Cursor.lockState = isOpen
             ? CursorLockMode.None

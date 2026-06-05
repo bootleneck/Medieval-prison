@@ -23,7 +23,7 @@ public class LeverTriggerPoint : MonoBehaviour
         if (triggered)
             return;
 
-        // Solo reacciona a objetos con CharacterController
+        
         if (!other.TryGetComponent<CharacterController>(out _))
             return;
 

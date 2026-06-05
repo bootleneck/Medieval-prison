@@ -20,11 +20,7 @@ public class EnemyMovement : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         SetPatrolMode();
-    }
-
-    // =========================================================
-    // MOVIMIENTO
-    // =========================================================
+    }     
 
     public void MoveTo(Vector3 position)
     {
@@ -40,11 +36,7 @@ public class EnemyMovement : MonoBehaviour
     public void Resume()
     {
         agent.isStopped = false;
-    }
-
-    // =========================================================
-    // MODOS
-    // =========================================================
+    }  
 
     public void SetPatrolSpeed()
     {
@@ -68,11 +60,7 @@ public class EnemyMovement : MonoBehaviour
     {
         agent.acceleration = chaseAcceleration;
         agent.angularSpeed = chaseAngularSpeed;
-    }
-
-    // =========================================================
-    // FSM UTIL
-    // =========================================================
+    }    
 
     public bool HasArrived(float threshold = 0.5f)
     {
@@ -87,11 +75,7 @@ public class EnemyMovement : MonoBehaviour
             return false;
 
         return true;
-    }
-
-    // =========================================================
-    // ANIMACIÓN (NO USAR VELOCIDAD)
-    // =========================================================
+    }   
 
     public bool IsMovingTowardsTarget()
     {

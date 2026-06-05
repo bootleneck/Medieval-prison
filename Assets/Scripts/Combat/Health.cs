@@ -13,8 +13,8 @@ public class Health : MonoBehaviour, IDamageable
 
     // Eventos
     public event Action<int> OnDamageTaken;
-    public event Action<int> OnHealed;      // Para UI futura
-    public event Action OnDeath;            // ← Este era el que faltaba
+    public event Action<int> OnHealed;    
+    public event Action OnDeath;           
 
     private void Awake()
     {

@@ -100,11 +100,7 @@ public class EnemyAudio : MonoBehaviour
         index = (index + 1) % array.Length;
 
         return clipId;
-    }
-
-    // =====================================================
-    // CHASE LOOP
-    // =====================================================
+    }    
 
     public void PlayChaseLoop()
     {
@@ -128,11 +124,7 @@ public class EnemyAudio : MonoBehaviour
         {
             loopSource.Stop();
         }
-    }
-
-    // =====================================================
-    // DEATH
-    // =====================================================
+    }    
 
     public void PlayDeath()
     {
@@ -142,11 +134,7 @@ public class EnemyAudio : MonoBehaviour
             deathSFX,
             transform.position
         );
-    }
-
-    // =====================================================
-    // ATTACKS
-    // =====================================================
+    }  
 
     public void PlayMeleeAttack()
     {

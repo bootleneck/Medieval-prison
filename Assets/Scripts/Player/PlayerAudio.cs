@@ -47,11 +47,7 @@ public class PlayerAudio : MonoBehaviour
     private void Update()
     {
         HandleHeartbeat();
-    }
-
-    // =========================
-    // DAMAGE / DEATH
-    // =========================
+    }    
 
     private void PlayPain(int damage)
     {
@@ -67,12 +63,7 @@ public class PlayerAudio : MonoBehaviour
         {
             AudioManager.Instance.PlaySFX3D(deathSFX, transform.position);
         }
-    }
-
-    // =========================
-    // HEARTBEAT
-    // =========================
-
+    }  
     private void HandleHeartbeat()
     {
         if (playerHealth == null || playerHealth.IsDead) return;
@@ -88,8 +79,7 @@ public class PlayerAudio : MonoBehaviour
         if (!canPlayHeartbeat) return;
 
         AudioManager.Instance.PlaySFX3D(heartbeatSFX, transform.position);
-
-        // UI sync
+       
         heartbeatUI?.PlayPulse();
 
         StartCoroutine(HeartbeatCooldown());

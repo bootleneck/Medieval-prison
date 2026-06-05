@@ -15,19 +15,13 @@ public class AcidFlashEffect : MonoBehaviour
     [SerializeField] private float spawnDelay = 0.25f;
     [SerializeField] private float maxAlpha = 0.6f;
     [SerializeField] private float fadeDuration = 1.5f;
-
-    // 🔥 lista de clones activos
+    
     private List<Image> _activeImages = new List<Image>();
-
-    // Corutina de spawns
+    
     private Coroutine _spawnRoutine;
-
-    /// <summary>
-    /// Aplica efecto ácido por cierta duración
-    /// </summary>
+    
     public void ApplyAcid(float duration)
-    {
-        // detener cualquier rutina previa
+    {        
         if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
         ClearAllImages();
 
@@ -86,10 +80,7 @@ public class AcidFlashEffect : MonoBehaviour
             Destroy(img.gameObject);
         }
     }
-
-    /// <summary>
-    /// Destruye todos los clones activos de golpe
-    /// </summary>
+    
     public void ClearAllImages()
     {
         foreach (var img in _activeImages)

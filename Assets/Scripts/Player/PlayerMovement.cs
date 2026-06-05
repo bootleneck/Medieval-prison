@@ -29,10 +29,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool _jumpStarted;
     private bool _wasGrounded;
-
-    // ==========================
-    // SLOW / ACID EFFECT
-    // ==========================
+   
     private float _speedMultiplier = 1f;
 
     public MovementState CurrentState { get; private set; }
@@ -66,8 +63,7 @@ public class PlayerMovement : MonoBehaviour
             transform.right * _move.x;
 
         Vector3 movement = moveDirection.normalized * finalSpeed;
-
-        // Gravity
+       
         if (_characterController.isGrounded && _verticalVelocity < 0)
             _verticalVelocity = -2f;
         else
@@ -146,11 +142,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         _wasGrounded = _characterController.isGrounded;
-    }
-
-    // ==========================
-    // ACID / SLOW EFFECT API
-    // ==========================
+    }   
 
     public void SetSpeedMultiplier(float multiplier)
     {
@@ -160,11 +152,7 @@ public class PlayerMovement : MonoBehaviour
     public void ResetSpeedMultiplier()
     {
         _speedMultiplier = 1f;
-    }
-
-    // ==========================
-    // INPUTS
-    // ==========================
+    }    
 
     public void OnMove(InputAction.CallbackContext context)
         => _move = context.ReadValue<Vector2>();
@@ -174,9 +162,18 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
-        if (!_characterController.isGrounded) return;
-        if (_jumpStarted) return;
+        if (!context.performed)
+            return;
+
+        if (!_characterController.isGrounded)
+            return;
+
+        if (_jumpStarted)
+            return;
+
+        // No permitir saltar agachado o cuerpo a tierra
+        if (_crouchScript != null && _crouchScript.IsLowered)
+            return;
 
         _jumpStarted = true;
         _verticalVelocity = _jumpForce;
