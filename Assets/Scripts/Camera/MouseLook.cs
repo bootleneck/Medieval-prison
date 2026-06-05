@@ -43,7 +43,7 @@ public class MouseLook : MonoBehaviour
 
         // Rotación vertical: rota Eyes (y con él el VirtualCamera_POV)
         _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+        _xRotation = Mathf.Clamp(_xRotation, -80f, 80f);
         transform.localRotation = Quaternion.Euler(_xRotation, 0, 0);
 
         // Rotación horizontal: rota el cuerpo del Player
