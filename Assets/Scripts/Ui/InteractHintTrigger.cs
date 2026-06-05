@@ -11,6 +11,7 @@ public class InteractHintTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         _shown = true;
-        ItemTutorialUI.Instance?.ShowTutorial(message, null, "InteractHint");
+        // Usa el nombre del objeto en la escena como ID único
+        ItemTutorialUI.Instance?.ShowTutorial(message, null, gameObject.name);
     }
 }
